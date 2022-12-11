@@ -1,14 +1,14 @@
 ---
 layout: course
-title: Biostat 203B
+title: Econ 425T
 ---
 
 # Syllabus
 
 ## Lecture
 
-Tue (lecture) 3pm-4:50pm @ CHS 33-105A   
-Thu (lecture and lab) 3pm-4:50pm @ CHS 33-105A   
+Tue, Thu (lecture) 12:30pm-1:45pm @ Bunche 2221E   
+Fri (lecture and lab) ???am-???am @ ???   
 
 ## Instructor
 
@@ -16,7 +16,7 @@ Thu (lecture and lab) 3pm-4:50pm @ CHS 33-105A
 Office: CHS 21-254A  
 Phone: (310)794-7835  
 Email: <huazhou@ucla.edu>  
-Office hours: Tue, Thu 5pm-6pm @ Zoom <https://ucla.zoom.us/j/97364661679> and CHS 21-254A  
+Office hours: Tue, Thu 8pm-9pm @ Zoom <https://ucla.zoom.us/j/98083064607>  
 
 ## Teaching Assistant
 
@@ -25,25 +25,25 @@ Office hours: TBA
 
 ## Course Description
 
-Computing skills and software tools for handling potentially big medical and public health data.
+Machine learning methods and tools for handling potentially big real world data.
 
-See the [schedule](https://ucla-biostat-203b.github.io/2023winter/schedule/schedule.html) page for a tentative list of topics.
-
-## Prerequisites
-
-The prerequisite for this course is _Biostat 203A: Introduction to Data Management and Statistical Computing_. Those wishing to enroll without these prerequisites will need to obtain consent from the instructor.  
+See the [schedule](https://ucla-econ-425t.github.io/2023winter/schedule/schedule.html) page for a tentative list of topics.
 
 ## Course Webpage
 
-[http://ucla-biostat-203b.com](http://ucla-biostat-203b.com) or [https://ucla-biostat-203b.github.io/2023winter](https://ucla-biostat-203b.github.io/2023winter)
+[https://ucla-econ-425t.github.io/2023winter](https://ucla-econ-425t.github.io/2023winter)
 
 ## Course Materials
 
-There are no required textbooks. Some useful resources will be distributed during class.
+Some useful references are listed below. None of them is required.
+
+* Gareth James, Daniela Witten, Trevor Hastie, Robert Tibshirani, _An Introduction to Statistical Learning: with Applications in R_, 2nd Edition, Springer (2021), [UCLA library link](https://search.library.ucla.edu/permalink/01UCS_LAL/17p22dp/alma9917455728606531)
+
+* Trevor Hastie, Robert Tibshirani, Jerome Friedman, _Elements of Statistical Learning: Data Mining, Inference, and Prediction_, 2nd Edition, Springer (2009), [UCLA library link](https://search.library.ucla.edu/permalink/01UCS_LAL/17p22dp/alma9914833914706531)
 
 ## Attendance
 
-Class attendance to both Tuesday lectures and Thursday lab is **mandatory**.
+Class attendance to both Tuesday/Thursday lectures and Friday lab is **mandatory**.
 
 ## Homework
 
