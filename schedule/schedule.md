@@ -23,7 +23,7 @@ Invite link: <https://join.slack.com/t/slack-cwa8850/shared_invite/zt-1lbvkli06-
 
 | Week | Tuesday | Thursday | Homework |
 |:-----------|:------------|:------------|:------------|
-| 1 | [1/10](http://ucla-econ-425t.github.io/2023winter/econ425twinter2023/2023/01/10/week1-day1.html) course intro and logistics, overview of machine learning (ISL 1-2)  | 1/12 linear regression (ISL 3, ESL 3) | HW1 |   
+| 1 | [1/10](http://ucla-econ-425t.github.io/2023winter/econ425twinter2023/2023/01/10/week1-day1.html) course intro and logistics, overview of machine learning (ISL 1-2)  | 1/12 linear regression (ISL 3) | HW1 |   
 | 2 | 1/17 classification (ISL 4) | 1/19 resampling method (ISL 5) | |    
 | 3 | 1/24 model selection and regularization (ISL 6) | 1/26 additive model (ISL 7) | HW2 |  
 | 4 | 1/31 tree-based methods (ISL 8) | 2/2  | |     
