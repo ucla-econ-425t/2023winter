@@ -30,6 +30,6 @@ Invite link: <https://join.slack.com/t/slack-cwa8850/shared_invite/zt-1lbvkli06-
 | 5 | 2/7 svm (ISL 9) | 2/9  | HW3 |  
 | 6 | 2/14 deep learning | 2/16 | |    
 | 7 | 2/21  | 2/23  | HW4 |   
-| 8 | 2/28 censored data (ISL 11), 3/2 multiple testing (ISL 13) | unsupervised learning (ISL 12) | |    
+| 8 | 2/28 censored data (ISL 11), multiple testing (ISL 13) | 3/2 unsupervised learning (ISL 12) | |    
 | 9 | 3/7 causal inference | 3/9 double machine learning | HW5 |   
 | 10 | 3/14 conformal prediction | 3/16  | | 
