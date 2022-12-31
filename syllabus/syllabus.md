@@ -8,7 +8,6 @@ title: Econ 425T
 ## Lecture
 
 Tue, Thu (lecture) 12:30pm-1:45pm @ Bunche 2221E   
-Fri (lecture and lab) ???am-???am @ ???   
 
 ## Instructor
 
@@ -16,7 +15,7 @@ Fri (lecture and lab) ???am-???am @ ???
 Office: CHS 21-254A  
 Phone: (310)794-7835  
 Email: <huazhou@ucla.edu>  
-Office hours: Tue, Thu 8pm-9pm @ Zoom <https://ucla.zoom.us/j/98083064607>  
+Office hours: Tue, Thu 6pm-7pm @ Zoom <https://ucla.zoom.us/j/98083064607>  
 
 ## Teaching Assistant
 
@@ -37,9 +36,9 @@ See the [schedule](https://ucla-econ-425t.github.io/2023winter/schedule/schedule
 
 Some useful references are listed below. None of them is required.
 
-* Gareth James, Daniela Witten, Trevor Hastie, Robert Tibshirani, _An Introduction to Statistical Learning: with Applications in R_, 2nd Edition, Springer (2021), [UCLA library link](https://search.library.ucla.edu/permalink/01UCS_LAL/17p22dp/alma9917455728606531)
+* Gareth James, Daniela Witten, Trevor Hastie, Robert Tibshirani, _An Introduction to Statistical Learning: with Applications in R_, 2nd Edition, Springer (2021), \[[UCLA library link](https://search.library.ucla.edu/permalink/01UCS_LAL/17p22dp/alma9917455728606531)\], \[[Book website](https://www.statlearning.com/)\]
 
-* Trevor Hastie, Robert Tibshirani, Jerome Friedman, _Elements of Statistical Learning: Data Mining, Inference, and Prediction_, 2nd Edition, Springer (2009), [UCLA library link](https://search.library.ucla.edu/permalink/01UCS_LAL/17p22dp/alma9914833914706531)
+* Trevor Hastie, Robert Tibshirani, Jerome Friedman, _Elements of Statistical Learning: Data Mining, Inference, and Prediction_, 2nd Edition, Springer (2009), \[[UCLA library link](https://search.library.ucla.edu/permalink/01UCS_LAL/17p22dp/alma9914833914706531)\], \[[Book website](https://hastie.su.domains/ElemStatLearn/)\]
 
 ## Attendance
 
