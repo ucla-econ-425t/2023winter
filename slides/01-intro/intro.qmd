@@ -119,6 +119,8 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+# Set font size in plots
+sns.set(font_scale = 2)
 # Display all columns
 pd.set_option('display.max_columns', None)
 
@@ -201,6 +203,7 @@ ax.set_xticklabels(ax.get_xticklabels(), rotation = 15)
 
 ```{r}
 #| message: false
+library(gtsummary)
 library(ISLR2)
 library(tidyverse)
 
@@ -208,7 +211,7 @@ library(tidyverse)
 Wage <- as_tibble(Wage) %>% print(width = Inf)
 
 # Summary statistics
-summary(Wage)
+Wage %>% tbl_summary()
 
 # Plot wage ~ age
 Wage %>%
@@ -244,7 +247,7 @@ Wage %>%
 #| eval: false
 using AlgebraOfGraphics, CairoMakie, CSV, DataFrames
 ENV["DATAFRAMES_COLUMNS"] = 1000
-CairoMakie.activate!(type = "pdf")
+CairoMakie.activate!(type = "png")
 
 # Import Wage data
 Wage = DataFrame(CSV.File("../data/Wage.csv"))
@@ -295,8 +298,9 @@ Smarket = pd.read_csv("../data/Smarket.csv")
 Smarket
 Smarket.info()
 ```
-v 
+
 ```{python}
+#| eval: false
 # summary statistics
 Smarket.describe(include = "all")
 ```
@@ -431,12 +435,11 @@ research assistants surveying the area. The objective is to classify the land us
 
 - No outcome variable, just predictors.  
 
-- Objective is more fuzzy: find groups that behave similarly, find features that behave similarly, find linear combinations of features with the most variations.  
+- Objective is more fuzzy: find groups that behave similarly, find features that behave similarly, find linear combinations of features with the most variations, generative models (transformers).  
 
 - Difficult to know how well you are doing. 
 
 - Can be useful in exploratory data analysis (EDA) or as a pre-processing step for supervised learning.
-
 
 ### Example: gene expression
 
@@ -539,9 +542,9 @@ The Netflix challenge.
 
 - Is this a supervised or unsupervised problem? 
 
-    - We may treat `rating` as outcome and user-movie combinations as predictors. Then it is a supervised learning problem.
+    - We can treat `rating` as outcome and user-movie combinations as predictors. Then it is a supervised learning problem.
     
-    - Or we may treat it as a matrix factorization or low rank approximation problem. Then it is more of a unsupervised learning problem, like PCA.
+    - Or we can treat it as a matrix factorization or low rank approximation problem. Then it is more of a unsupervised learning problem, similar to PCA.
     
 ### Example: large language models (LLMs)    
 
