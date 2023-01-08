@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Dr.&nbsp;Hua Zhou @ UCLA">
-<meta name="dcterms.date" content="2023-01-03">
+<meta name="dcterms.date" content="2023-01-07">
 
 <title>Introduction (ISL 1)</title>
 <style>
@@ -111,7 +111,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#overview-of-statistical-learning" id="toc-overview-of-statistical-learning" class="nav-link active" data-scroll-target="#overview-of-statistical-learning"><span class="toc-section-number">1</span>  Overview of statistical learning</a>
+  <li><a href="#overview-of-statisticalmachine-learning" id="toc-overview-of-statisticalmachine-learning" class="nav-link active" data-scroll-target="#overview-of-statisticalmachine-learning"><span class="toc-section-number">1</span>  Overview of statistical/machine learning</a>
   <ul>
   <li><a href="#supervised-vs-unsupervised-learning" id="toc-supervised-vs-unsupervised-learning" class="nav-link" data-scroll-target="#supervised-vs-unsupervised-learning"><span class="toc-section-number">1.1</span>  Supervised vs unsupervised learning</a></li>
   <li><a href="#supervised-learning" id="toc-supervised-learning" class="nav-link" data-scroll-target="#supervised-learning"><span class="toc-section-number">1.2</span>  Supervised learning</a>
@@ -119,16 +119,21 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#example-salary" id="toc-example-salary" class="nav-link" data-scroll-target="#example-salary"><span class="toc-section-number">1.2.1</span>  Example: salary</a></li>
   <li><a href="#example-stock-market" id="toc-example-stock-market" class="nav-link" data-scroll-target="#example-stock-market"><span class="toc-section-number">1.2.2</span>  Example: stock market</a></li>
   <li><a href="#example-handwritten-digit-recognition" id="toc-example-handwritten-digit-recognition" class="nav-link" data-scroll-target="#example-handwritten-digit-recognition"><span class="toc-section-number">1.2.3</span>  Example: handwritten digit recognition</a></li>
-  <li><a href="#example-classify-the-pixels-in-a-satellite-image-by-usage" id="toc-example-classify-the-pixels-in-a-satellite-image-by-usage" class="nav-link" data-scroll-target="#example-classify-the-pixels-in-a-satellite-image-by-usage"><span class="toc-section-number">1.2.4</span>  Example: classify the pixels in a satellite image, by usage</a></li>
+  <li><a href="#example-more-computer-vision-tasks" id="toc-example-more-computer-vision-tasks" class="nav-link" data-scroll-target="#example-more-computer-vision-tasks"><span class="toc-section-number">1.2.4</span>  Example: more computer vision tasks</a></li>
+  <li><a href="#example-classify-the-pixels-in-a-satellite-image-by-usage" id="toc-example-classify-the-pixels-in-a-satellite-image-by-usage" class="nav-link" data-scroll-target="#example-classify-the-pixels-in-a-satellite-image-by-usage"><span class="toc-section-number">1.2.5</span>  Example: classify the pixels in a satellite image, by usage</a></li>
   </ul></li>
   <li><a href="#unsupervised-learning" id="toc-unsupervised-learning" class="nav-link" data-scroll-target="#unsupervised-learning"><span class="toc-section-number">1.3</span>  Unsupervised learning</a>
   <ul class="collapse">
   <li><a href="#example-gene-expression" id="toc-example-gene-expression" class="nav-link" data-scroll-target="#example-gene-expression"><span class="toc-section-number">1.3.1</span>  Example: gene expression</a></li>
   <li><a href="#example-mapping-people-from-their-genomes" id="toc-example-mapping-people-from-their-genomes" class="nav-link" data-scroll-target="#example-mapping-people-from-their-genomes"><span class="toc-section-number">1.3.2</span>  Example: mapping people from their genomes</a></li>
-  <li><a href="#example-the-netflix-prize" id="toc-example-the-netflix-prize" class="nav-link" data-scroll-target="#example-the-netflix-prize"><span class="toc-section-number">1.3.3</span>  Example: the Netflix prize</a></li>
   </ul></li>
-  <li><a href="#statistical-learning-vs-machine-learning" id="toc-statistical-learning-vs-machine-learning" class="nav-link" data-scroll-target="#statistical-learning-vs-machine-learning"><span class="toc-section-number">1.4</span>  Statistical learning vs machine learning</a></li>
-  <li><a href="#a-brief-history-of-statistical-learning" id="toc-a-brief-history-of-statistical-learning" class="nav-link" data-scroll-target="#a-brief-history-of-statistical-learning"><span class="toc-section-number">1.5</span>  A Brief History of Statistical Learning</a></li>
+  <li><a href="#no-easy-answer" id="toc-no-easy-answer" class="nav-link" data-scroll-target="#no-easy-answer"><span class="toc-section-number">1.4</span>  No easy answer</a>
+  <ul class="collapse">
+  <li><a href="#example-the-netflix-prize" id="toc-example-the-netflix-prize" class="nav-link" data-scroll-target="#example-the-netflix-prize"><span class="toc-section-number">1.4.1</span>  Example: the Netflix prize</a></li>
+  <li><a href="#example-large-language-models-llms" id="toc-example-large-language-models-llms" class="nav-link" data-scroll-target="#example-large-language-models-llms"><span class="toc-section-number">1.4.2</span>  Example: large language models (LLMs)</a></li>
+  </ul></li>
+  <li><a href="#statistical-learning-vs-machine-learning" id="toc-statistical-learning-vs-machine-learning" class="nav-link" data-scroll-target="#statistical-learning-vs-machine-learning"><span class="toc-section-number">1.5</span>  Statistical learning vs machine learning</a></li>
+  <li><a href="#a-brief-history-of-statistical-learning" id="toc-a-brief-history-of-statistical-learning" class="nav-link" data-scroll-target="#a-brief-history-of-statistical-learning"><span class="toc-section-number">1.6</span>  A Brief History of Statistical Learning</a></li>
   </ul></li>
   <li><a href="#course-logistics" id="toc-course-logistics" class="nav-link" data-scroll-target="#course-logistics"><span class="toc-section-number">2</span>  Course logistics</a></li>
   </ul>
@@ -158,7 +163,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 3, 2023</p>
+      <p class="date">January 7, 2023</p>
     </div>
   </div>
   
@@ -178,17 +183,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> IPython</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(IPython.sys_info())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>{'commit_hash': 'fcc71cc32',
+<pre><code>{'commit_hash': 'add5877a4',
  'commit_source': 'installation',
  'default_encoding': 'utf-8',
- 'ipython_path': '/usr/local/lib/python3.7/site-packages/IPython',
- 'ipython_version': '7.34.0',
+ 'ipython_path': '/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/IPython',
+ 'ipython_version': '8.8.0',
  'os_name': 'posix',
- 'platform': 'Darwin-21.6.0-x86_64-i386-64bit',
- 'sys_executable': '/usr/local/opt/python/bin/python3.7',
+ 'platform': 'macOS-10.16-x86_64-i386-64bit',
+ 'sys_executable': '/usr/local/bin/python3',
  'sys_platform': 'darwin',
- 'sys_version': '3.7.4 (default, Sep  7 2019, 18:27:02) \n'
-                '[Clang 10.0.1 (clang-1001.0.46.4)]'}</code></pre>
+ 'sys_version': '3.10.9 (v3.10.9:1dd9be6584, Dec  6 2022, 14:37:36) [Clang '
+                '13.0.0 (clang-1300.0.29.30)]'}</code></pre>
 </div>
 </div>
 </div>
@@ -231,16 +236,16 @@ loaded via a namespace (and not attached):
 </div>
 </div>
 </div>
-<p>In this class, we use the phrases <em>statistical learning</em>, <em>machine learning</em>, or <em>learning</em> interchangeably.</p>
-<section id="overview-of-statistical-learning" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Overview of statistical learning</h1>
+<section id="overview-of-statisticalmachine-learning" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Overview of statistical/machine learning</h1>
+<p>In this class, we use the phrases <strong>statistical learning</strong>, <strong>machine learning</strong>, or simply <strong>learning</strong> interchangeably.</p>
 <section id="supervised-vs-unsupervised-learning" class="level2" data-number="1.1">
 <h2 data-number="1.1" class="anchored" data-anchor-id="supervised-vs-unsupervised-learning"><span class="header-section-number">1.1</span> Supervised vs unsupervised learning</h2>
 <ul>
 <li><strong>Supervised learning</strong>: input(s) -&gt; output.
 <ul>
 <li>Prediction: the output is continuous (income, weight, bmi, …).</li>
-<li>Classification: the output is categorical (disease or not, image, pattern recognition, …).</li>
+<li>Classification: the output is categorical (disease or not, pattern recognition, …).</li>
 </ul></li>
 <li><strong>Unsupervised learning</strong>: no output. We learn relationships and structure in the data.
 <ul>
@@ -253,14 +258,14 @@ loaded via a namespace (and not attached):
 <section id="supervised-learning" class="level2" data-number="1.2">
 <h2 data-number="1.2" class="anchored" data-anchor-id="supervised-learning"><span class="header-section-number">1.2</span> Supervised learning</h2>
 <ul>
-<li><p>Predictors <span class="math display">\[
+<li><p><strong>Predictors</strong> <span class="math display">\[
 X = \begin{pmatrix} X_1 \\ \vdots \\ X_p \end{pmatrix}.
-\]</span> Also called inputs, covariates, regressors, features, independent variables.</p></li>
-<li><p>Outcome <span class="math inline">\(Y\)</span> (also called output, response variable, dependent variable, target).</p>
+\]</span> Also called <strong>inputs</strong>, <strong>covariates</strong>, <strong>regressors</strong>, <strong>features</strong>, <strong>independent variables</strong>.</p></li>
+<li><p><strong>Outcome</strong> <span class="math inline">\(Y\)</span> (also called <strong>output</strong>, <strong>response variable</strong>, <strong>dependent variable</strong>, <strong>target</strong>).</p>
 <ul>
-<li>In the <em>regression problem</em>, <span class="math inline">\(Y\)</span> is quantitative (price, weight, bmi).<br>
+<li>In the <strong>regression problem</strong>, <span class="math inline">\(Y\)</span> is quantitative (price, weight, bmi).<br>
 </li>
-<li>In the <em>classification problem</em>, <span class="math inline">\(Y\)</span> is categorical. That is <span class="math inline">\(Y\)</span> takes values in a finite, unordered set (survived/died, digit 0-9, object in image, cancer class of tissue sample).</li>
+<li>In the <strong>classification problem</strong>, <span class="math inline">\(Y\)</span> is categorical. That is <span class="math inline">\(Y\)</span> takes values in a finite, unordered set (survived/died, digit 0-9, object in image, cancer class of tissue sample).</li>
 </ul></li>
 <li><p>We have training data <span class="math inline">\((\mathbf{x}_1, y_1), \ldots, (\mathbf{x}_n, y_n)\)</span>. These are observations (also called samples, instances, cases). Training data is often represented by a predictor matrix <span id="eq-predictor-matrix"><span class="math display">\[
 \mathbf{X} = \begin{pmatrix}
@@ -385,104 +390,66 @@ memory usage: 115.2 KB</code></pre>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># summary statistics</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>Wage.describe(include <span class="op">=</span> <span class="st">"all"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>               year          age      maritl      race   education  \
-count   3000.000000  3000.000000        3000      3000        3000   
-unique          NaN          NaN           5         4           5   
-top             NaN          NaN  2. Married  1. White  2. HS Grad   
-freq            NaN          NaN        2074      2480         971   
-mean    2005.791000    42.414667         NaN       NaN         NaN   
-std        2.026167    11.542406         NaN       NaN         NaN   
-min     2003.000000    18.000000         NaN       NaN         NaN   
-25%     2004.000000    33.750000         NaN       NaN         NaN   
-50%     2006.000000    42.000000         NaN       NaN         NaN   
-75%     2008.000000    51.000000         NaN       NaN         NaN   
-max     2009.000000    80.000000         NaN       NaN         NaN   
-
-                    region       jobclass          health health_ins  \
-count                 3000           3000            3000       3000   
-unique                   1              2               2          2   
-top     2. Middle Atlantic  1. Industrial  2. &gt;=Very Good     1. Yes   
-freq                  3000           1544            2142       2083   
-mean                   NaN            NaN             NaN        NaN   
-std                    NaN            NaN             NaN        NaN   
-min                    NaN            NaN             NaN        NaN   
-25%                    NaN            NaN             NaN        NaN   
-50%                    NaN            NaN             NaN        NaN   
-75%                    NaN            NaN             NaN        NaN   
-max                    NaN            NaN             NaN        NaN   
-
-            logwage         wage  
-count   3000.000000  3000.000000  
-unique          NaN          NaN  
-top             NaN          NaN  
-freq            NaN          NaN  
-mean       4.653905   111.703608  
-std        0.351753    41.728595  
-min        3.000000    20.085537  
-25%        4.447158    85.383940  
-50%        4.653213   104.921507  
-75%        4.857332   128.680488  
-max        5.763128   318.342430  </code></pre>
-</div>
 </div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot wage ~ age</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>sns.lmplot(</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  data <span class="op">=</span> Wage, </span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  x <span class="op">=</span> <span class="st">"age"</span>, </span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  y <span class="op">=</span> <span class="st">"wage"</span>, </span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  lowess <span class="op">=</span> <span class="va">True</span>,</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  scatter_kws <span class="op">=</span> {<span class="st">'alpha'</span> : <span class="fl">0.1</span>}</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  ).<span class="bu">set</span>(</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  xlabel <span class="op">=</span> <span class="st">'Age'</span>, </span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  ylabel <span class="op">=</span> <span class="st">'Wage (k$)'</span></span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot wage ~ age</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>sns.lmplot(</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  data <span class="op">=</span> Wage, </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  x <span class="op">=</span> <span class="st">"age"</span>, </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  y <span class="op">=</span> <span class="st">"wage"</span>, </span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  lowess <span class="op">=</span> <span class="va">True</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  scatter_kws <span class="op">=</span> {<span class="st">'alpha'</span> : <span class="fl">0.1</span>},</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  height <span class="op">=</span> <span class="dv">8</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  ).<span class="bu">set</span>(</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  xlabel <span class="op">=</span> <span class="st">'Age'</span>, </span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  ylabel <span class="op">=</span> <span class="st">'Wage (k$)'</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-wage-age" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="intro_files/figure-html/fig-wage-age-1.png" class="img-fluid figure-img" width="244"></p>
+<p><img src="intro_files/figure-html/fig-wage-age-1.png" class="img-fluid figure-img" width="395"></p>
 <p></p><figcaption class="figure-caption">Figure&nbsp;1: Wage changes nonlinearly with age.</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot wage ~ year</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>sns.lmplot(</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  data <span class="op">=</span> Wage, </span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  x <span class="op">=</span> <span class="st">"year"</span>, </span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  y <span class="op">=</span> <span class="st">"wage"</span>, </span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  scatter_kws <span class="op">=</span> {<span class="st">'alpha'</span> : <span class="fl">0.1</span>}</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  ).<span class="bu">set</span>(</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  xlabel <span class="op">=</span> <span class="st">'Year'</span>, </span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  ylabel <span class="op">=</span> <span class="st">'Wage (k$)'</span></span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot wage ~ year</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>sns.lmplot(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  data <span class="op">=</span> Wage, </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  x <span class="op">=</span> <span class="st">"year"</span>, </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  y <span class="op">=</span> <span class="st">"wage"</span>, </span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  scatter_kws <span class="op">=</span> {<span class="st">'alpha'</span> : <span class="fl">0.1</span>},</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  height <span class="op">=</span> <span class="dv">8</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  ).<span class="bu">set</span>(</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  xlabel <span class="op">=</span> <span class="st">'Year'</span>, </span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  ylabel <span class="op">=</span> <span class="st">'Wage (k$)'</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-wage-year" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="intro_files/figure-html/fig-wage-year-3.png" class="img-fluid figure-img" width="244"></p>
+<p><img src="intro_files/figure-html/fig-wage-year-3.png" class="img-fluid figure-img" width="395"></p>
 <p></p><figcaption class="figure-caption">Figure&nbsp;2: Average wage increases by $10k in 2003-2009.</figcaption><p></p>
 </figure>
 </div>
 </div>
 </div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot wage ~ education</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> sns.boxplot(</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  data <span class="op">=</span> Wage, </span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  x <span class="op">=</span> <span class="st">"education"</span>, </span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  y <span class="op">=</span> <span class="st">"wage"</span>, </span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>g.<span class="bu">set</span>(</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  xlabel <span class="op">=</span> <span class="st">'Education'</span>, </span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  ylabel <span class="op">=</span> <span class="st">'Wage (k$)'</span></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>g.set_xticklabels(g.get_xticklabels(), rotation <span class="op">=</span> <span class="dv">15</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot wage ~ education</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> sns.boxplot(</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  data <span class="op">=</span> Wage, </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  x <span class="op">=</span> <span class="st">"education"</span>, </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  y <span class="op">=</span> <span class="st">"wage"</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>ax.<span class="bu">set</span>(</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  xlabel <span class="op">=</span> <span class="st">'Education'</span>, </span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  ylabel <span class="op">=</span> <span class="st">'Wage (k$)'</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>ax.set_xticklabels(ax.get_xticklabels(), rotation <span class="op">=</span> <span class="dv">15</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-wage-edu" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="intro_files/figure-html/fig-wage-edu-5.png" class="img-fluid figure-img" width="480"></p>
+<p><img src="intro_files/figure-html/fig-wage-edu-5.png" class="img-fluid figure-img" width="768"></p>
 <p></p><figcaption class="figure-caption">Figure&nbsp;3: Wage increases with education level.</figcaption><p></p>
 </figure>
 </div>
@@ -491,11 +458,11 @@ max        5.763128   318.342430  </code></pre>
 </div>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ISLR2)</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to tibble</span></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>Wage <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(Wage) <span class="sc">%&gt;%</span> <span class="fu">print</span>(<span class="at">width =</span> <span class="cn">Inf</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ISLR2)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to tibble</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>Wage <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(Wage) <span class="sc">%&gt;%</span> <span class="fu">print</span>(<span class="at">width =</span> <span class="cn">Inf</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3,000 × 11
     year   age maritl           race     education       region            
@@ -524,8 +491,8 @@ max        5.763128   318.342430  </code></pre>
 10 2. Information 2. &gt;=Very Good 1. Yes        4.86 129. 
 # … with 2,990 more rows</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Summary statistics</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(Wage)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Summary statistics</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(Wage)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      year           age                     maritl           race     
  Min.   :2003   Min.   :18.00   1. Never Married: 648   1. White:2480  
@@ -552,14 +519,14 @@ max        5.763128   318.342430  </code></pre>
                                      Max.   :5.763   Max.   :318.34  
                                                                      </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot wage ~ age</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>Wage <span class="sc">%&gt;%</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> wage)) <span class="sc">+</span> </span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>() <span class="sc">+</span></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Wage changes nonlinearly with age"</span>,</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Age"</span>,</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Wage (k$)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot wage ~ age</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>Wage <span class="sc">%&gt;%</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> age, <span class="at">y =</span> wage)) <span class="sc">+</span> </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>() <span class="sc">+</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Wage changes nonlinearly with age"</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Age"</span>,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Wage (k$)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -567,14 +534,14 @@ max        5.763128   318.342430  </code></pre>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot wage ~ year</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>Wage <span class="sc">%&gt;%</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> wage)) <span class="sc">+</span> </span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Average wage increases by $10k in 2003-2009"</span>,</span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Year"</span>,</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Wage (k$)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot wage ~ year</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>Wage <span class="sc">%&gt;%</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> wage)) <span class="sc">+</span> </span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>) <span class="sc">+</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Average wage increases by $10k in 2003-2009"</span>,</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Year"</span>,</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Wage (k$)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -582,14 +549,14 @@ max        5.763128   318.342430  </code></pre>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot wage ~ education</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>Wage <span class="sc">%&gt;%</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> education, <span class="at">y =</span> wage)) <span class="sc">+</span> </span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Wage increases with education level"</span>,</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Year"</span>,</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Wage (k$)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot wage ~ education</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>Wage <span class="sc">%&gt;%</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> education, <span class="at">y =</span> wage)) <span class="sc">+</span> </span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Wage increases with education level"</span>,</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Year"</span>,</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Wage (k$)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -600,7 +567,20 @@ max        5.763128   318.342430  </code></pre>
 </div>
 </div>
 <div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
-
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">AlgebraOfGraphics</span>, <span class="bu">CairoMakie</span>, <span class="bu">CSV</span>, <span class="bu">DataFrames</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="cn">ENV</span>[<span class="st">"DATAFRAMES_COLUMNS"</span>] <span class="op">=</span> <span class="fl">1000</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>CairoMakie.<span class="fu">activate!</span>(<span class="kw">type</span> <span class="op">=</span> <span class="st">"pdf"</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Import Wage data</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>Wage <span class="op">=</span> <span class="fu">DataFrame</span>(CSV.<span class="fu">File</span>(<span class="st">"../data/Wage.csv"</span>))</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Summary statistics</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="fu">describe</span>(Wage)</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot Wage ~ age</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(Wage) <span class="op">*</span> <span class="fu">mapping</span>(<span class="op">:</span>age, <span class="op">:</span>wage) <span class="op">*</span> (<span class="fu">smooth</span>() <span class="op">+</span> <span class="fu">visual</span>(Scatter)) <span class="op">|&gt;</span> draw</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </div>
 </div>
 </div>
@@ -625,7 +605,7 @@ max        5.763128   318.342430  </code></pre>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="intro_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="intro_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -680,6 +660,7 @@ dtypes: float64(7), int64(1), object(1)
 memory usage: 88.0+ KB</code></pre>
 </div>
 </div>
+<p>v</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># summary statistics</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>Smarket.describe(include <span class="op">=</span> <span class="st">"all"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -737,12 +718,12 @@ max        5.73300     3.152470     5.733000       NaN  </code></pre>
 
 [6250 rows x 6 columns]</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> sns.FacetGrid(Smarket_long, col <span class="op">=</span> <span class="st">"Lag"</span>, col_wrap <span class="op">=</span> <span class="dv">3</span>)</span>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>g <span class="op">=</span> sns.FacetGrid(Smarket_long, col <span class="op">=</span> <span class="st">"Lag"</span>, col_wrap <span class="op">=</span> <span class="dv">3</span>, height <span class="op">=</span> <span class="dv">10</span>)</span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>g.map_dataframe(sns.boxplot, x <span class="op">=</span> <span class="st">"Direction"</span>, y <span class="op">=</span> <span class="st">"Perc"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-sp500-lag" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="intro_files/figure-html/fig-sp500-lag-1.png" class="img-fluid figure-img" width="444"></p>
+<p><img src="intro_files/figure-html/fig-sp500-lag-1.png" class="img-fluid figure-img" width="1495"></p>
 <p></p><figcaption class="figure-caption">Figure&nbsp;4: LagX is the percentage return for the previous X days.</figcaption><p></p>
 </figure>
 </div>
@@ -812,7 +793,7 @@ max        5.73300     3.152470     5.733000       NaN  </code></pre>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="intro_files/figure-html/unnamed-chunk-14-3.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="intro_files/figure-html/unnamed-chunk-15-3.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -826,26 +807,14 @@ max        5.73300     3.152470     5.733000       NaN  </code></pre>
 </section>
 <section id="example-handwritten-digit-recognition" class="level3" data-number="1.2.3">
 <h3 data-number="1.2.3" class="anchored" data-anchor-id="example-handwritten-digit-recognition"><span class="header-section-number">1.2.3</span> Example: handwritten digit recognition</h3>
-<div id="fig-handwritten-digits" class="quarto-layout-panel">
+<div id="fig-handwritten-digits" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><embed src="./ISL_fig_10_3a.pdf" class="img-fluid"></p>
-</figure>
-</div>
-</div>
-</div>
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><embed src="./ISL_fig_10_3b.pdf" class="img-fluid"></p>
-</figure>
-</div>
-</div>
-</div>
+<p align="center">
+<embed src="./ISL_fig_10_3a.pdf" width="500" height="300">
+</p>
+<p align="center">
+<embed src="./ISL_fig_10_3b.pdf" width="500" height="300">
+</p>
 <p></p><figcaption class="figure-caption">Figure&nbsp;5: Examples of handwritten digits from the MNIST corpus (ISL Figure 10.3).</figcaption><p></p>
 </figure>
 </div>
@@ -880,15 +849,47 @@ max        5.73300     3.152470     5.733000       NaN  </code></pre>
 </table></li>
 </ul>
 </section>
-<section id="example-classify-the-pixels-in-a-satellite-image-by-usage" class="level3" data-number="1.2.4">
-<h3 data-number="1.2.4" class="anchored" data-anchor-id="example-classify-the-pixels-in-a-satellite-image-by-usage"><span class="header-section-number">1.2.4</span> Example: classify the pixels in a satellite image, by usage</h3>
+<section id="example-more-computer-vision-tasks" class="level3" data-number="1.2.4">
+<h3 data-number="1.2.4" class="anchored" data-anchor-id="example-more-computer-vision-tasks"><span class="header-section-number">1.2.4</span> Example: more computer vision tasks</h3>
+<p>Some popular data sets from computer vision.</p>
+<ul>
+<li><a href="https://github.com/zalandoresearch/fashion-mnist#fashion-mnist">Fashion MNIST</a></li>
+</ul>
+<p align="center">
+<img src="./fashion-mnist-sprite.png" class="img-fluid" width="500">
+</p>
+<ul>
+<li><a href="https://www.cs.toronto.edu/~kriz/cifar.html">CIFAR 10</a></li>
+</ul>
+<p align="center">
+<img src="./cifar10.jpg" class="img-fluid" width="500">
+</p>
+<ul>
+<li><a href="https://www.image-net.org/">ImageNet</a></li>
+</ul>
+<p align="center">
+<img src="./colah-KSH-results.png" class="img-fluid" width="500">
+</p>
+<ul>
+<li><a href="https://cocodataset.org/#home">Microsoft COCO</a> (object detection, segmentation, and captioning)</li>
+</ul>
+<p align="center">
+<img src="./coco-examples.jpeg" class="img-fluid" width="500">
+</p>
+<ul>
+<li><a href="http://groups.csail.mit.edu/vision/datasets/ADE20K/">ADE20K</a> (scene parsing)</li>
+</ul>
+<p align="center">
+<img src="./ade20k_examples.png" class="img-fluid" width="500">
+</p>
+</section>
+<section id="example-classify-the-pixels-in-a-satellite-image-by-usage" class="level3" data-number="1.2.5">
+<h3 data-number="1.2.5" class="anchored" data-anchor-id="example-classify-the-pixels-in-a-satellite-image-by-usage"><span class="header-section-number">1.2.5</span> Example: classify the pixels in a satellite image, by usage</h3>
 <div id="fig-landsat" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><embed src="./ESL_fig_13_6.pdf" class="img-fluid"></p>
-</figure>
-</div>
+<p align="center">
+<embed src="./ESL_fig_13_6.pdf" width="750" height="750">
+</p>
 <p></p><figcaption class="figure-caption">Figure&nbsp;6: LANDSET images (ESL Figure 13.6).</figcaption><p></p>
 </figure>
 </div>
@@ -943,17 +944,17 @@ memory usage: 3.3 MB</code></pre>
 <span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>nci60_pc</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>          PC1        PC2 cancer_type
-0  -19.838016   3.556054         CNS
-1  -23.089148   6.441520         CNS
-2  -27.456007   2.465416         CNS
-3  -42.816748  -9.767322       RENAL
-4  -55.418524  -5.199094      BREAST
+0  -19.838057   3.555741         CNS
+1  -23.089196   6.440507         CNS
+2  -27.456070   2.463845         CNS
+3  -42.816800  -9.767717       RENAL
+4  -55.418516  -5.198371      BREAST
 ..        ...        ...         ...
-59 -17.996183 -47.241745    MELANOMA
-60  -4.415422 -42.309334    MELANOMA
-61 -22.966891 -36.102131    MELANOMA
-62 -19.175977 -50.398353    MELANOMA
-63 -13.232905 -35.125629    MELANOMA
+59 -17.996214 -47.242700    MELANOMA
+60  -4.415464 -42.310706    MELANOMA
+61 -22.966946 -36.102826    MELANOMA
+62 -19.176034 -50.397127    MELANOMA
+63 -13.232890 -35.125320    MELANOMA
 
 [64 rows x 3 columns]</code></pre>
 </div>
@@ -965,12 +966,13 @@ memory usage: 3.3 MB</code></pre>
 <span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  data <span class="op">=</span> nci60_pc, </span>
 <span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>  x <span class="op">=</span> <span class="st">'PC1'</span>,</span>
 <span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>  y <span class="op">=</span> <span class="st">'PC2'</span>,</span>
-<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>  hue <span class="op">=</span> <span class="st">'cancer_type'</span></span>
-<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>  hue <span class="op">=</span> <span class="st">'cancer_type'</span>,</span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>  height <span class="op">=</span> <span class="dv">10</span></span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="intro_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="308"></p>
+<p><img src="intro_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="564"></p>
 </figure>
 </div>
 </div>
@@ -1012,7 +1014,7 @@ MCF7A-repro MCF7D-repro    MELANOMA       NSCLC     OVARIAN    PROSTATE
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="intro_files/figure-html/unnamed-chunk-18-3.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="intro_files/figure-html/unnamed-chunk-19-3.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -1033,8 +1035,12 @@ MCF7A-repro MCF7D-repro    MELANOMA       NSCLC     OVARIAN    PROSTATE
 </ul>
 <p><img src="https://media.springernature.com/full/springer-static/image/art%3A10.1038%2Fnature07331/MediaObjects/41586_2008_Article_BFnature07331_Fig1_HTML.jpg?as=webp" class="img-fluid"></p>
 </section>
-<section id="example-the-netflix-prize" class="level3" data-number="1.3.3">
-<h3 data-number="1.3.3" class="anchored" data-anchor-id="example-the-netflix-prize"><span class="header-section-number">1.3.3</span> Example: the Netflix prize</h3>
+</section>
+<section id="no-easy-answer" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="no-easy-answer"><span class="header-section-number">1.4</span> No easy answer</h2>
+<p>In modern applications, the line between supervised and unsupervised learning is blurred.</p>
+<section id="example-the-netflix-prize" class="level3" data-number="1.4.1">
+<h3 data-number="1.4.1" class="anchored" data-anchor-id="example-the-netflix-prize"><span class="header-section-number">1.4.1</span> Example: the Netflix prize</h3>
 <div id="fig-netflix" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <div class="quarto-figure quarto-figure-center">
@@ -1055,12 +1061,22 @@ MCF7A-repro MCF7D-repro    MELANOMA       NSCLC     OVARIAN    PROSTATE
 <li><p>Training data is very sparse, about 98% sparse.</p></li>
 <li><p>The objective is to predict the rating for a set of 1 million customer-movie pairs that are missing in the training data.</p></li>
 <li><p>Netflix’s in-house algorithm achieved a root MSE of 0.953. The first team to achieve a 10% improvement wins one million dollars.</p></li>
-<li><p>Is this a supervised or unsupervised problem?</p></li>
+<li><p>Is this a supervised or unsupervised problem?</p>
+<ul>
+<li><p>We may treat <code>rating</code> as outcome and user-movie combinations as predictors. Then it is a supervised learning problem.</p></li>
+<li><p>Or we may treat it as a matrix factorization or low rank approximation problem. Then it is more of a unsupervised learning problem, like PCA.</p></li>
+</ul></li>
 </ul>
 </section>
+<section id="example-large-language-models-llms" class="level3" data-number="1.4.2">
+<h3 data-number="1.4.2" class="anchored" data-anchor-id="example-large-language-models-llms"><span class="header-section-number">1.4.2</span> Example: large language models (LLMs)</h3>
+<p>Modern large language models, such as <a href="https://chat.openai.com">ChatGPT3</a>, combine both supervised learning and reinforcement learning.</p>
+<script type="text/javascript" src="https://ssl.gstatic.com/trends_nrtr/3197_RC01/embed_loader.js"></script>
+<script type="text/javascript"> trends.embed.renderExploreWidget("TIMESERIES", {"comparisonItem":[{"keyword":"chatgpt","geo":"","time":"2022-01-08 2023-01-08"}],"category":0,"property":""}, {"exploreQuery":"q=chatgpt&date=today 12-m","guestPath":"https://trends.google.com:443/trends/embed/"}); </script>
 </section>
-<section id="statistical-learning-vs-machine-learning" class="level2" data-number="1.4">
-<h2 data-number="1.4" class="anchored" data-anchor-id="statistical-learning-vs-machine-learning"><span class="header-section-number">1.4</span> Statistical learning vs machine learning</h2>
+</section>
+<section id="statistical-learning-vs-machine-learning" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="statistical-learning-vs-machine-learning"><span class="header-section-number">1.5</span> Statistical learning vs machine learning</h2>
 <ul>
 <li><p>Machine learning arose as a subfield of Artificial Intelligence.</p></li>
 <li><p>Statistical learning arose as a subfield of Statistics.</p></li>
@@ -1073,8 +1089,8 @@ MCF7A-repro MCF7D-repro    MELANOMA       NSCLC     OVARIAN    PROSTATE
 <li><p>Machine learning has the upper hand in Marketing!</p></li>
 </ul>
 </section>
-<section id="a-brief-history-of-statistical-learning" class="level2" data-number="1.5">
-<h2 data-number="1.5" class="anchored" data-anchor-id="a-brief-history-of-statistical-learning"><span class="header-section-number">1.5</span> A Brief History of Statistical Learning</h2>
+<section id="a-brief-history-of-statistical-learning" class="level2" data-number="1.6">
+<h2 data-number="1.6" class="anchored" data-anchor-id="a-brief-history-of-statistical-learning"><span class="header-section-number">1.6</span> A Brief History of Statistical Learning</h2>
 <p><img src="https://people.idsia.ch/~juergen/deep-learning-history1508x932.png" class="img-fluid"></p>
 <p>Image source: <a href="https://people.idsia.ch/~juergen/deep-learning-history.html" class="uri">https://people.idsia.ch/~juergen/deep-learning-history.html</a></p>
 <ul>
@@ -1094,7 +1110,23 @@ MCF7A-repro MCF7D-repro    MELANOMA       NSCLC     OVARIAN    PROSTATE
 <section id="course-logistics" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Course logistics</h1>
 <ul>
-<li><p>This course introduces some commonly used methods for supervised and unsupervised learning.</p></li>
+<li>This course introduces some commonly used methods for supervised and unsupervised learning.</li>
+</ul>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Q: Wait! Why don’t we just learn the best method such as deep learning first?</p>
+<p>A: No single method dominates. One method may prove useful in answering some questions on a given data set. On a related (not identical) data set or question, another might prevail. <a href="https://arxiv.org/abs/2106.03253">Article</a></p>
+</div>
+</div>
+<ul>
 <li><p>Read <a href="https://ucla-econ-425t.github.io/2023winter/syllabus/syllabus.html">syllabus</a> and <a href="https://ucla-econ-425t.github.io/2023winter/schedule/schedule.html">schedule</a> for a tentative list of topics and course logistics.</p></li>
 <li><p>Homework assignments will be a mix of theoretical/conceptual and applied/computational questions. Although not required, you are highly encouraged to practice literate programming (using Jupyter, Quarto, RMarkdown, or Google Colab) coordinated through Git/GitHub. This will enhance your GitHub profile and make you more appealing on job market.</p></li>
 <li><p>We will use Python in this course. Limited support for R and Julia is also available from Dr.&nbsp;Hua Zhou.</p></li>

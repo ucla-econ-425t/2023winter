@@ -51,15 +51,17 @@ versioninfo()
 
 :::
 
-In this class, we use the phrases _statistical learning_, _machine learning_, or _learning_ interchangeably.
 
-# Overview of statistical learning
+
+# Overview of statistical/machine learning
+
+In this class, we use the phrases **statistical learning**, **machine learning**, or simply **learning** interchangeably.
 
 ## Supervised vs unsupervised learning
 
 - **Supervised learning**: input(s) -> output. 
     - Prediction: the output is continuous (income, weight, bmi, ...).
-    - Classification: the output is categorical (disease or not, image, pattern recognition, ...).
+    - Classification: the output is categorical (disease or not, pattern recognition, ...).
 
 - **Unsupervised learning**: no output. We learn relationships and structure in the data. 
     - Clustering.   
@@ -67,15 +69,15 @@ In this class, we use the phrases _statistical learning_, _machine learning_, or
 
 ## Supervised learning
 
-- Predictors
+- **Predictors**
 $$
 X = \begin{pmatrix} X_1 \\ \vdots \\ X_p \end{pmatrix}.
 $$
-Also called inputs, covariates, regressors, features, independent variables.
+Also called **inputs**, **covariates**, **regressors**, **features**, **independent variables**.
 
-- Outcome $Y$ (also called output, response variable, dependent variable, target).
-    - In the _regression problem_, $Y$ is quantitative (price, weight, bmi).  
-    - In the _classification problem_, $Y$ is categorical. That is $Y$ takes values in a finite, unordered set (survived/died, digit 0-9, object in image, cancer class of tissue sample).  
+- **Outcome** $Y$ (also called **output**, **response variable**, **dependent variable**, **target**).
+    - In the **regression problem**, $Y$ is quantitative (price, weight, bmi).  
+    - In the **classification problem**, $Y$ is categorical. That is $Y$ takes values in a finite, unordered set (survived/died, digit 0-9, object in image, cancer class of tissue sample).  
 
 - We have training data $(\mathbf{x}_1, y_1), \ldots, (\mathbf{x}_n, y_n)$. These are observations (also called samples, instances, cases). Training data is often represented by a predictor matrix
 $$
@@ -138,6 +140,7 @@ Wage.info()
 ```
 
 ```{python}
+#| eval: false
 # summary statistics
 Wage.describe(include = "all")
 ```
@@ -152,7 +155,8 @@ sns.lmplot(
   x = "age", 
   y = "wage", 
   lowess = True,
-  scatter_kws = {'alpha' : 0.1}
+  scatter_kws = {'alpha' : 0.1},
+  height = 8
   ).set(
   xlabel = 'Age', 
   ylabel = 'Wage (k$)'
@@ -168,7 +172,8 @@ sns.lmplot(
   data = Wage, 
   x = "year", 
   y = "wage", 
-  scatter_kws = {'alpha' : 0.1}
+  scatter_kws = {'alpha' : 0.1},
+  height = 8
   ).set(
   xlabel = 'Year', 
   ylabel = 'Wage (k$)'
@@ -180,16 +185,16 @@ sns.lmplot(
 #| fig-cap: "Wage increases with education level."
 
 # Plot wage ~ education
-g = sns.boxplot(
+ax = sns.boxplot(
   data = Wage, 
   x = "education", 
-  y = "wage", 
+  y = "wage"
   )
-g.set(
+ax.set(
   xlabel = 'Education', 
   ylabel = 'Wage (k$)'
   )
-g.set_xticklabels(g.get_xticklabels(), rotation = 15)
+ax.set_xticklabels(ax.get_xticklabels(), rotation = 15)
 ```
 
 #### R
@@ -235,6 +240,22 @@ Wage %>%
 
 #### Julia
 
+```{julia}
+#| eval: false
+using AlgebraOfGraphics, CairoMakie, CSV, DataFrames
+ENV["DATAFRAMES_COLUMNS"] = 1000
+CairoMakie.activate!(type = "pdf")
+
+# Import Wage data
+Wage = DataFrame(CSV.File("../data/Wage.csv"))
+
+# Summary statistics
+describe(Wage)
+
+# Plot Wage ~ age
+data(Wage) * mapping(:age, :wage) * (smooth() + visual(Scatter)) |> draw
+```
+
 :::
 
 ### Example: stock market
@@ -274,7 +295,7 @@ Smarket = pd.read_csv("../data/Smarket.csv")
 Smarket
 Smarket.info()
 ```
-
+v 
 ```{python}
 # summary statistics
 Smarket.describe(include = "all")
@@ -294,7 +315,7 @@ Smarket_long = pd.melt(
   )
 Smarket_long  
 
-g = sns.FacetGrid(Smarket_long, col = "Lag", col_wrap = 3)
+g = sns.FacetGrid(Smarket_long, col = "Lag", col_wrap = 3, height = 10)
 g.map_dataframe(sns.boxplot, x = "Direction", y = "Perc")
 plt.clf()
 ```
@@ -330,11 +351,15 @@ Smarket %>%
 
 ### Example: handwritten digit recognition
 
-::: {#fig-handwritten-digits layout-ncol=1}
+::: {#fig-handwritten-digits}
 
-![](./ISL_fig_10_3a.pdf){fig-align="center" width=80%}
+<p align="center">
+![](./ISL_fig_10_3a.pdf){width=500px height=300px}
+</p>
 
-![](./ISL_fig_10_3b.pdf){fig-align="center" width=80%}
+<p align="center">
+![](./ISL_fig_10_3b.pdf){width=500px height=300px}
+</p>
 
 Examples of handwritten digits from the MNIST corpus (ISL Figure 10.3).
 
@@ -351,11 +376,48 @@ Examples of handwritten digits from the MNIST corpus (ISL Figure 10.3).
     | LeNet-5 | 0.8% |  
     | boosted LeNet-4 | 0.7% |
 
+### Example: more computer vision tasks
+
+Some popular data sets from computer vision. 
+
+- [Fashion MNIST](https://github.com/zalandoresearch/fashion-mnist#fashion-mnist)
+
+<p align="center">
+![](./fashion-mnist-sprite.png){width=500px}
+</p>
+
+- [CIFAR 10](https://www.cs.toronto.edu/~kriz/cifar.html)
+
+<p align="center">
+![](./cifar10.jpg){width=500px}
+</p>
+
+- [ImageNet](https://www.image-net.org/)
+
+<p align="center">
+![](./colah-KSH-results.png){width=500px}
+</p>
+
+- [Microsoft COCO](https://cocodataset.org/#home) (object detection, segmentation, and captioning)
+
+<p align="center">
+![](./coco-examples.jpeg){width=500px}
+</p>
+
+- [ADE20K](http://groups.csail.mit.edu/vision/datasets/ADE20K/) (scene parsing)
+
+<p align="center">
+![](./ade20k_examples.png){width=500px}
+</p>
+
+
 ### Example: classify the pixels in a satellite image, by usage
 
 ::: {#fig-landsat}
 
-![](./ESL_fig_13_6.pdf){fig-align="center"}
+<p align="center">
+![](./ESL_fig_13_6.pdf){width=750px height=750px}
+</p>
 
 LANDSET images (ESL Figure 13.6).
 :::
@@ -413,7 +475,8 @@ sns.relplot(
   data = nci60_pc, 
   x = 'PC1',
   y = 'PC2',
-  hue = 'cancer_type'
+  hue = 'cancer_type',
+  height = 10
   )
 ```
 
@@ -451,6 +514,10 @@ prcomp(NCI60$data, scale = TRUE, center = TRUE, retx = T)$x %>%
 
 ![](https://media.springernature.com/full/springer-static/image/art%3A10.1038%2Fnature07331/MediaObjects/41586_2008_Article_BFnature07331_Fig1_HTML.jpg?as=webp)
 
+## No easy answer
+
+In modern applications, the line between supervised and unsupervised learning is blurred.
+
 ### Example: the Netflix prize
 
 ::: {#fig-netflix fig-ncols=1}
@@ -471,6 +538,16 @@ The Netflix challenge.
 - Netflix's in-house algorithm achieved a root MSE of 0.953. The first team to achieve a 10\% improvement wins one million dollars.
 
 - Is this a supervised or unsupervised problem? 
+
+    - We may treat `rating` as outcome and user-movie combinations as predictors. Then it is a supervised learning problem.
+    
+    - Or we may treat it as a matrix factorization or low rank approximation problem. Then it is more of a unsupervised learning problem, like PCA.
+    
+### Example: large language models (LLMs)    
+
+Modern large language models, such as [ChatGPT3](https://chat.openai.com), combine both supervised learning and reinforcement learning. 
+
+<script type="text/javascript" src="https://ssl.gstatic.com/trends_nrtr/3197_RC01/embed_loader.js"></script> <script type="text/javascript"> trends.embed.renderExploreWidget("TIMESERIES", {"comparisonItem":[{"keyword":"chatgpt","geo":"","time":"2022-01-08 2023-01-08"}],"category":0,"property":""}, {"exploreQuery":"q=chatgpt&date=today 12-m","guestPath":"https://trends.google.com:443/trends/embed/"}); </script>
 
 ## Statistical learning vs machine learning
 
@@ -517,6 +594,14 @@ Image source: <https://people.idsia.ch/~juergen/deep-learning-history.html>
 # Course logistics
 
 - This course introduces some commonly used methods for supervised and unsupervised learning.
+
+::: {.callout-tip}
+
+Q: Wait! Why don't we just learn the best method such as deep learning first?
+
+A: No single method dominates. One method may prove useful in answering some
+questions on a given data set. On a related (not identical) data set or question, another might prevail. [Article](https://arxiv.org/abs/2106.03253)
+:::
 
 - Read [syllabus](https://ucla-econ-425t.github.io/2023winter/syllabus/syllabus.html) and [schedule](https://ucla-econ-425t.github.io/2023winter/schedule/schedule.html) for a tentative list of topics and course logistics.
 
