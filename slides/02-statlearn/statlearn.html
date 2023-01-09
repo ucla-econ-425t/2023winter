@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Dr.&nbsp;Hua Zhou @ UCLA">
-<meta name="dcterms.date" content="2023-01-07">
+<meta name="dcterms.date" content="2023-01-08">
 
 <title>Statistical Learning (ISL 2)</title>
 <style>
@@ -115,16 +115,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <ul>
   <li><a href="#income-data" id="toc-income-data" class="nav-link" data-scroll-target="#income-data"><span class="toc-section-number">1.1</span>  <code>income</code> data</a></li>
   <li><a href="#why-estimate-f" id="toc-why-estimate-f" class="nav-link" data-scroll-target="#why-estimate-f"><span class="toc-section-number">1.2</span>  Why estimate <span class="math inline">\(f\)</span>?</a></li>
-  <li><a href="#reducible-and-irreducible-errors" id="toc-reducible-and-irreducible-errors" class="nav-link" data-scroll-target="#reducible-and-irreducible-errors"><span class="toc-section-number">1.3</span>  Reducible and irreducible errors</a></li>
-  <li><a href="#how-to-estimate-f" id="toc-how-to-estimate-f" class="nav-link" data-scroll-target="#how-to-estimate-f"><span class="toc-section-number">1.4</span>  How to estimate <span class="math inline">\(f\)</span>?</a>
+  <li><a href="#the-optimal-but-unreachable-f" id="toc-the-optimal-but-unreachable-f" class="nav-link" data-scroll-target="#the-optimal-but-unreachable-f"><span class="toc-section-number">1.3</span>  The optimal (but unreachable) <span class="math inline">\(f\)</span></a></li>
+  <li><a href="#reducible-and-irreducible-errors" id="toc-reducible-and-irreducible-errors" class="nav-link" data-scroll-target="#reducible-and-irreducible-errors"><span class="toc-section-number">1.4</span>  Reducible and irreducible errors</a></li>
+  <li><a href="#how-to-estimate-f" id="toc-how-to-estimate-f" class="nav-link" data-scroll-target="#how-to-estimate-f"><span class="toc-section-number">1.5</span>  How to estimate <span class="math inline">\(f\)</span>?</a>
   <ul class="collapse">
-  <li><a href="#parametric-or-structured-model" id="toc-parametric-or-structured-model" class="nav-link" data-scroll-target="#parametric-or-structured-model"><span class="toc-section-number">1.4.1</span>  Parametric or structured model</a></li>
-  <li><a href="#non-parametric-model" id="toc-non-parametric-model" class="nav-link" data-scroll-target="#non-parametric-model"><span class="toc-section-number">1.4.2</span>  Non-parametric model</a></li>
+  <li><a href="#parametric-or-structured-model" id="toc-parametric-or-structured-model" class="nav-link" data-scroll-target="#parametric-or-structured-model"><span class="toc-section-number">1.5.1</span>  Parametric or structured model</a></li>
+  <li><a href="#non-parametric-model" id="toc-non-parametric-model" class="nav-link" data-scroll-target="#non-parametric-model"><span class="toc-section-number">1.5.2</span>  Non-parametric model</a></li>
   </ul></li>
-  <li><a href="#some-trade-offs" id="toc-some-trade-offs" class="nav-link" data-scroll-target="#some-trade-offs"><span class="toc-section-number">1.5</span>  Some trade-offs</a></li>
-  <li><a href="#assessing-model-accuracy" id="toc-assessing-model-accuracy" class="nav-link" data-scroll-target="#assessing-model-accuracy"><span class="toc-section-number">1.6</span>  Assessing model accuracy</a></li>
-  <li><a href="#bias-variance-trade-off" id="toc-bias-variance-trade-off" class="nav-link" data-scroll-target="#bias-variance-trade-off"><span class="toc-section-number">1.7</span>  Bias-variance trade-off</a></li>
-  <li><a href="#classification-problems" id="toc-classification-problems" class="nav-link" data-scroll-target="#classification-problems"><span class="toc-section-number">1.8</span>  Classification problems</a></li>
+  <li><a href="#some-trade-offs" id="toc-some-trade-offs" class="nav-link" data-scroll-target="#some-trade-offs"><span class="toc-section-number">1.6</span>  Some trade-offs</a></li>
+  <li><a href="#assessing-model-accuracy" id="toc-assessing-model-accuracy" class="nav-link" data-scroll-target="#assessing-model-accuracy"><span class="toc-section-number">1.7</span>  Assessing model accuracy</a></li>
+  <li><a href="#bias-variance-trade-off" id="toc-bias-variance-trade-off" class="nav-link" data-scroll-target="#bias-variance-trade-off"><span class="toc-section-number">1.8</span>  Bias-variance trade-off</a></li>
+  <li><a href="#classification-problems" id="toc-classification-problems" class="nav-link" data-scroll-target="#classification-problems"><span class="toc-section-number">1.9</span>  Classification problems</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -153,7 +154,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 7, 2023</p>
+      <p class="date">January 8, 2023</p>
     </div>
   </div>
   
@@ -246,15 +247,17 @@ loaded via a namespace (and not attached):
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Display all columns</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">'display.max_columns'</span>, <span class="va">None</span>)</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Import income2 data</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>income <span class="op">=</span> pd.read_csv(</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="st">"../data/Income2.csv"</span>,</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  index_col <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>income</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Set font sizes in plots</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>sns.<span class="bu">set</span>(font_scale <span class="op">=</span> <span class="dv">2</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Display all columns</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">'display.max_columns'</span>, <span class="va">None</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Import income2 data</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>income <span class="op">=</span> pd.read_csv(</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  <span class="st">"../data/Income2.csv"</span>,</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  index_col <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>income</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    Education   Seniority     Income
 1   21.586207  113.103448  99.917173
@@ -288,57 +291,47 @@ loaded via a namespace (and not attached):
 29  12.068966   32.413793  17.613593
 30  17.034483  106.896552  74.610960</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>income.info()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
-Int64Index: 30 entries, 1 to 30
-Data columns (total 3 columns):
- #   Column     Non-Null Count  Dtype  
----  ------     --------------  -----  
- 0   Education  30 non-null     float64
- 1   Seniority  30 non-null     float64
- 2   Income     30 non-null     float64
-dtypes: float64(3)
-memory usage: 960.0 bytes</code></pre>
-</div>
 </div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot Income ~ Education</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>sns.lmplot(</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  data <span class="op">=</span> income, </span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  x <span class="op">=</span> <span class="st">"Education"</span>, </span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  y <span class="op">=</span> <span class="st">"Income"</span>,</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  lowess <span class="op">=</span> <span class="va">True</span>,</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  scatter_kws <span class="op">=</span> {<span class="st">'alpha'</span> : <span class="fl">0.5</span>}</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  ).<span class="bu">set</span>(</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  xlabel <span class="op">=</span> <span class="st">'Years of Education'</span>, </span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  ylabel <span class="op">=</span> <span class="st">'Income (k$)'</span></span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot Income ~ Seniority</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot Income ~ Education</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>sns.lmplot(</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  data <span class="op">=</span> income, </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  x <span class="op">=</span> <span class="st">"Education"</span>, </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  y <span class="op">=</span> <span class="st">"Income"</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  lowess <span class="op">=</span> <span class="va">True</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  scatter_kws <span class="op">=</span> {<span class="st">'alpha'</span> : <span class="fl">0.5</span>},</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  height <span class="op">=</span> <span class="dv">8</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  ).<span class="bu">set</span>(</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  xlabel <span class="op">=</span> <span class="st">'Years of Education'</span>, </span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  ylabel <span class="op">=</span> <span class="st">'Income (k$)'</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-income-edu-1" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-income-edu" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="statlearn_files/figure-html/fig-income-edu-1.png" class="img-fluid figure-img" width="245"></p>
+<p><img src="statlearn_files/figure-html/fig-income-edu-1.png" class="img-fluid figure-img" width="376"></p>
 <p></p><figcaption class="figure-caption">Figure&nbsp;1: Income increases nonlinearly with education.</figcaption><p></p>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>sns.lmplot(</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  data <span class="op">=</span> income, </span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  x <span class="op">=</span> <span class="st">"Seniority"</span>, </span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  y <span class="op">=</span> <span class="st">"Income"</span>,</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  lowess <span class="op">=</span> <span class="va">True</span>,</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  scatter_kws <span class="op">=</span> {<span class="st">'alpha'</span> : <span class="fl">0.5</span>}</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  ).<span class="bu">set</span>(</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  xlabel <span class="op">=</span> <span class="st">'Seniority'</span>, </span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  ylabel <span class="op">=</span> <span class="st">'Income (k$)'</span></span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  )  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot Income ~ Seniority</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>sns.lmplot(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  data <span class="op">=</span> income, </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  x <span class="op">=</span> <span class="st">"Seniority"</span>, </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  y <span class="op">=</span> <span class="st">"Income"</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  lowess <span class="op">=</span> <span class="va">True</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  scatter_kws <span class="op">=</span> {<span class="st">'alpha'</span> : <span class="fl">0.5</span>},</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  height <span class="op">=</span> <span class="dv">8</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  ).<span class="bu">set</span>(</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  xlabel <span class="op">=</span> <span class="st">'Seniority'</span>, </span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  ylabel <span class="op">=</span> <span class="st">'Income (k$)'</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  )  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div id="fig-income-edu-2" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-income-seniority" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="statlearn_files/figure-html/fig-income-edu-2.png" class="img-fluid figure-img" width="244"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;2: Income increases nonlinearly with education.</figcaption><p></p>
+<p><img src="statlearn_files/figure-html/fig-income-seniority-3.png" class="img-fluid figure-img" width="376"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;2: Income increases nonlinearly with seniority.</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -346,11 +339,11 @@ memory usage: 960.0 bytes</code></pre>
 </div>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Import Income2 data</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>income <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"../data/Income2.csv"</span>, <span class="at">col_select =</span> Education<span class="sc">:</span>Income) <span class="sc">%&gt;%</span> </span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">width =</span> <span class="cn">Inf</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Import Income2 data</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>income <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"../data/Income2.csv"</span>, <span class="at">col_select =</span> Education<span class="sc">:</span>Income) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">width =</span> <span class="cn">Inf</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 30 × 3
    Education Seniority Income
@@ -367,33 +360,33 @@ memory usage: 960.0 bytes</code></pre>
 10      10       113.    45.7
 # … with 20 more rows</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot income ~ Education</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>income <span class="sc">%&gt;%</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Education, <span class="at">y =</span> Income)) <span class="sc">+</span> </span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>() <span class="sc">+</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Income increases nonlinearly with education"</span>,</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Years of Education"</span>,</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Income (k$)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot income ~ Education</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>income <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Education, <span class="at">y =</span> Income)) <span class="sc">+</span> </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>() <span class="sc">+</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Income increases nonlinearly with education"</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Years of Education"</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Income (k$)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="statlearn_files/figure-html/unnamed-chunk-6-5.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="statlearn_files/figure-html/unnamed-chunk-7-5.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot income ~ Seniority</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>income <span class="sc">%&gt;%</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Seniority, <span class="at">y =</span> Income)) <span class="sc">+</span> </span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>() <span class="sc">+</span></span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Income increases nonlinearly with seniority"</span>,</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Seniority"</span>,</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Income (k$)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot income ~ Seniority</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>income <span class="sc">%&gt;%</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> Seniority, <span class="at">y =</span> Income)) <span class="sc">+</span> </span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>() <span class="sc">+</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Income increases nonlinearly with seniority"</span>,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Seniority"</span>,</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Income (k$)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="statlearn_files/figure-html/unnamed-chunk-6-6.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="statlearn_files/figure-html/unnamed-chunk-7-6.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -405,13 +398,13 @@ memory usage: 960.0 bytes</code></pre>
 </div>
 </div>
 <ul>
-<li><p>Can we predict <code>Income</code> using <code>Years of Education</code>? Can we predict <code>Income</code> using <code>Seniority</code>? Perhaps we can do better using a model using both? <span class="math display">\[
+<li><p>Can we predict <code>Income</code> using <code>Years of Education</code>? Can we predict <code>Income</code> using <code>Seniority</code>? Perhaps we can do better with a model using both? <span class="math display">\[
 \text{Income} \approx f(\text{Education}, \text{Seniority})
 \]</span></p></li>
-<li><p><span class="math inline">\(Y\)</span>: <code>Income</code> is the response or target that we wish to predict.</p></li>
+<li><p><span class="math inline">\(Y\)</span>: <code>Income</code> is the <strong>response</strong>, or <strong>target</strong>, or <strong>output</strong>, or <strong>outcome</strong>, or <strong>dependent variables</strong> that we wish to predict.</p></li>
 <li><p><span class="math inline">\(X\)</span>: <code>Education</code> and <code>Seniority</code>. <span class="math display">\[
 X = \begin{pmatrix} X_1 \\ \vdots \\ X_p \end{pmatrix}
-\]</span> is the vector of features, or inputs, or predictor.</p></li>
+\]</span> is the vector of <strong>features</strong>, or <strong>inputs</strong>, or <strong>predictors</strong>, or <strong>independent variables</strong>.</p></li>
 <li><p>We assume the model <span id="eq-statistical-model"><span class="math display">\[
 Y = f(X) + \epsilon,
 \tag{1}\]</span></span> where</p>
@@ -433,11 +426,23 @@ Y = f(X) + \epsilon,
 <ul>
 <li><p>We can understand which components of <span class="math inline">\(X=(X_1, \ldots, X_p)\)</span> are important in explaining <span class="math inline">\(Y\)</span>, and which are irrelevant. For example, <code>Seniority</code> and <code>Years of Education</code> have a big impact on <code>Income</code>, but <code>Marital Status</code> typically does not.</p></li>
 <li><p>Depending on the complexity of <span class="math inline">\(f\)</span>, we may be able to understand how each component <span class="math inline">\(X_j\)</span> of <span class="math inline">\(X\)</span> affects <span class="math inline">\(Y\)</span>. For example, how much extra income will one earn with one more year of education? Does a linear relationship hold?</p></li>
+<li><p>Causal inference. We may infer whether purposedly changing the values of certain variables will change outcomes.</p></li>
 </ul></li>
 </ul>
 </section>
-<section id="reducible-and-irreducible-errors" class="level2" data-number="1.3">
-<h2 data-number="1.3" class="anchored" data-anchor-id="reducible-and-irreducible-errors"><span class="header-section-number">1.3</span> Reducible and irreducible errors</h2>
+<section id="the-optimal-but-unreachable-f" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="the-optimal-but-unreachable-f"><span class="header-section-number">1.3</span> The optimal (but unreachable) <span class="math inline">\(f\)</span></h2>
+<ul>
+<li><p>It can be shown (HW1) that <span class="math display">\[
+f_{\text{opt}} = \operatorname{E}(Y | X)
+\]</span> minimizes the mean-squared prediction error <span class="math display">\[
+\operatorname{E}[Y - f(X)]^2,
+\]</span> where the expectations averages over variations in both <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>.</p></li>
+<li><p>However we almost never know the conditional distribution of <span class="math inline">\(Y\)</span> given <span class="math inline">\(X\)</span> in practice.</p></li>
+</ul>
+</section>
+<section id="reducible-and-irreducible-errors" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="reducible-and-irreducible-errors"><span class="header-section-number">1.4</span> Reducible and irreducible errors</h2>
 <ul>
 <li>Assuming <span class="math inline">\(\hat f\)</span> and <span class="math inline">\(X\)</span> are fixed, then</li>
 </ul>
@@ -450,11 +455,11 @@ Y = f(X) + \epsilon,
 <li><p>Even if we knew the truth <span class="math inline">\(f\)</span>, we would still make errors in prediction due to the irreducbile error.</p></li>
 </ul>
 </section>
-<section id="how-to-estimate-f" class="level2" data-number="1.4">
-<h2 data-number="1.4" class="anchored" data-anchor-id="how-to-estimate-f"><span class="header-section-number">1.4</span> How to estimate <span class="math inline">\(f\)</span>?</h2>
+<section id="how-to-estimate-f" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="how-to-estimate-f"><span class="header-section-number">1.5</span> How to estimate <span class="math inline">\(f\)</span>?</h2>
 <p>Our goal is to apply a statistical learning method to find a function <span class="math inline">\(\hat f\)</span> such that <span class="math inline">\(Y \approx \hat f(X)\)</span> for any observation <span class="math inline">\((X, Y)\)</span>.</p>
-<section id="parametric-or-structured-model" class="level3" data-number="1.4.1">
-<h3 data-number="1.4.1" class="anchored" data-anchor-id="parametric-or-structured-model"><span class="header-section-number">1.4.1</span> Parametric or structured model</h3>
+<section id="parametric-or-structured-model" class="level3" data-number="1.5.1">
+<h3 data-number="1.5.1" class="anchored" data-anchor-id="parametric-or-structured-model"><span class="header-section-number">1.5.1</span> Parametric or structured model</h3>
 <ul>
 <li><p>Step 1. We make an assumption about the functional form, or shape, of <span class="math inline">\(f\)</span>.</p>
 <p>For example, one may assume that <span class="math inline">\(f\)</span> is linear in <span class="math inline">\(X\)</span>: <span class="math display">\[
@@ -469,7 +474,7 @@ Y = f(X) + \epsilon,
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><embed src="ISL_fig_2_3.pdf" class="img-fluid"></p>
+<p><embed src="./ISL_fig_2_3.pdf" class="img-fluid"></p>
 <p></p><figcaption class="figure-caption">Blue surface is the true <span class="math inline">\(f\)</span></figcaption><p></p>
 </figure>
 </div>
@@ -477,7 +482,7 @@ Y = f(X) + \epsilon,
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><embed src="ISL_fig_2_4.pdf" class="img-fluid"></p>
+<p><embed src="./ISL_fig_2_4.pdf" class="img-fluid"></p>
 <p></p><figcaption class="figure-caption">Yellow surface is the linear model fit <span class="math inline">\(\hat f\)</span></figcaption><p></p>
 </figure>
 </div>
@@ -490,10 +495,10 @@ Y = f(X) + \epsilon,
 <li>Although it is <em>almost never correct</em>, a linear model often serves as a good and interpretable approximation to the unknown true function <span class="math inline">\(f\)</span>.</li>
 </ul>
 </section>
-<section id="non-parametric-model" class="level3" data-number="1.4.2">
-<h3 data-number="1.4.2" class="anchored" data-anchor-id="non-parametric-model"><span class="header-section-number">1.4.2</span> Non-parametric model</h3>
+<section id="non-parametric-model" class="level3" data-number="1.5.2">
+<h3 data-number="1.5.2" class="anchored" data-anchor-id="non-parametric-model"><span class="header-section-number">1.5.2</span> Non-parametric model</h3>
 <ul>
-<li><p>Non-parametric methods do not make explicit assumptions about the functional form of <span class="math inline">\(f\)</span>. Instead they seek an estimate of f that gets as close to the data points as possible without being too rough or wiggly.</p>
+<li><p>Non-parametric methods do not make explicit assumptions about the functional form of <span class="math inline">\(f\)</span>. Instead they seek an estimate of <span class="math inline">\(f\)</span> that gets as close to the data points as much as possible without being too rough or wiggly.</p>
 <ul>
 <li><p>Advantages: better fit.</p></li>
 <li><p>Disadvantage: many more paremeters; need more training samples to accurately estimate <span class="math inline">\(f\)</span>.</p></li>
@@ -551,8 +556,8 @@ Y = f(X) + \epsilon,
 </div>
 </section>
 </section>
-<section id="some-trade-offs" class="level2" data-number="1.5">
-<h2 data-number="1.5" class="anchored" data-anchor-id="some-trade-offs"><span class="header-section-number">1.5</span> Some trade-offs</h2>
+<section id="some-trade-offs" class="level2" data-number="1.6">
+<h2 data-number="1.6" class="anchored" data-anchor-id="some-trade-offs"><span class="header-section-number">1.6</span> Some trade-offs</h2>
 <ul>
 <li>Prediction accuracy vs interpretability.
 <ul>
@@ -569,13 +574,15 @@ Y = f(X) + \epsilon,
 </ul>
 <div id="fig-tradeoff" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><embed src="ISL_fig_2_7.pdf" class="img-fluid"></p>
+<p align="center">
+<embed src="ISL_fig_2_7.pdf" width="500" height="300">
+</p>
 <p></p><figcaption class="figure-caption">Figure&nbsp;6: Trade-off of model flexibility vs interpretability.</figcaption><p></p>
 </figure>
 </div>
 </section>
-<section id="assessing-model-accuracy" class="level2" data-number="1.6">
-<h2 data-number="1.6" class="anchored" data-anchor-id="assessing-model-accuracy"><span class="header-section-number">1.6</span> Assessing model accuracy</h2>
+<section id="assessing-model-accuracy" class="level2" data-number="1.7">
+<h2 data-number="1.7" class="anchored" data-anchor-id="assessing-model-accuracy"><span class="header-section-number">1.7</span> Assessing model accuracy</h2>
 <ul>
 <li><p>Given training data <span class="math inline">\(\{(x_1, y_1), \ldots, (x_n, y_n)\}\)</span>, we fit a model <span class="math inline">\(\hat f\)</span>. We can evaluate the model accuracy on the training data by the <strong>mean squared error</strong> <span class="math display">\[
 \operatorname{MSE}_{\text{train}} = \frac 1n \sum_{i=1}^n [y_i - \hat f(x_i)]^2.
@@ -590,19 +597,25 @@ Y = f(X) + \epsilon,
 </ul>
 <div id="fig-tradeoff-truth" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><embed src="ISL_fig_2_9.pdf" class="img-fluid"></p>
+<p align="center">
+<embed src="ISL_fig_2_9.pdf" width="500" height="300">
+</p>
 <p></p><figcaption class="figure-caption">Figure&nbsp;7: Black curve is truth. Red curve on right is the test MSE, grey curve is the training MSE. Orange, blue and green curves/squares correspond to fits of different flexibility.</figcaption><p></p>
 </figure>
 </div>
 <div id="fig-tradeoff-smooth-truth" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><embed src="ISL_fig_2_10.pdf" class="img-fluid"></p>
+<p align="center">
+<embed src="ISL_fig_2_10.pdf" width="500" height="300">
+</p>
 <p></p><figcaption class="figure-caption">Figure&nbsp;8: Here the truth is smoother, so the smoother fit and linear model do really well.</figcaption><p></p>
 </figure>
 </div>
 <div id="fig-tradeoff-wiggly-truth" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><embed src="ISL_fig_2_11.pdf" class="img-fluid"></p>
+<p align="center">
+<embed src="ISL_fig_2_11.pdf" width="500" height="300">
+</p>
 <p></p><figcaption class="figure-caption">Figure&nbsp;9: Here the truth is wiggly and the noise is low, so the more flexible fits do the best.</figcaption><p></p>
 </figure>
 </div>
@@ -611,12 +624,12 @@ Y = f(X) + \epsilon,
 <li><p>Later we will discuss the <strong>cross-validation</strong> strategy to estimate test MSE using only the training data.</p></li>
 </ul>
 </section>
-<section id="bias-variance-trade-off" class="level2" data-number="1.7">
-<h2 data-number="1.7" class="anchored" data-anchor-id="bias-variance-trade-off"><span class="header-section-number">1.7</span> Bias-variance trade-off</h2>
+<section id="bias-variance-trade-off" class="level2" data-number="1.8">
+<h2 data-number="1.8" class="anchored" data-anchor-id="bias-variance-trade-off"><span class="header-section-number">1.8</span> Bias-variance trade-off</h2>
 <ul>
 <li><p>The U-shaped observed in the test MSE curves (<a href="#fig-tradeoff-truth">Figure&nbsp;7</a>-<a href="#fig-tradeoff-wiggly-truth">Figure&nbsp;9</a>) reflects the <strong>bias-variance</strong> trade-off.</p></li>
-<li><p>Let <span class="math inline">\((x_0, y_0)\)</span> be a test observation. Under the model <a href="#eq-statistical-model">Equation&nbsp;1</a>, <span class="math display">\[
-\operatorname{E}[y_0 - \hat f(x_0)]^2 = \operatorname{Var}(\hat f(x_0)) + [\operatorname{Bias}(\hat f(x_0))]^2 + \operatorname{Var}(\epsilon),
+<li><p>Let <span class="math inline">\((x_0, y_0)\)</span> be a test observation. Under the model <a href="#eq-statistical-model">Equation&nbsp;1</a>, the <strong>expected prediction error (EPE)</strong> at <span class="math inline">\(x_0\)</span>, or the <strong>test error</strong>, or <strong>generalization error</strong>, can be decomposed as (HW1) <span class="math display">\[
+\operatorname{E}[y_0 - \hat f(x_0)]^2 = \underbrace{\operatorname{Var}(\hat f(x_0)) + [\operatorname{Bias}(\hat f(x_0))]^2}_{\text{MSE of } \hat f(x_0) \text{ for estimating } f(x_0)} + \underbrace{\operatorname{Var}(\epsilon)}_{\text{irreducible}},
 \]</span> where</p>
 <ul>
 <li><span class="math inline">\(\operatorname{Bias}(\hat f(x_0)) = \operatorname{E}[\hat f(x_0)] - f(x_0)\)</span>;</li>
@@ -626,28 +639,40 @@ Y = f(X) + \epsilon,
 </ul>
 <div id="fig-tradeoff-bias-variance-tradeoff" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><embed src="ISL_fig_2_12.pdf" class="img-fluid"></p>
+<p align="center">
+<embed src="ISL_fig_2_12.pdf" width="500" height="300">
+</p>
 <p></p><figcaption class="figure-caption">Figure&nbsp;10: Bias-variance trade-off.</figcaption><p></p>
 </figure>
 </div>
-</section>
-<section id="classification-problems" class="level2" data-number="1.8">
-<h2 data-number="1.8" class="anchored" data-anchor-id="classification-problems"><span class="header-section-number">1.8</span> Classification problems</h2>
 <ul>
-<li><p>When the outcome <span class="math inline">\(Y\)</span> is discrete, for example, email is one of <span class="math inline">\(\mathcal{C}=\)</span>{<code>spam</code>, <code>ham</code>} (<code>ham</code>=good email), digit class is one of <span class="math inline">\(\mathcal{C} = \{0,1,\ldots,9\}\)</span>.</p></li>
+<li>Above U-shaped test MSE curves are in the so-called <strong>classical regime</strong> where number of features is less than the training samples. In the <strong>modern regime</strong> where with the number features can be order of magnitude larger than the training samples, the <strong>double descent</strong> phenomenon is observed and being actively studied. See this <a href="https://epubs.siam.org/doi/pdf/10.1137/20M1336072">paper</a> and references therein.</li>
+</ul>
+<div id="fig-double-descent" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="https://openai.com/content/images/2019/12/modeldd.svg" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;11: Double descent phenomenon (<a href="https://openai.com/blog/deep-double-descent/">OpenAI Blog</a>).</figcaption><p></p>
+</figure>
+</div>
+</section>
+<section id="classification-problems" class="level2" data-number="1.9">
+<h2 data-number="1.9" class="anchored" data-anchor-id="classification-problems"><span class="header-section-number">1.9</span> Classification problems</h2>
+<ul>
+<li><p>When the outcome <span class="math inline">\(Y\)</span> is discrete, for example, email is one of <span class="math inline">\(\mathcal{C}=\)</span>{<code>spam</code>, <code>ham</code>} (<code>ham</code>=good email), handwritten digit is one of <span class="math inline">\(\mathcal{C} = \{0,1,\ldots,9\}\)</span>.</p></li>
 <li><p>Our goals are to</p>
 <ul>
-<li>build a classifer <span class="math inline">\(f(X)\)</span> that assigns a class label from <span class="math inline">\(\mathcal{C}\)</span> to a future unlabeled observation <span class="math inline">\(X\)</span>;</li>
+<li>build a classifier <span class="math inline">\(f(X)\)</span> that assigns a class label from <span class="math inline">\(\mathcal{C}\)</span> to a future unlabeled observation <span class="math inline">\(X\)</span>;</li>
 <li>assess the uncertainty in each classification;<br>
 </li>
 <li>understand the roles of the different predictors among <span class="math inline">\(X=(X_1,\ldots,X_p)\)</span>.</li>
 </ul></li>
 <li><p>To evaluate the performance of classification algorithms, the <strong>training error rate</strong> is <span class="math display">\[
 \frac 1n \sum_{i=1}^n I(y_i \ne \hat y_i),
-\]</span> where <span class="math inline">\(\hat y_i\)</span> is the predicted class label for the <span class="math inline">\(i\)</span>th observation using <span class="math inline">\(\hat f\)</span>. As in the regression setting, we are most interested in the <strong>test error rate</strong> associated with a set of test obervations <span class="math inline">\((x_0, y_0)\)</span> <span class="math display">\[
-\operatorname{Ave}(I(y_0 \ne \hat y_0))
+\]</span> where <span class="math inline">\(\hat y_i = \hat f(x_i)\)</span> is the predicted class label for the <span class="math inline">\(i\)</span>th observation using <span class="math inline">\(\hat f\)</span>.</p></li>
+<li><p>As in the regression setting, we are most interested in the <strong>test error rate</strong> associated with a set of test observations <span class="math inline">\((x_0, y_0)\)</span> <span class="math display">\[
+\frac{1}{n_{\text{test}}} \sum_{i=1}^{n_{\text{test}}} I(y_i \ne \hat y_i).
 \]</span></p></li>
-<li><p>Suppose <span class="math inline">\(\mathcal{C}=\{1,2,\ldots,K\}\)</span>, the <strong>Bayes classifer</strong> assigns a test observation with predictor vector <span class="math inline">\(x_0\)</span> to the class <span class="math inline">\(j\)</span> for which <span class="math display">\[
+<li><p>Suppose <span class="math inline">\(\mathcal{C}=\{1,2,\ldots,K\}\)</span>, the <strong>Bayes classifier</strong> assigns a test observation with predictor vector <span class="math inline">\(x_0\)</span> to the class <span class="math inline">\(j \in \mathcal{C}\)</span> for which <span class="math display">\[
 \operatorname{Pr}(Y=j \mid X = x_0)
 \]</span> is largest.</p>
 <p>In a two-class problem <span class="math inline">\(K=2\)</span>, the Bayes classifier assigns a test case to class 1 if <span class="math inline">\(\operatorname{Pr}(Y=1 \mid X = x_0) &gt; 0.5\)</span>., and to class 2 otherwise.</p></li>
@@ -658,14 +683,16 @@ Y = f(X) + \epsilon,
 \]</span> where the expectation averages over all possible values of <span class="math inline">\(X\)</span>.</p></li>
 <li><p>Unfortunately, for real data, we don’t know the conditional distribution of <span class="math inline">\(Y\)</span> given <span class="math inline">\(X\)</span>, and computing the Bayes classifier is impossible.</p></li>
 <li><p>Various learning algorithms attempt to estimate the conditional distribution of <span class="math inline">\(Y\)</span> given <span class="math inline">\(X\)</span>, and then classify a given observation to the class with the highest estimated probability.</p></li>
-<li><p>One simpple classifer is the <strong><span class="math inline">\(K\)</span>-nearest neighbor (KNN)</strong> classifier. Given a positive integer <span class="math inline">\(K\)</span> and a test observation <span class="math inline">\(x_0\)</span>, the KNN classifer first identifies the <span class="math inline">\(K\)</span> points in the training data that are closest to <span class="math inline">\(x_0\)</span>, represented by <span class="math inline">\(\mathcal{N}_0\)</span>. It then estimates the conditional probability by <span class="math display">\[
+<li><p>One simple classifier is the <strong><span class="math inline">\(K\)</span>-nearest neighbor (KNN)</strong> classifier. Given a positive integer <span class="math inline">\(K\)</span> and a test observation <span class="math inline">\(x_0\)</span>, the KNN classifier first identifies the <span class="math inline">\(K\)</span> points in the training data that are closest to <span class="math inline">\(x_0\)</span>, represented by <span class="math inline">\(\mathcal{N}_0\)</span>. It then estimates the conditional probability by <span class="math display">\[
 \operatorname{Pr}(Y=j \mid X = x_0) = \frac{1}{K} \sum_{i \in \mathcal{N}_0} I(y_j = j)
 \]</span> and then classifies the test observation <span class="math inline">\(x_0\)</span> to the class with the largest probability.</p></li>
 </ul>
 <div id="fig-KNN-K-10" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><embed src="ISL_fig_2_15.pdf" class="img-fluid"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;11: Black curve is the KNN decision boundary using <span class="math inline">\(K=10\)</span>. The purple dashed line is the Bayes decision boundary.</figcaption><p></p>
+<p align="center">
+<embed src="ISL_fig_2_15.pdf" width="500" height="300">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;12: Black curve is the KNN decision boundary using <span class="math inline">\(K=10\)</span>. The purple dashed line is the Bayes decision boundary.</figcaption><p></p>
 </figure>
 </div>
 <ul>
@@ -673,8 +700,10 @@ Y = f(X) + \epsilon,
 </ul>
 <div id="fig-KNN-K-1-K-100" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><embed src="ISL_fig_2_16.pdf" class="img-fluid"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;12: Left panel: KNN with <span class="math inline">\(K=1\)</span>. Right panel: KNN with <span class="math inline">\(K=100\)</span>.</figcaption><p></p>
+<p align="center">
+<embed src="ISL_fig_2_16.pdf" width="500" height="300">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;13: Left panel: KNN with <span class="math inline">\(K=1\)</span>. Right panel: KNN with <span class="math inline">\(K=100\)</span>.</figcaption><p></p>
 </figure>
 </div>
 <ul>
@@ -682,8 +711,10 @@ Y = f(X) + \epsilon,
 </ul>
 <div id="fig-KNN-tradeoff" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><embed src="ISL_fig_2_17.pdf" class="img-fluid"></p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;13: KNN with <span class="math inline">\(K \approx 10\)</span> achieves the Bayes error rate (black dashed line).</figcaption><p></p>
+<p align="center">
+<embed src="ISL_fig_2_17.pdf" width="500" height="300">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;14: KNN with <span class="math inline">\(K \approx 10\)</span> achieves the Bayes error rate (black dashed line).</figcaption><p></p>
 </figure>
 </div>
 </section>

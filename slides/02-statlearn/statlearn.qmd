@@ -71,6 +71,8 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+# Set font sizes in plots
+sns.set(font_scale = 2)
 # Display all columns
 pd.set_option('display.max_columns', None)
 
@@ -80,7 +82,6 @@ income = pd.read_csv(
   index_col = 0
   )
 income
-income.info()
 ```
 
 ```{python}
@@ -93,25 +94,31 @@ sns.lmplot(
   x = "Education", 
   y = "Income",
   lowess = True,
-  scatter_kws = {'alpha' : 0.5}
+  scatter_kws = {'alpha' : 0.5},
+  height = 8
   ).set(
   xlabel = 'Years of Education', 
   ylabel = 'Income (k$)'
   )
-  
+```  
+
+```{python}
+#| label: fig-income-seniority
+#| fig-cap: "Income increases nonlinearly with seniority."
+
 # Plot Income ~ Seniority
 sns.lmplot(
   data = income, 
   x = "Seniority", 
   y = "Income",
   lowess = True,
-  scatter_kws = {'alpha' : 0.5}
+  scatter_kws = {'alpha' : 0.5},
+  height = 8
   ).set(
   xlabel = 'Seniority', 
   ylabel = 'Income (k$)'
   )  
 ```
-
 
 #### R
 
@@ -145,18 +152,18 @@ income %>%
 
 :::
 
-- Can we predict `Income` using `Years of Education`? Can we predict `Income` using `Seniority`? Perhaps we can do better using a model using both?
+- Can we predict `Income` using `Years of Education`? Can we predict `Income` using `Seniority`? Perhaps we can do better with a model using both?
 $$
 \text{Income} \approx f(\text{Education}, \text{Seniority})
 $$
 
-- $Y$: `Income` is the response or target that we wish to predict.
+- $Y$: `Income` is the **response**, or **target**, or **output**, or **outcome**, or **dependent variables** that we wish to predict.
 
 - $X$: `Education` and `Seniority`. 
 $$
 X = \begin{pmatrix} X_1 \\ \vdots \\ X_p \end{pmatrix}
 $$
-is the vector of features, or inputs, or predictor.
+is the vector of **features**, or **inputs**, or **predictors**, or **independent variables**.
 
 - We assume the model
 $$
@@ -174,11 +181,28 @@ where
 $$
 \hat Y = \hat f (X).
 $$
+
 - Inference. 
 
     - We can understand which components of $X=(X_1, \ldots, X_p)$ are important in explaining $Y$, and which are irrelevant. For example, `Seniority` and `Years of Education` have a big impact on `Income`, but `Marital Status` typically does not.
 
     - Depending on the complexity of $f$, we may be able to understand how each component $X_j$ of $X$ affects $Y$. For example, how much extra income will one earn with one more year of education? Does a linear relationship hold? 
+    
+    - Causal inference. We may infer whether purposedly changing the values of certain variables will change outcomes. 
+
+## The optimal (but unreachable) $f$
+
+- It can be shown (HW1) that
+$$
+f_{\text{opt}} = \operatorname{E}(Y | X)
+$$
+minimizes the mean-squared prediction error
+$$
+\operatorname{E}[Y - f(X)]^2,
+$$
+where the expectations averages over variations in both $X$ and $Y$.
+
+- However we almost never know the conditional distribution of $Y$ given $X$ in practice.
 
 ## Reducible and irreducible errors
 
@@ -212,9 +236,9 @@ Our goal is to apply a statistical learning method to find a function $\hat f$ s
     
 ::: {#fig-income-lmfit layout-ncol=2}
 
-![Blue surface is the true $f$](ISL_fig_2_3.pdf)
+![Blue surface is the true $f$](./ISL_fig_2_3.pdf){height=300px}
 
-![Yellow surface is the linear model fit $\hat f$](ISL_fig_2_4.pdf)
+![Yellow surface is the linear model fit $\hat f$](./ISL_fig_2_4.pdf){height=300px}
 
 Linear approximation of $f$.
 
@@ -226,8 +250,8 @@ Linear approximation of $f$.
 ### Non-parametric model
 
 - Non-parametric methods do not make explicit assumptions about the functional
-form of $f$. Instead they seek an estimate of f that gets as close to the
-data points as possible without being too rough or wiggly.
+form of $f$. Instead they seek an estimate of $f$ that gets as close to the
+data points as much as possible without being too rough or wiggly.
 
     - Advantages: better fit.
     
@@ -270,7 +294,9 @@ Overfitting of $f$.
     
 ::: {#fig-tradeoff}
 
-![](ISL_fig_2_7.pdf)
+<p align="center">
+![](ISL_fig_2_7.pdf){width=500px height=300px}
+</p>
 
 Trade-off of model flexibility vs interpretability.
 
@@ -295,7 +321,9 @@ The smaller $\operatorname{MSE}_{\text{train}}$, the better model fit.
     
 ::: {#fig-tradeoff-truth}
 
-![](ISL_fig_2_9.pdf)
+<p align="center">
+![](ISL_fig_2_9.pdf){width=500px height=300px}
+</p>
 
 Black curve is truth. Red curve on right is the test MSE, grey curve is the training MSE. Orange, blue and green curves/squares correspond to fits of different flexibility.
 
@@ -304,7 +332,9 @@ Black curve is truth. Red curve on right is the test MSE, grey curve is the trai
 
 ::: {#fig-tradeoff-smooth-truth}
 
-![](ISL_fig_2_10.pdf)
+<p align="center">
+![](ISL_fig_2_10.pdf){width=500px height=300px}
+</p>
 
 Here the truth is smoother, so the smoother fit and linear model do really well.
 
@@ -312,7 +342,9 @@ Here the truth is smoother, so the smoother fit and linear model do really well.
 
 ::: {#fig-tradeoff-wiggly-truth}
 
-![](ISL_fig_2_11.pdf)
+<p align="center">
+![](ISL_fig_2_11.pdf){width=500px height=300px}
+</p>
 
 Here the truth is wiggly and the noise is low, so the more flexible fits do the best.
 
@@ -326,9 +358,9 @@ Here the truth is wiggly and the noise is low, so the more flexible fits do the 
 
 - The U-shaped observed in the test MSE curves (@fig-tradeoff-truth-@fig-tradeoff-wiggly-truth) reflects the **bias-variance** trade-off.
 
-- Let $(x_0, y_0)$ be a test observation. Under the model @eq-statistical-model,
+- Let $(x_0, y_0)$ be a test observation. Under the model @eq-statistical-model, the **expected prediction error (EPE)** at $x_0$, or the **test error**, or **generalization error**, can be decomposed as (HW1)
 $$
-\operatorname{E}[y_0 - \hat f(x_0)]^2 = \operatorname{Var}(\hat f(x_0)) + [\operatorname{Bias}(\hat f(x_0))]^2 + \operatorname{Var}(\epsilon),
+\operatorname{E}[y_0 - \hat f(x_0)]^2 = \underbrace{\operatorname{Var}(\hat f(x_0)) + [\operatorname{Bias}(\hat f(x_0))]^2}_{\text{MSE of } \hat f(x_0) \text{ for estimating } f(x_0)} + \underbrace{\operatorname{Var}(\epsilon)}_{\text{irreducible}},
 $$
 where
     - $\operatorname{Bias}(\hat f(x_0)) = \operatorname{E}[\hat f(x_0)] - f(x_0)$;
@@ -338,18 +370,29 @@ where
 
 ::: {#fig-tradeoff-bias-variance-tradeoff}
 
-![](ISL_fig_2_12.pdf)
+<p align="center">
+![](ISL_fig_2_12.pdf){width=500px height=300px}
+</p>
 
 Bias-variance trade-off.
 
 :::
 
+- Above U-shaped test MSE curves are in the so-called **classical regime** where number of features is less than the training samples. In the **modern regime** where with the number features can be order of magnitude larger than the training samples, the **double descent** phenomenon is observed and being actively studied. See this [paper](https://epubs.siam.org/doi/pdf/10.1137/20M1336072) and references therein.
+
+::: {#fig-double-descent}
+
+![](https://openai.com/content/images/2019/12/modeldd.svg)
+
+Double descent phenomenon ([OpenAI Blog](https://openai.com/blog/deep-double-descent/)).
+:::
+
 ## Classification problems
 
-- When the outcome $Y$ is discrete, for example, email is one of $\mathcal{C}=$\{`spam`, `ham`\} (`ham`=good email), digit class is one of $\mathcal{C} = \{0,1,\ldots,9\}$. 
+- When the outcome $Y$ is discrete, for example, email is one of $\mathcal{C}=$\{`spam`, `ham`\} (`ham`=good email), handwritten digit is one of $\mathcal{C} = \{0,1,\ldots,9\}$. 
 
 - Our goals are to
-    - build a classifer $f(X)$ that assigns a class label from $\mathcal{C}$ to a future unlabeled observation $X$;
+    - build a classifier $f(X)$ that assigns a class label from $\mathcal{C}$ to a future unlabeled observation $X$;
     - assess the uncertainty in each classification;  
     - understand the roles of the different predictors among $X=(X_1,\ldots,X_p)$. 
 
@@ -357,12 +400,14 @@ Bias-variance trade-off.
 $$
 \frac 1n \sum_{i=1}^n I(y_i \ne \hat y_i), 
 $$
-where $\hat y_i$ is the predicted class label for the $i$th observation using $\hat f$. As in the regression setting, we are most interested in the **test error rate** associated with a set of test obervations $(x_0, y_0)$
+where $\hat y_i = \hat f(x_i)$ is the predicted class label for the $i$th observation using $\hat f$. 
+
+- As in the regression setting, we are most interested in the **test error rate** associated with a set of test observations $(x_0, y_0)$
 $$
-\operatorname{Ave}(I(y_0 \ne \hat y_0))
+\frac{1}{n_{\text{test}}} \sum_{i=1}^{n_{\text{test}}} I(y_i \ne \hat y_i).
 $$
     
-- Suppose $\mathcal{C}=\{1,2,\ldots,K\}$, the **Bayes classifer** assigns a test observation with predictor vector $x_0$ to the class $j$ for which
+- Suppose $\mathcal{C}=\{1,2,\ldots,K\}$, the **Bayes classifier** assigns a test observation with predictor vector $x_0$ to the class $j \in \mathcal{C}$ for which
 $$
 \operatorname{Pr}(Y=j \mid X = x_0)
 $$
@@ -384,7 +429,7 @@ where the expectation averages over all possible values of $X$.
 
 - Various learning algorithms attempt to estimate the conditional distribution of $Y$ given $X$, and then classify a given observation to the class with the highest estimated probability. 
 
-- One simpple classifer is the **$K$-nearest neighbor (KNN)** classifier. Given a positive integer $K$ and a test observation $x_0$, the KNN classifer first identifies the $K$ points in the training data that are closest to $x_0$, represented by $\mathcal{N}_0$. It then estimates the conditional probability by
+- One simple classifier is the **$K$-nearest neighbor (KNN)** classifier. Given a positive integer $K$ and a test observation $x_0$, the KNN classifier first identifies the $K$ points in the training data that are closest to $x_0$, represented by $\mathcal{N}_0$. It then estimates the conditional probability by
 $$
 \operatorname{Pr}(Y=j \mid X = x_0) = \frac{1}{K} \sum_{i \in \mathcal{N}_0} I(y_j = j)
 $$
@@ -392,7 +437,9 @@ and then classifies the test observation $x_0$ to the class with the largest pro
 
 ::: {#fig-KNN-K-10}
 
-![](ISL_fig_2_15.pdf)
+<p align="center">
+![](ISL_fig_2_15.pdf){width=500px height=300px}
+</p>
 
 Black curve is the KNN decision boundary using $K=10$. The purple dashed line is the Bayes decision boundary.
 
@@ -402,7 +449,9 @@ Black curve is the KNN decision boundary using $K=10$. The purple dashed line is
 
 ::: {#fig-KNN-K-1-K-100}
 
-![](ISL_fig_2_16.pdf)
+<p align="center">
+![](ISL_fig_2_16.pdf){width=500px height=300px}
+</p>
 
 Left panel: KNN with $K=1$. Right panel: KNN with $K=100$.
 
@@ -412,7 +461,9 @@ Left panel: KNN with $K=1$. Right panel: KNN with $K=100$.
 
 ::: {#fig-KNN-tradeoff}
 
-![](ISL_fig_2_17.pdf)
+<p align="center">
+![](ISL_fig_2_17.pdf){width=500px height=300px}
+</p>
 
 KNN with $K \approx 10$ achieves the Bayes error rate (black dashed line).
 
