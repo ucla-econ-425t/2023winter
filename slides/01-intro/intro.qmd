@@ -596,18 +596,45 @@ Image source: <https://people.idsia.ch/~juergen/deep-learning-history.html>
 
 # Course logistics
 
-- This course introduces some commonly used methods for supervised and unsupervised learning.
+## Learning objectives
+
+1. Understand what machine learning is (and isn't).
+
+2. Learn some foundational methods/tools.
+
+3. For specific data problems, be able to choose methods that make sense. 
 
 ::: {.callout-tip}
 
-Q: Wait! Why don't we just learn the best method such as deep learning first?
+Q: Wait! Why don't we just learn the best method (aka deep learning) first?
 
-A: No single method dominates. One method may prove useful in answering some
-questions on a given data set. On a related (not identical) data set or question, another might prevail. [Article](https://arxiv.org/abs/2106.03253)
+A: No single method dominates. One method may prove useful in answering some questions on a given data set. On a related (not identical) data set or question, another might prevail. [Article](https://arxiv.org/abs/2106.03253)
 :::
+
+## Syllabus
 
 - Read [syllabus](https://ucla-econ-425t.github.io/2023winter/syllabus/syllabus.html) and [schedule](https://ucla-econ-425t.github.io/2023winter/schedule/schedule.html) for a tentative list of topics and course logistics.
 
 - Homework assignments will be a mix of theoretical/conceptual and applied/computational questions. Although not required, you are highly encouraged to practice literate programming (using Jupyter, Quarto, RMarkdown, or Google Colab) coordinated through Git/GitHub. This will enhance your GitHub profile and make you more appealing on job market.
 
 - We will use Python in this course. Limited support for R and Julia is also available from Dr. Hua Zhou.
+
+## What I expect from you
+
+- You are curious and are excited about "figuring stuff out".
+
+- You are proficient in coding and debugging (or are ready to work to get there).
+
+- You have a solid foundation in introductory statistics (or are ready to work to get there).
+
+- You are willing to ask questions. 
+
+## What you can expect from me
+
+- I value your learning experience and process. 
+
+- I'm flexible with respect to the topics we cover. 
+
+- I'm happy to share my professional connections.
+
+- I'll try my best to be responsive in class, in office hours, and on Slack.
