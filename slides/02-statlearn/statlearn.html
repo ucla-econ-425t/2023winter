@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Dr.&nbsp;Hua Zhou @ UCLA">
-<meta name="dcterms.date" content="2023-01-08">
+<meta name="dcterms.date" content="2023-01-10">
 
 <title>Statistical Learning (ISL 2)</title>
 <style>
@@ -154,7 +154,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 8, 2023</p>
+      <p class="date">January 10, 2023</p>
     </div>
   </div>
   
@@ -181,7 +181,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
  'ipython_version': '8.8.0',
  'os_name': 'posix',
  'platform': 'macOS-10.16-x86_64-i386-64bit',
- 'sys_executable': '/usr/local/bin/python3',
+ 'sys_executable': '/Library/Frameworks/Python.framework/Versions/3.10/bin/python3',
  'sys_platform': 'darwin',
  'sys_version': '3.10.9 (v3.10.9:1dd9be6584, Dec  6 2022, 14:37:36) [Clang '
                 '13.0.0 (clang-1300.0.29.30)]'}</code></pre>
@@ -419,14 +419,14 @@ Y = f(X) + \epsilon,
 <section id="why-estimate-f" class="level2" data-number="1.2">
 <h2 data-number="1.2" class="anchored" data-anchor-id="why-estimate-f"><span class="header-section-number">1.2</span> Why estimate <span class="math inline">\(f\)</span>?</h2>
 <ul>
-<li><p>Prediction. With a good <span class="math inline">\(f\)</span>, we can predict <span class="math inline">\(Y\)</span> at new points <span class="math inline">\(X = x\)</span> <span class="math display">\[
+<li><p>Prediction. With a good estiamte <span class="math inline">\(\hat f\)</span>, we can predict <span class="math inline">\(Y\)</span> at new points <span class="math inline">\(X = x\)</span> <span class="math display">\[
 \hat Y = \hat f (X).
 \]</span></p></li>
 <li><p>Inference.</p>
 <ul>
 <li><p>We can understand which components of <span class="math inline">\(X=(X_1, \ldots, X_p)\)</span> are important in explaining <span class="math inline">\(Y\)</span>, and which are irrelevant. For example, <code>Seniority</code> and <code>Years of Education</code> have a big impact on <code>Income</code>, but <code>Marital Status</code> typically does not.</p></li>
-<li><p>Depending on the complexity of <span class="math inline">\(f\)</span>, we may be able to understand how each component <span class="math inline">\(X_j\)</span> of <span class="math inline">\(X\)</span> affects <span class="math inline">\(Y\)</span>. For example, how much extra income will one earn with one more year of education? Does a linear relationship hold?</p></li>
-<li><p>Causal inference. We may infer whether purposedly changing the values of certain variables will change outcomes.</p></li>
+<li><p>Depending on the complexity of <span class="math inline">\(f\)</span>, we may be able to understand how each component <span class="math inline">\(X_j\)</span> of <span class="math inline">\(X\)</span> affects <span class="math inline">\(Y\)</span>. For example, how much extra income will one earn with two more year of education? Does a linear relationship hold?</p></li>
+<li><p>Causal inference. We may infer whether purposedly changing the values of certain predictors will change outcomes. We rely on various learning methods to estimate <span class="math inline">\(f\)</span>.</p></li>
 </ul></li>
 </ul>
 </section>
@@ -646,7 +646,7 @@ f_{\text{opt}} = \operatorname{E}(Y | X)
 </figure>
 </div>
 <ul>
-<li>Above U-shaped test MSE curves are in the so-called <strong>classical regime</strong> where number of features is less than the training samples. In the <strong>modern regime</strong> where with the number features can be order of magnitude larger than the training samples, the <strong>double descent</strong> phenomenon is observed and being actively studied. See this <a href="https://epubs.siam.org/doi/pdf/10.1137/20M1336072">paper</a> and references therein.</li>
+<li>Above U-shaped test MSE curves are in the so-called <strong>classical regime</strong> where number of features is less than the training samples. In the <strong>modern regime</strong> where the number of features can be order of magnitude larger than the training samples, the <strong>double descent</strong> phenomenon is observed and being actively studied. See this <a href="https://epubs.siam.org/doi/pdf/10.1137/20M1336072">paper</a> and references therein.</li>
 </ul>
 <div id="fig-double-descent" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">

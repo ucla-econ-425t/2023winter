@@ -177,7 +177,7 @@ where
 
 ## Why estimate $f$?
 
-- Prediction. With a good $f$, we can predict $Y$ at new points $X = x$
+- Prediction. With a good estiamte $\hat f$, we can predict $Y$ at new points $X = x$
 $$
 \hat Y = \hat f (X).
 $$
@@ -186,9 +186,9 @@ $$
 
     - We can understand which components of $X=(X_1, \ldots, X_p)$ are important in explaining $Y$, and which are irrelevant. For example, `Seniority` and `Years of Education` have a big impact on `Income`, but `Marital Status` typically does not.
 
-    - Depending on the complexity of $f$, we may be able to understand how each component $X_j$ of $X$ affects $Y$. For example, how much extra income will one earn with one more year of education? Does a linear relationship hold? 
+    - Depending on the complexity of $f$, we may be able to understand how each component $X_j$ of $X$ affects $Y$. For example, how much extra income will one earn with two more year of education? Does a linear relationship hold? 
     
-    - Causal inference. We may infer whether purposedly changing the values of certain variables will change outcomes. 
+    - Causal inference. We may infer whether purposedly changing the values of certain predictors will change outcomes. We rely on various learning methods to estimate $f$.
 
 ## The optimal (but unreachable) $f$
 
@@ -378,7 +378,7 @@ Bias-variance trade-off.
 
 :::
 
-- Above U-shaped test MSE curves are in the so-called **classical regime** where number of features is less than the training samples. In the **modern regime** where with the number features can be order of magnitude larger than the training samples, the **double descent** phenomenon is observed and being actively studied. See this [paper](https://epubs.siam.org/doi/pdf/10.1137/20M1336072) and references therein.
+- Above U-shaped test MSE curves are in the so-called **classical regime** where number of features is less than the training samples. In the **modern regime** where the number of features can be order of magnitude larger than the training samples, the **double descent** phenomenon is observed and being actively studied. See this [paper](https://epubs.siam.org/doi/pdf/10.1137/20M1336072) and references therein.
 
 ::: {#fig-double-descent}
 
