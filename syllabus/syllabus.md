@@ -7,7 +7,7 @@ title: Econ 425T
 
 ## Lecture
 
-Tue, Thu (lecture) 12:30pm-1:45pm @ Bunche 2221E   
+Tue, Thu (lecture) 12:30pm-1:45pm @ Bunche 2221E
 
 ## Instructor
 
@@ -15,7 +15,7 @@ Tue, Thu (lecture) 12:30pm-1:45pm @ Bunche 2221E
 Office: CHS 21-254A  
 Phone: (310)794-7835  
 Email: <huazhou@ucla.edu>  
-Office hours: Tue, Thu 6pm-7pm @ Zoom <https://ucla.zoom.us/j/98083064607>  
+Office hours: Tue, Thu (by appointment) 6pm-7pm @ Zoom <https://ucla.zoom.us/j/98083064607>  
 
 ## Course Description
 
@@ -47,7 +47,7 @@ There will be no midterm and final exams.
 
 ## Final Grade
 
-Grades will be based on the homework (70%) and participation (class attendance, pop quiz, ask questions, engage on Slack and in office hours, 30%). Auditors must earn a respectable D to gain recording of this course.
+Grades will be based on the homework (60%), Friday labs (20%), and participation (class attendance, pop quiz, ask questions, engage on Slack and in office hours, 20%). Auditors must earn a respectable D to gain recording of this course.
 
 ## UCLA ADA Policy 
 
