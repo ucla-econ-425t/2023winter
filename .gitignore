@@ -7,3 +7,13 @@
 books/
 *_cache/
 *.docx
+
+# hw solutions
+hw?sol_files/
+hw?sol_cache/
+hw?sol.Rmd
+hw?sol.qmd
+hw?sol.html
+hwsol_to_hw.Rmd
+hwsol_to_hw.html
+grade_hw?.md
