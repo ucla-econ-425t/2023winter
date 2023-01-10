@@ -421,7 +421,7 @@ Commonly used model selection criteria include Mallow's $C_p$, Akaike informatio
 $$
 R^2 = 1 - \frac{\text{RSS}}{\text{TSS}} = 1 - \frac{\sum_i (y_i - \hat y_i)^2}{\sum_i (y_i - \bar y)^2}.
 $$
-It turns out
+It turns out (HW1 bonus question)
 $$
 R^2 = \operatorname{Cor}(Y, \hat Y)^2.
 $$
