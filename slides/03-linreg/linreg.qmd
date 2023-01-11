@@ -195,16 +195,10 @@ lmod.score(X, y)
 
 ```{python}
 import statsmodels.api as sm
-from patsy import dmatrices
+import statsmodels.formula.api as smf
 
-# Create design matrix and response vector using R-like formula
-y, X = dmatrices(
-  'sales ~ TV + radio + newspaper', 
-  data = Advertising, 
-  return_type = 'dataframe'
-  )
 # Fit linear regression
-lmod = sm.OLS(y, X).fit()
+lmod = smf.ols(formula = 'sales ~ TV + radio + newspaper', data = Advertising).fit()
 lmod.summary()
 ```
 
@@ -305,6 +299,7 @@ anova(lmod_null, lmod)
 
 ```{python}
 from abess.linear import LinearRegression
+from patsy import dmatrices
 
 # Create design matrix and response vector using R-like formula
 ym, Xm = dmatrices(
@@ -437,7 +432,8 @@ Adding more predictors into a model **always** increase $R^2$.
 # R^2
 lmod.rsquared
 # Cor(Y, \hat Y)^2
-y.assign(yhat = lmod.predict()).corr()
+np.corrcoef(Advertising['sales'], lmod.predict())
+np.corrcoef(Advertising['sales'], lmod.predict())[0, 1]**2
 ```
 
 #### R
