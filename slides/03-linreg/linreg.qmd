@@ -254,9 +254,17 @@ $$
 H_a: \text{at least one } \beta_j \text{ is non-zero}.
 $$
 
-- In general, the F-statistic for testing $H_0$: a restricted model $\omega$ versus $H_a$: a more general model $\Omega$ takes the form
+- In general, the F-statistic for testing 
 $$
-F = \frac{(\text{RSS}_\omega - \text{RSS}_\Omega) / (\text{df}(\Omega) - \text{df}(\omega))}{\text{RSS}_\Omega / \text{df}(\Omega)},
+H_0: \text{ a restricted model } \omega
+$$
+versus 
+$$
+H_a: \text{a more general model } \Omega
+$$
+takes the form
+$$
+F = \frac{(\text{RSS}_\omega - \text{RSS}_\Omega) / (\text{df}(\Omega) - \text{df}(\omega))}{\text{RSS}_\Omega / (n - \text{df}(\Omega))},
 $$
 where df is the degree of freedom (roughly speaking the number of free parameters) of a model.
 
@@ -285,13 +293,13 @@ anova(lmod_null, lmod)
 
 **Question:** Do all the predictors help to explain $Y$ , or is only a subset of the predictors useful?
 
-- For a naive implementation of the best subset regression in Python, interesting readers can read this [blog](https://xavierbourretsicotte.github.io/subset_selection.html). 
+- For a naive implementation of the best subset, forward selection, and backward selection regressions in Python, interesting readers can read this [blog](https://xavierbourretsicotte.github.io/subset_selection.html). 
 
 #### Best subset regression
 
 - The most direct approach is called **all subsets** or **best subsets** regression: we compute the least squares fit for all possible subsets and then choose between them based on some criterion that balances training error with model size.
 
--  We use the highly-optimized [`abess`](https://abess.readthedocs.io/en/latest/index.html) package here.
+-  We try the highly-optimized [`abess`](https://abess.readthedocs.io/en/latest/index.html) package here.
 
 ::: {.panel-tabset}
 
@@ -307,7 +315,7 @@ ym, Xm = dmatrices(
   data = Advertising, 
   return_type = 'matrix'
   )
-lmod_abess = LinearRegression()
+lmod_abess = LinearRegression(support_size = range(3))
 lmod_abess.fit(Xm, ym)
 lmod_abess.coef_
 ```
@@ -317,7 +325,19 @@ lmod_abess.coef_
 ```{r}
 library(leaps)
 
-regsubsets(sales ~ ., data = Advertising, method = "exhaustive") %>% summary()
+bs_mod <- regsubsets(
+  sales ~ ., 
+  data = Advertising, 
+  method = "exhaustive"
+  ) %>% summary()
+bs_mod
+tibble(
+  K = 1:3, 
+  R2 = bs_mod$rsq,
+  adjR2 = bs_mod$adjr2,
+  BIC = bs_mod$bic,
+  CP = bs_mod$cp
+) %>% print(width = Inf)
 ```
 
 #### Julia
@@ -334,11 +354,11 @@ regsubsets(sales ~ ., data = Advertising, method = "exhaustive") %>% summary()
 
 - Begin with the **null model**, a model that contains an intercept but no predictors.
 
-- Fit $p$ simple linear regressions and add to the null model the variable that results in the lowest RSS.
+- Fit $p$ simple linear regressions and add to the null model the variable that results in the lowest RSS (equivalently the lowest AIC).
 
 - Add to that model the variable that results in the lowest RSS among all two-variable models.
 
-- Continue until some stopping rule is satisfied, for example when all remaining variables have a $p$-value above some threshold, or the AIC does not decrease anymore.
+- Continue until some stopping rule is satisfied, for example when the AIC does not decrease anymore.
     
 ::: {.panel-tabset}
 
@@ -364,9 +384,9 @@ step(lmod_null,
 
 - The new $(p-1)$-variable model is fit, and the variable with the largest p-value is removed.
 
-- Continue until a stopping rule is reached. For instance, we may stop when all remaining variables have a significant $p$-value defined by some significance threshold.
+- Continue until a stopping rule is reached. For instance, we may stop when AIC does not decrease anymore, or when all remaining variables have a significant $p$-value defined by some significance threshold.
 
-- Backward selection cannot start with a model with $p > n$, while forward selection can.
+- Backward selection cannot start with a model with $p > n$.
 
 ::: {.panel-tabset}
 
@@ -512,7 +532,6 @@ y_small, X_small = dmatrices(
 lmod_small = sm.OLS(y_small, X_small).fit()
 lmod_small_pred = lmod_small.get_prediction(pd.DataFrame({'Intercept': [1], 'TV': [100], 'radio': [20]})).summary_frame()
 lmod_small_pred
-
 ```
 
 #### R
@@ -670,7 +689,7 @@ lmod_int %>%
 
 :::
 
-- The results in this table suggests that interactions are important.
+- The results in this table suggests that the TV $\times$ Radio interaction is important.
 
 - The $R^2$ for the interaction model is 96.8\%, compared to only 89.7\% for the model that predicts sales using `TV` and `radio` without an interaction term.
 
@@ -707,34 +726,38 @@ $$
 ```{python}
 # Import Auto data (missing data represented by '?')
 Auto = pd.read_csv("../data/Auto.csv", na_values = '?').dropna()
+Auto
 ```
 
 ```{python}
-from sklearn.preprocessing import PolynomialFeatures
-
-# Retrieve response (mpg) and predictor (horsepower)
-mpg, hp = dmatrices(
-  'mpg ~ 0 + horsepower',
-  data = Auto, 
-  return_type = 'dataframe'
+plt.clf()
+# Linear fit
+ax = sns.regplot(
+  data = Auto,
+  x = 'horsepower',
+  y = 'mpg', 
+  order = 1
   )
-
-# Fit polynomial regression with degrees = 1, 2, 5
-res = Auto.assign(
-  # Regular linear regression (degree = 1)
-  yhat1 = sm.OLS(mpg, PolynomialFeatures(degree = 1).fit_transform(hp)).fit().predict(),
-  # Degree 2 linear regression
-  yhat2 = sm.OLS(mpg, PolynomialFeatures(degree = 2).fit_transform(hp)).fit().predict(),
-  # Degree 5 linear regression
-  yhat5 = sm.OLS(mpg, PolynomialFeatures(degree = 5).fit_transform(hp)).fit().predict()
+# Quadratic fit  
+sns.regplot(
+  data = Auto,
+  x = 'horsepower',
+  y = 'mpg', 
+  order = 2,
+  ax = ax
   )
-
-# Plot
-ax = sns.relplot(data = res, x = 'horsepower', y = 'mpg', height = 8);
-ax.map_dataframe(sns.lineplot, x = 'horsepower', y = 'yhat1', color = 'y');
-ax.map_dataframe(sns.lineplot, x = 'horsepower', y = 'yhat2', color = 'b');
-ax.map_dataframe(sns.lineplot, x = 'horsepower', y = 'yhat5', color = 'g');
-ax.set(xlabel = 'Horsepower', ylabel = 'Miles per gallon')
+# 5-degree fit  
+sns.regplot(
+  data = Auto,
+  x = 'horsepower',
+  y = 'mpg', 
+  order = 5,
+  ax = ax
+  )
+ax.set(
+  xlabel = 'Horsepower',
+  ylabel = 'Miles per gallon'
+)
 ```
 
 #### R
@@ -777,7 +800,7 @@ See ISL Section 3.3.3.
 
 In much of the rest of this course, we discuss methods that expand the scope of linear models and how they are fit.
 
-- Classification problems: logistic regression, support vector machines.  
+- Classification problems: logistic regression, discriminant analysis, support vector machines.  
 
 - Non-linearity: kernel smoothing, splines and generalized additive models, nearest neighbor methods. 
 
