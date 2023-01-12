@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Dr.&nbsp;Hua Zhou @ UCLA">
-<meta name="dcterms.date" content="2023-01-11">
+<meta name="dcterms.date" content="2023-01-12">
 
 <title>Statistical Learning (ISL 2)</title>
 <style>
@@ -115,7 +115,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <ul>
   <li><a href="#income-data" id="toc-income-data" class="nav-link" data-scroll-target="#income-data"><span class="toc-section-number">1.1</span>  <code>income</code> data</a></li>
   <li><a href="#why-estimate-f" id="toc-why-estimate-f" class="nav-link" data-scroll-target="#why-estimate-f"><span class="toc-section-number">1.2</span>  Why estimate <span class="math inline">\(f\)</span>?</a></li>
-  <li><a href="#the-optimal-but-unreachable-f" id="toc-the-optimal-but-unreachable-f" class="nav-link" data-scroll-target="#the-optimal-but-unreachable-f"><span class="toc-section-number">1.3</span>  The optimal (but unreachable) <span class="math inline">\(f\)</span></a></li>
+  <li><a href="#the-optimal-but-unrealistic-f" id="toc-the-optimal-but-unrealistic-f" class="nav-link" data-scroll-target="#the-optimal-but-unrealistic-f"><span class="toc-section-number">1.3</span>  The optimal (but unrealistic) <span class="math inline">\(f\)</span></a></li>
   <li><a href="#reducible-and-irreducible-errors" id="toc-reducible-and-irreducible-errors" class="nav-link" data-scroll-target="#reducible-and-irreducible-errors"><span class="toc-section-number">1.4</span>  Reducible and irreducible errors</a></li>
   <li><a href="#how-to-estimate-f" id="toc-how-to-estimate-f" class="nav-link" data-scroll-target="#how-to-estimate-f"><span class="toc-section-number">1.5</span>  How to estimate <span class="math inline">\(f\)</span>?</a>
   <ul class="collapse">
@@ -155,7 +155,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 11, 2023</p>
+      <p class="date">January 12, 2023</p>
     </div>
   </div>
   
@@ -420,26 +420,26 @@ Y = f(X) + \epsilon,
 <section id="why-estimate-f" class="level2" data-number="1.2">
 <h2 data-number="1.2" class="anchored" data-anchor-id="why-estimate-f"><span class="header-section-number">1.2</span> Why estimate <span class="math inline">\(f\)</span>?</h2>
 <ul>
-<li><p>Prediction. With a good estiamte <span class="math inline">\(\hat f\)</span>, we can predict <span class="math inline">\(Y\)</span> at new points <span class="math inline">\(X = x\)</span> <span class="math display">\[
+<li><p>Prediction. With a good estimate <span class="math inline">\(\hat f\)</span>, we can predict <span class="math inline">\(Y\)</span> at new points <span class="math display">\[
 \hat Y = \hat f (X).
 \]</span></p></li>
 <li><p>Inference.</p>
 <ul>
 <li><p>We can understand which components of <span class="math inline">\(X=(X_1, \ldots, X_p)\)</span> are important in explaining <span class="math inline">\(Y\)</span>, and which are irrelevant. For example, <code>Seniority</code> and <code>Years of Education</code> have a big impact on <code>Income</code>, but <code>Marital Status</code> typically does not.</p></li>
 <li><p>Depending on the complexity of <span class="math inline">\(f\)</span>, we may be able to understand how each component <span class="math inline">\(X_j\)</span> of <span class="math inline">\(X\)</span> affects <span class="math inline">\(Y\)</span>. For example, how much extra income will one earn with two more year of education? Does a linear relationship hold?</p></li>
-<li><p>Causal inference. We may infer whether purposedly changing the values of certain predictors will change outcomes. We rely on various learning methods to estimate <span class="math inline">\(f\)</span>.</p></li>
+<li><p>Causal inference. We may infer whether purposedly changing the values of certain predictors will change outcomes. For example, does an advertising campaign increase the sales? Or it’s just seasonal change in sales?</p></li>
 </ul></li>
 </ul>
 </section>
-<section id="the-optimal-but-unreachable-f" class="level2" data-number="1.3">
-<h2 data-number="1.3" class="anchored" data-anchor-id="the-optimal-but-unreachable-f"><span class="header-section-number">1.3</span> The optimal (but unreachable) <span class="math inline">\(f\)</span></h2>
+<section id="the-optimal-but-unrealistic-f" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="the-optimal-but-unrealistic-f"><span class="header-section-number">1.3</span> The optimal (but unrealistic) <span class="math inline">\(f\)</span></h2>
 <ul>
 <li><p>It can be shown (HW1) that <span class="math display">\[
 f_{\text{opt}} = \operatorname{E}(Y | X)
 \]</span> minimizes the mean-squared prediction error <span class="math display">\[
 \operatorname{E}[Y - f(X)]^2,
 \]</span> where the expectations averages over variations in both <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>.</p></li>
-<li><p>However we almost never know the conditional distribution of <span class="math inline">\(Y\)</span> given <span class="math inline">\(X\)</span> in practice.</p></li>
+<li><p>However we almost never know the conditional distribution of <span class="math inline">\(Y\)</span> given <span class="math inline">\(X\)</span>. In practice, we use various learning methods to estimate <span class="math inline">\(f\)</span>.</p></li>
 </ul>
 </section>
 <section id="reducible-and-irreducible-errors" class="level2" data-number="1.4">
@@ -453,12 +453,12 @@ f_{\text{opt}} = \operatorname{E}(Y | X)
 \end{eqnarray*}\]</span></p>
 <ul>
 <li><p>Statistical learning techniques may yield better <span class="math inline">\(\hat f\)</span>, thus decreasing the reducible errors.</p></li>
-<li><p>Even if we knew the truth <span class="math inline">\(f\)</span>, we would still make errors in prediction due to the irreducbile error.</p></li>
+<li><p>Even if we knew the truth <span class="math inline">\(f\)</span>, we would still make errors in prediction due to the irreducible error.</p></li>
 </ul>
 </section>
 <section id="how-to-estimate-f" class="level2" data-number="1.5">
 <h2 data-number="1.5" class="anchored" data-anchor-id="how-to-estimate-f"><span class="header-section-number">1.5</span> How to estimate <span class="math inline">\(f\)</span>?</h2>
-<p>Our goal is to apply a statistical learning method to find a function <span class="math inline">\(\hat f\)</span> such that <span class="math inline">\(Y \approx \hat f(X)\)</span> for any observation <span class="math inline">\((X, Y)\)</span>.</p>
+<p>Our goal is to apply a statistical learning method to find a function <span class="math inline">\(\hat f\)</span> such that <span class="math inline">\(Y \approx \hat f(X)\)</span>.</p>
 <section id="parametric-or-structured-model" class="level3" data-number="1.5.1">
 <h3 data-number="1.5.1" class="anchored" data-anchor-id="parametric-or-structured-model"><span class="header-section-number">1.5.1</span> Parametric or structured model</h3>
 <ul>
@@ -650,7 +650,8 @@ f_{\text{opt}} = \operatorname{E}(Y | X)
 <section id="classical-regime-vs-modern-regime" class="level2" data-number="1.9">
 <h2 data-number="1.9" class="anchored" data-anchor-id="classical-regime-vs-modern-regime"><span class="header-section-number">1.9</span> Classical regime vs modern regime</h2>
 <ul>
-<li>Above U-shaped test MSE curves are in the so-called <strong>classical regime</strong> where number of features is less than the training samples. In the <strong>modern regime</strong> where the number of features can be order of magnitude larger than the training samples, the <strong>double descent</strong> phenomenon is observed and being actively studied. See this <a href="https://epubs.siam.org/doi/pdf/10.1137/20M1336072">paper</a> and references therein.</li>
+<li><p>Above U-shaped test MSE curves are in the so-called <strong>classical regime</strong> where the number of features (or the degree of freedom) is less than the training samples.</p>
+<p>In the <strong>modern regime</strong>, where the number of features (or the degree of freedom) can be order of magnitude larger than the training samples (recall that ChatGPT3 model has 175 billion parameters!), the <strong>double descent</strong> phenomenon is observed and being actively studied. See the recent <a href="https://epubs.siam.org/doi/pdf/10.1137/20M1336072">paper</a> and references therein.</p></li>
 </ul>
 <div id="fig-double-descent" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -673,13 +674,13 @@ f_{\text{opt}} = \operatorname{E}(Y | X)
 <li><p>To evaluate the performance of classification algorithms, the <strong>training error rate</strong> is <span class="math display">\[
 \frac 1n \sum_{i=1}^n I(y_i \ne \hat y_i),
 \]</span> where <span class="math inline">\(\hat y_i = \hat f(x_i)\)</span> is the predicted class label for the <span class="math inline">\(i\)</span>th observation using <span class="math inline">\(\hat f\)</span>.</p></li>
-<li><p>As in the regression setting, we are most interested in the <strong>test error rate</strong> associated with a set of test observations <span class="math inline">\((x_0, y_0)\)</span> <span class="math display">\[
+<li><p>As in the regression setting, we are most interested in the <strong>test error rate</strong> associated with a set of test observations <span class="math display">\[
 \frac{1}{n_{\text{test}}} \sum_{i=1}^{n_{\text{test}}} I(y_i \ne \hat y_i).
 \]</span></p></li>
 <li><p>Suppose <span class="math inline">\(\mathcal{C}=\{1,2,\ldots,K\}\)</span>, the <strong>Bayes classifier</strong> assigns a test observation with predictor vector <span class="math inline">\(x_0\)</span> to the class <span class="math inline">\(j \in \mathcal{C}\)</span> for which <span class="math display">\[
 \operatorname{Pr}(Y=j \mid X = x_0)
 \]</span> is largest.</p>
-<p>In a two-class problem <span class="math inline">\(K=2\)</span>, the Bayes classifier assigns a test case to class 1 if <span class="math inline">\(\operatorname{Pr}(Y=1 \mid X = x_0) &gt; 0.5\)</span>., and to class 2 otherwise.</p></li>
+<p>In a two-class problem <span class="math inline">\(K=2\)</span>, the Bayes classifier assigns a test case to class 1 if <span class="math inline">\(\operatorname{Pr}(Y=1 \mid X = x_0) &gt; 0.5\)</span>, and to class 2 otherwise.</p></li>
 <li><p>The Bayes classifier produces the <strong>lowest</strong> possible test error rate, called the <strong>Bayes error rate</strong> <span class="math display">\[
 1 - \max_j \operatorname{Pr}(Y=j \mid X = x_0)
 \]</span> at <span class="math inline">\(X=x_0\)</span>. The <strong>overall Bayes error</strong> is given by <span class="math display">\[
@@ -688,7 +689,7 @@ f_{\text{opt}} = \operatorname{E}(Y | X)
 <li><p>Unfortunately, for real data, we don’t know the conditional distribution of <span class="math inline">\(Y\)</span> given <span class="math inline">\(X\)</span>, and computing the Bayes classifier is impossible.</p></li>
 <li><p>Various learning algorithms attempt to estimate the conditional distribution of <span class="math inline">\(Y\)</span> given <span class="math inline">\(X\)</span>, and then classify a given observation to the class with the highest estimated probability.</p></li>
 <li><p>One simple classifier is the <strong><span class="math inline">\(K\)</span>-nearest neighbor (KNN)</strong> classifier. Given a positive integer <span class="math inline">\(K\)</span> and a test observation <span class="math inline">\(x_0\)</span>, the KNN classifier first identifies the <span class="math inline">\(K\)</span> points in the training data that are closest to <span class="math inline">\(x_0\)</span>, represented by <span class="math inline">\(\mathcal{N}_0\)</span>. It then estimates the conditional probability by <span class="math display">\[
-\operatorname{Pr}(Y=j \mid X = x_0) = \frac{1}{K} \sum_{i \in \mathcal{N}_0} I(y_j = j)
+\operatorname{Pr}(Y=j \mid X = x_0) = \frac{1}{K} \sum_{i \in \mathcal{N}_0} I(y_i = j)
 \]</span> and then classifies the test observation <span class="math inline">\(x_0\)</span> to the class with the largest probability.</p></li>
 </ul>
 <div id="fig-KNN-K-10" class="quarto-figure quarto-figure-center anchored">

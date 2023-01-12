@@ -177,7 +177,7 @@ where
 
 ## Why estimate $f$?
 
-- Prediction. With a good estiamte $\hat f$, we can predict $Y$ at new points $X = x$
+- Prediction. With a good estimate $\hat f$, we can predict $Y$ at new points
 $$
 \hat Y = \hat f (X).
 $$
@@ -188,9 +188,9 @@ $$
 
     - Depending on the complexity of $f$, we may be able to understand how each component $X_j$ of $X$ affects $Y$. For example, how much extra income will one earn with two more year of education? Does a linear relationship hold? 
     
-    - Causal inference. We may infer whether purposedly changing the values of certain predictors will change outcomes. We rely on various learning methods to estimate $f$.
+    - Causal inference. We may infer whether purposedly changing the values of certain predictors will change outcomes. For example, does an advertising campaign increase the sales? Or it's just seasonal change in sales? 
 
-## The optimal (but unreachable) $f$
+## The optimal (but unrealistic) $f$
 
 - It can be shown (HW1) that
 $$
@@ -202,7 +202,7 @@ $$
 $$
 where the expectations averages over variations in both $X$ and $Y$.
 
-- However we almost never know the conditional distribution of $Y$ given $X$ in practice.
+- However we almost never know the conditional distribution of $Y$ given $X$.  In practice, we use various learning methods to estimate $f$.
 
 ## Reducible and irreducible errors
 
@@ -215,11 +215,11 @@ where the expectations averages over variations in both $X$ and $Y$.
 
 - Statistical learning techniques may yield better $\hat f$, thus decreasing the reducible errors.
 
-- Even if we knew the truth $f$, we would still make errors in prediction due to the irreducbile error. 
+- Even if we knew the truth $f$, we would still make errors in prediction due to the irreducible error. 
 
 ## How to estimate $f$? 
 
-Our goal is to apply a statistical learning method to find a function $\hat f$ such that $Y \approx \hat f(X)$ for any observation $(X, Y)$. 
+Our goal is to apply a statistical learning method to find a function $\hat f$ such that $Y \approx \hat f(X)$. 
 
 ### Parametric or structured model
 
@@ -380,7 +380,9 @@ Bias-variance trade-off.
 
 ## Classical regime vs modern regime
 
-- Above U-shaped test MSE curves are in the so-called **classical regime** where number of features is less than the training samples. In the **modern regime** where the number of features can be order of magnitude larger than the training samples, the **double descent** phenomenon is observed and being actively studied. See this [paper](https://epubs.siam.org/doi/pdf/10.1137/20M1336072) and references therein.
+- Above U-shaped test MSE curves are in the so-called **classical regime** where the number of features (or the degree of freedom) is less than the training samples. 
+
+    In the **modern regime**, where the number of features (or the degree of freedom) can be order of magnitude larger than the training samples (recall that ChatGPT3 model has 175 billion parameters!), the **double descent** phenomenon is observed and being actively studied. See the recent [paper](https://epubs.siam.org/doi/pdf/10.1137/20M1336072) and references therein.
 
 ::: {#fig-double-descent}
 
@@ -404,7 +406,7 @@ $$
 $$
 where $\hat y_i = \hat f(x_i)$ is the predicted class label for the $i$th observation using $\hat f$. 
 
-- As in the regression setting, we are most interested in the **test error rate** associated with a set of test observations $(x_0, y_0)$
+- As in the regression setting, we are most interested in the **test error rate** associated with a set of test observations
 $$
 \frac{1}{n_{\text{test}}} \sum_{i=1}^{n_{\text{test}}} I(y_i \ne \hat y_i).
 $$
@@ -415,7 +417,7 @@ $$
 $$
 is largest. 
 
-    In a two-class problem $K=2$, the Bayes classifier assigns a test case to class 1 if $\operatorname{Pr}(Y=1 \mid X = x_0) > 0.5$., and to class 2 otherwise.
+    In a two-class problem $K=2$, the Bayes classifier assigns a test case to class 1 if $\operatorname{Pr}(Y=1 \mid X = x_0) > 0.5$, and to class 2 otherwise.
     
 - The Bayes classifier produces the **lowest** possible test error rate, called the **Bayes error rate**
 $$
@@ -433,7 +435,7 @@ where the expectation averages over all possible values of $X$.
 
 - One simple classifier is the **$K$-nearest neighbor (KNN)** classifier. Given a positive integer $K$ and a test observation $x_0$, the KNN classifier first identifies the $K$ points in the training data that are closest to $x_0$, represented by $\mathcal{N}_0$. It then estimates the conditional probability by
 $$
-\operatorname{Pr}(Y=j \mid X = x_0) = \frac{1}{K} \sum_{i \in \mathcal{N}_0} I(y_j = j)
+\operatorname{Pr}(Y=j \mid X = x_0) = \frac{1}{K} \sum_{i \in \mathcal{N}_0} I(y_i = j)
 $$
 and then classifies the test observation $x_0$ to the class with the largest probability.
 
