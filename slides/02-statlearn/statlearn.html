@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Dr.&nbsp;Hua Zhou @ UCLA">
-<meta name="dcterms.date" content="2023-01-10">
+<meta name="dcterms.date" content="2023-01-11">
 
 <title>Statistical Learning (ISL 2)</title>
 <style>
@@ -125,7 +125,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#some-trade-offs" id="toc-some-trade-offs" class="nav-link" data-scroll-target="#some-trade-offs"><span class="toc-section-number">1.6</span>  Some trade-offs</a></li>
   <li><a href="#assessing-model-accuracy" id="toc-assessing-model-accuracy" class="nav-link" data-scroll-target="#assessing-model-accuracy"><span class="toc-section-number">1.7</span>  Assessing model accuracy</a></li>
   <li><a href="#bias-variance-trade-off" id="toc-bias-variance-trade-off" class="nav-link" data-scroll-target="#bias-variance-trade-off"><span class="toc-section-number">1.8</span>  Bias-variance trade-off</a></li>
-  <li><a href="#classification-problems" id="toc-classification-problems" class="nav-link" data-scroll-target="#classification-problems"><span class="toc-section-number">1.9</span>  Classification problems</a></li>
+  <li><a href="#classical-regime-vs-modern-regime" id="toc-classical-regime-vs-modern-regime" class="nav-link" data-scroll-target="#classical-regime-vs-modern-regime"><span class="toc-section-number">1.9</span>  Classical regime vs modern regime</a></li>
+  <li><a href="#classification-problems" id="toc-classification-problems" class="nav-link" data-scroll-target="#classification-problems"><span class="toc-section-number">1.10</span>  Classification problems</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -154,7 +155,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 10, 2023</p>
+      <p class="date">January 11, 2023</p>
     </div>
   </div>
   
@@ -448,7 +449,7 @@ f_{\text{opt}} = \operatorname{E}(Y | X)
 </ul>
 <p><span class="math display">\[\begin{eqnarray*}
 \operatorname{E}(Y - \hat Y)^2 &amp;=&amp; \operatorname{E} [f(X) + \epsilon - \hat f(X)]^2 \\
-&amp;=&amp; \underbrace{[f(X) - \hat f(X)]^2}_\text{Reducible} + \underbrace{\operatorname{Var}(\epsilon)}_\text{Irreducible}.
+&amp;=&amp; \operatorname{E} \underbrace{[f(X) - \hat f(X)]^2}_\text{Reducible} + \underbrace{\operatorname{Var}(\epsilon)}_\text{Irreducible}.
 \end{eqnarray*}\]</span></p>
 <ul>
 <li><p>Statistical learning techniques may yield better <span class="math inline">\(\hat f\)</span>, thus decreasing the reducible errors.</p></li>
@@ -645,6 +646,9 @@ f_{\text{opt}} = \operatorname{E}(Y | X)
 <p></p><figcaption class="figure-caption">Figure&nbsp;10: Bias-variance trade-off.</figcaption><p></p>
 </figure>
 </div>
+</section>
+<section id="classical-regime-vs-modern-regime" class="level2" data-number="1.9">
+<h2 data-number="1.9" class="anchored" data-anchor-id="classical-regime-vs-modern-regime"><span class="header-section-number">1.9</span> Classical regime vs modern regime</h2>
 <ul>
 <li>Above U-shaped test MSE curves are in the so-called <strong>classical regime</strong> where number of features is less than the training samples. In the <strong>modern regime</strong> where the number of features can be order of magnitude larger than the training samples, the <strong>double descent</strong> phenomenon is observed and being actively studied. See this <a href="https://epubs.siam.org/doi/pdf/10.1137/20M1336072">paper</a> and references therein.</li>
 </ul>
@@ -655,8 +659,8 @@ f_{\text{opt}} = \operatorname{E}(Y | X)
 </figure>
 </div>
 </section>
-<section id="classification-problems" class="level2" data-number="1.9">
-<h2 data-number="1.9" class="anchored" data-anchor-id="classification-problems"><span class="header-section-number">1.9</span> Classification problems</h2>
+<section id="classification-problems" class="level2" data-number="1.10">
+<h2 data-number="1.10" class="anchored" data-anchor-id="classification-problems"><span class="header-section-number">1.10</span> Classification problems</h2>
 <ul>
 <li><p>When the outcome <span class="math inline">\(Y\)</span> is discrete, for example, email is one of <span class="math inline">\(\mathcal{C}=\)</span>{<code>spam</code>, <code>ham</code>} (<code>ham</code>=good email), handwritten digit is one of <span class="math inline">\(\mathcal{C} = \{0,1,\ldots,9\}\)</span>.</p></li>
 <li><p>Our goals are to</p>

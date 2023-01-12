@@ -210,7 +210,7 @@ where the expectations averages over variations in both $X$ and $Y$.
 
 \begin{eqnarray*}
 \operatorname{E}(Y - \hat Y)^2 &=& \operatorname{E} [f(X) + \epsilon - \hat f(X)]^2 \\
-&=& \underbrace{[f(X) - \hat f(X)]^2}_\text{Reducible} + \underbrace{\operatorname{Var}(\epsilon)}_\text{Irreducible}.
+&=& \operatorname{E} \underbrace{[f(X) - \hat f(X)]^2}_\text{Reducible} + \underbrace{\operatorname{Var}(\epsilon)}_\text{Irreducible}.
 \end{eqnarray*}
 
 - Statistical learning techniques may yield better $\hat f$, thus decreasing the reducible errors.
@@ -377,6 +377,8 @@ where
 Bias-variance trade-off.
 
 :::
+
+## Classical regime vs modern regime
 
 - Above U-shaped test MSE curves are in the so-called **classical regime** where number of features is less than the training samples. In the **modern regime** where the number of features can be order of magnitude larger than the training samples, the **double descent** phenomenon is observed and being actively studied. See this [paper](https://epubs.siam.org/doi/pdf/10.1137/20M1336072) and references therein.
 
