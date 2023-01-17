@@ -179,7 +179,7 @@ $$
 #### Python (sklearn)
 
 ```{python}
-# scikit-learn does not offer much
+# sklearn does not offer much besides coefficient estimate
 from sklearn.linear_model import LinearRegression
 
 X = Advertising[['TV', 'radio', 'newspaper']]
@@ -243,7 +243,11 @@ lmod %>%
 
 - We can use the F-statistic to assess the fit of the overall model
 $$
-F = \frac{(\text{TSS} - \text{RSS})/p}{\text{RSS}/(n-p-1)} \sim F_{p, n-p-1}.
+F = \frac{(\text{TSS} - \text{RSS})/p}{\text{RSS}/(n-p-1)} \sim F_{p, n-p-1},
+$$
+where
+$$
+\text{TSS} = \sum_{i=1}^n (y_i - \bar y)^2.
 $$
 Formally we are testing the null hypothesis
 $$
@@ -471,7 +475,7 @@ cor(predict(lmod), Advertising$sales)^2
 
 - The **adjusted $R_a^2$** adjusts to the fact that a larger model also uses more parameters. 
 $$
-R_a^2 = 1 - \frac{\text{RSS}/(n-p)}{\text{TSS}/(n-1)}.
+R_a^2 = 1 - \frac{\text{RSS}/(n-p-1)}{\text{TSS}/(n-1)}.
 $$
 Adding a predictor will only increase $R_a^2$ if it has some predictive value.
 
