@@ -453,7 +453,7 @@ max     20.000000  1999.000000  </code></pre>
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">R</a></li></ul>
 <div class="tab-content">
 <div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
-<p>I don’t know of good Python package for best subset regression. Please see the R code.</p>
+<p>I don’t know of good Python packages for best subset regression. The <a href="https://abess.readthedocs.io/en/latest/index.html"><code>abess</code></a> package may be worth trying. Please see the R code.</p>
 </div>
 <div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
 <div class="cell" data-layout-align="center">
@@ -580,11 +580,10 @@ Selection Algorithm: exhaustive
 </div>
 </div>
 <ul>
-<li><p>Adjusted <span class="math inline">\(R^2\)</span> chooses the best model of size 7.</p>
-<p><span class="math inline">\(C_p\)</span> (and AIC) chooses the best model of size 6.</p>
-<p>BIC chooses the best model of size 4.</p></li>
-<li><p>Although we have presented best subset selection here for least squares regression, the same ideas apply to other types of models, such as <strong>logistic regression</strong> (discussed in Chapter 4).</p></li>
-<li><p>The <strong>deviance</strong> (negative two times the maximized log-likelihood) plays the role of RSS for a broader class of models.</p></li>
+<li><p>Adjusted <span class="math inline">\(R^2\)</span> chooses the best model of size 7: <code>income</code>, <code>limit</code>, <code>rating</code>, <code>cards</code>, <code>age</code>, <code>student</code> and <code>own</code>.</p>
+<p><span class="math inline">\(C_p\)</span> (and AIC) chooses the best model of size 6: <code>income</code>, <code>limit</code>, <code>rating</code>, <code>cards</code>, <code>age</code> and <code>student</code>.</p>
+<p>BIC chooses the best model of size 4: <code>income</code>, <code>limit</code>, <code>cards</code> and <code>student</code>.</p></li>
+<li><p>Although we have presented best subset selection here for least squares regression, the same ideas apply to other types of models, such as <strong>logistic regression</strong> (discussed in Chapter 4). The <strong>deviance</strong> (negative two times the maximized log-likelihood) plays the role of RSS for a broader class of models.</p></li>
 <li><p>For computational reasons, best subset selection cannot be applied with very large <span class="math inline">\(p\)</span>. When <span class="math inline">\(p = 20\)</span>, there are <span class="math inline">\(2^p = 1,048,576\)</span> models!</p></li>
 </ul>
 <!-- - Best subset selection may also suffer from statistical problems when $p$ is large: larger the search space, the higher the chance of finding models that look good on the training data, even though they might not have any predictive power on future data. -->
@@ -799,7 +798,7 @@ Selection Algorithm: backward
 <li><p>For the <code>Credit</code> data, backward stepwise selection matches the best subset selection up to <span class="math inline">\(\mathcal{M}_4\)</span> (backwards).</p></li>
 <li><p>Like forward stepwise selection, the backward selection approach searches through only <span class="math inline">\(1 + p(p+1)/2\)</span> models, and so can be applied in settings where <span class="math inline">\(p\)</span> is too large to apply best subset selection. When <span class="math inline">\(p=20\)</span>, only <span class="math inline">\(1 + p(p+1)/2 = 211\)</span> models.</p></li>
 <li><p>Like forward stepwise selection, backward stepwise selection is not guaranteed to yield the best model containing a subset of the <span class="math inline">\(p\)</span> predictors.</p></li>
-<li><p>Backward selection requires that the number of samples n is larger than the number of variables <span class="math inline">\(p\)</span> (so that the full model can be fit). In contrast, forward stepwise can be used even when <span class="math inline">\(n &lt; p\)</span>, and so is the only viable subset method when <span class="math inline">\(p\)</span> is very large.</p></li>
+<li><p>Backward selection requires that the number of samples <span class="math inline">\(n\)</span> is larger than the number of variables <span class="math inline">\(p\)</span> (so that the full model can be fit). In contrast, forward stepwise can be used even when <span class="math inline">\(n &lt; p\)</span>, and so is the only viable subset method when <span class="math inline">\(p\)</span> is very large.</p></li>
 </ul>
 </section>
 </section>
@@ -820,23 +819,32 @@ Selection Algorithm: backward
 <ul>
 <li><p>Mallow’s <span class="math inline">\(C_p\)</span>: <span class="math display">\[
 C_p = \frac{1}{n} (\text{RSS} + 2d \hat{\sigma}^2),
-\]</span> where <span class="math inline">\(d\)</span> is the total number of parameters used and <span class="math inline">\(\hat{\sigma}^2\)</span> is an estimate of the error variance <span class="math inline">\(\text{Var}(\epsilon)\)</span>.</p></li>
+\]</span> where <span class="math inline">\(d\)</span> is the total number of parameters used and <span class="math inline">\(\hat{\sigma}^2\)</span> is an estimate of the error variance <span class="math inline">\(\text{Var}(\epsilon)\)</span>. Smaller <span class="math inline">\(C_p\)</span> means better model.</p></li>
 <li><p>The AIC criterion: <span class="math display">\[
 \text{AIC} = -  2 \log L + 2d,
-\]</span> where <span class="math inline">\(L\)</span> is the maximized value of the likelihood function for the estimated model.</p>
+\]</span> where <span class="math inline">\(L\)</span> is the maximized value of the likelihood function for the estimated model. Smaller AIC means better model.</p>
 <p>In the case of the linear model with Gaussian errors, maximum likelihood and least squares are the same thing, and <span class="math inline">\(C_p\)</span> and AIC are equivalent.</p></li>
 <li><p>BIC: <span class="math display">\[
 \text{BIC} = \frac{1}{n}(\text{RSS} + \log(n) d \hat{\sigma}^2).
-\]</span></p>
+\]</span> Smaller BIC means better model.</p>
 <p>Since <span class="math inline">\(\log n &gt; 2\)</span> for any <span class="math inline">\(n &gt; 7\)</span>, the BIC statistic generally places a heavier penalty on models with many variables, and hence results in the selection of smaller models than <span class="math inline">\(C_p\)</span>.</p></li>
 <li><p>Adjusted <span class="math inline">\(R^2\)</span>: <span class="math display">\[
 \text{Adjusted } R^2 = 1 - \frac{\text{RSS}/(n - d - 1)}{\text{TSS} / (n - 1)}.
-\]</span> A large value of adjusted R2 indicates a model with a small test error.</p>
+\]</span> A large value of adjusted <span class="math inline">\(R^2\)</span> indicates a model with a small test error.</p>
 <p>Maximizing the adjusted <span class="math inline">\(R^2\)</span> is equivalent to minimizing <span class="math inline">\(\text{RSS} / (n - d - 1)\)</span>.</p></li>
 </ul>
+<div id="fig-credit-bestmodel-cp-bic-adjr2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
 <p align="center">
-<embed src="ISL_fig_6_2.pdf" width="500" height="300">
+<embed src="ISL_fig_6_2.pdf" width="600" height="350">
 </p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;1: <span class="math inline">\(C_p\)</span>, BIC, and adjusted <span class="math inline">\(R^2\)</span> are shown for the best models of each size for the <code>Credit</code> data set. <span class="math inline">\(C_p\)</span> and BIC are estimates of test MSE. In the middle plot we see that the BIC estimate of test error shows an increase after four variables are selected. The other two plots are rather flat after four variables are included.</figcaption><p></p>
+</figure>
+</div>
+<ul>
+<li><p><span class="math inline">\(C_p\)</span>, AIC and BIC have rigorous theoretical justification. As sample size <span class="math inline">\(n\)</span> is very large, they are guaranteed to find the best model. Adjusted <span class="math inline">\(R^2\)</span> is less motivated in statistical theory.</p></li>
+<li><p>Indirect methods hold great computational advantage. They just require a single fit of the training data.</p></li>
+</ul>
 </section>
 <section id="direct-approaches-validation-and-cross-validation" class="level3" data-number="4.2">
 <h3 data-number="4.2" class="anchored" data-anchor-id="direct-approaches-validation-and-cross-validation"><span class="header-section-number">4.2</span> Direct approaches: validation and cross-validation</h3>
@@ -845,12 +853,12 @@ C_p = \frac{1}{n} (\text{RSS} + 2d \hat{\sigma}^2),
 <li><p>This procedure has an advantage relative to AIC, BIC, <span class="math inline">\(C_p\)</span>, and adjusted <span class="math inline">\(R^2\)</span>, in that it provides a direct estimate of the test error, and <em>doesn’t require an estimate of the error variance <span class="math inline">\(\sigma^2\)</span></em>.</p></li>
 <li><p>It can also be used in a wider range of model selection tasks, even in cases where it is hard to pinpoint the model degrees of freedom (e.g.&nbsp;the number of predictors in the model) or hard to estimate the error variance <span class="math inline">\(\sigma^2\)</span>.</p></li>
 </ul>
-<div id="fig-cp-bic-adjr2-credit" class="quarto-figure quarto-figure-center anchored">
+<div id="fig-bic-val-cv-credit" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p align="center">
-<embed src="ISL_fig_6_3.pdf" width="500" height="300">
+<embed src="ISL_fig_6_3.pdf" width="600" height="350">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;1: <span class="math inline">\(C_p\)</span>, BIC, and adjusted <span class="math inline">\(R^2\)</span> for the <code>Credit</code> data.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;2: Square root of BIC, validation set error, and CV error for the <code>Credit</code> data.</figcaption><p></p>
 </figure>
 </div>
 </section>
@@ -874,14 +882,14 @@ C_p = \frac{1}{n} (\text{RSS} + 2d \hat{\sigma}^2),
 <li><p>Similar to least squares, ridge regression seeks coefficient estimates that fit the data well, by making the RSS small.</p></li>
 <li><p>However, the second term, <span class="math inline">\(\lambda \sum_{j} \beta_j^2\)</span>, called a <strong>shrinkage penalty</strong>, is small when <span class="math inline">\(\beta_1, \ldots, \beta_p\)</span> are close to zero, and so it has the effect of <strong>shrinking</strong> the estimates of <span class="math inline">\(\beta_j\)</span> towards zero.</p></li>
 <li><p>The tuning parameter <span class="math inline">\(\lambda\)</span> serves to control the relative impact of these two terms on the regression coefficient estimates.</p></li>
-<li><p>Selecting a good value for <span class="math inline">\(\lambda\)</span> is critical; cross-validation is used for this.</p></li>
+<li><p>Selecting a good value for <span class="math inline">\(\lambda\)</span> is critical. Cross-validation can be used for this.</p></li>
 </ul>
 <div id="fig-ridge-credit" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p align="center">
-<embed src="ISL_fig_6_4.pdf" width="500" height="300">
+<embed src="ISL_fig_6_4.pdf" width="600" height="350">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;2: Ridge solution path for the <code>Credit</code> data.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3: Ridge solution path for the <code>Credit</code> data.</figcaption><p></p>
 </figure>
 </div>
 <ul>
@@ -895,16 +903,16 @@ C_p = \frac{1}{n} (\text{RSS} + 2d \hat{\sigma}^2),
 <div id="fig-ridge-bias-variance-tradeoff" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p align="center">
-<embed src="ISL_fig_6_5.pdf" width="500" height="300">
+<embed src="ISL_fig_6_5.pdf" width="600" height="350">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;3: Simulated data with <span class="math inline">\(n = 50\)</span> observations, <span class="math inline">\(p = 45\)</span> predictors, all having nonzero coefficients. Squared bias (black), variance (green), and test mean squared error (purple) for the ridge regression predictions on a simulated data set, as a function of <span class="math inline">\(\lambda\)</span> and <span class="math inline">\(\|\hat{\beta}_{\lambda}^R\|_2 / \|\hat{\beta}\|_2\)</span>. The horizontal dashed lines indicate the minimum possible MSE. The purple crosses indicate the ridge regression models for which the MSE is smallest.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;4: Simulated data with <span class="math inline">\(n = 50\)</span> observations, <span class="math inline">\(p = 45\)</span> predictors, all having nonzero coefficients. Squared bias (black), variance (green), and test mean squared error (purple) for the ridge regression predictions on a simulated data set, as a function of <span class="math inline">\(\lambda\)</span> and <span class="math inline">\(\|\hat{\beta}_{\lambda}^R\|_2 / \|\hat{\beta}\|_2\)</span>. The horizontal dashed lines indicate the minimum possible MSE. The purple crosses indicate the ridge regression models for which the test MSE is smallest.</figcaption><p></p>
 </figure>
 </div>
 </section>
 <section id="lasso" class="level3" data-number="5.2">
 <h3 data-number="5.2" class="anchored" data-anchor-id="lasso"><span class="header-section-number">5.2</span> Lasso</h3>
 <ul>
-<li><p>Ridge regression does have one obvious disadvantage: unlike subset selection, which will generally select models that involve just a subset of the variables, ridge regression will include all <span class="math inline">\(p\)</span> predictors in the final model.</p></li>
+<li><p>Ridge regression does have one obvious disadvantage: unlike subset selections, which will generally select models that involve just a subset of the variables, ridge regression will include all <span class="math inline">\(p\)</span> predictors in the final model.</p></li>
 <li><p><strong>Lasso</strong> is a relatively recent alternative to ridge regression that overcomes this disadvantage. The lasso coefficients, <span class="math inline">\(\hat{\beta}_\lambda^L\)</span>, minimize the quantity <span class="math display">\[
 \text{RSS} + \lambda \sum_{j=1}^p |\beta_j|.
 \]</span></p></li>
@@ -913,49 +921,57 @@ C_p = \frac{1}{n} (\text{RSS} + 2d \hat{\sigma}^2),
 <li><p>However, in the case of the lasso, the <span class="math inline">\(\ell_1\)</span> penalty has the effect of forcing some of the coefficient estimates to be exactly equal to zero when the tuning parameter <span class="math inline">\(\lambda\)</span> is sufficiently large.</p></li>
 <li><p>Hence, much like best subset selection, the lasso performs <strong>variable selection</strong>.</p></li>
 <li><p>We say that the lasso yields <strong>sparse</strong> models. The models involve only a subset of the variables.</p></li>
-<li><p>As in ridge regression, selecting a good value of <span class="math inline">\(\lambda\)</span> for the lasso is critical; cross-validation is again the method of choice.</p></li>
+<li><p>As in ridge regression, selecting a good value of <span class="math inline">\(\lambda\)</span> for the lasso is critical. Cross-validation is again the method of choice.</p></li>
 </ul>
 <div id="fig-lasso-credit" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p align="center">
-<embed src="ISL_fig_6_6.pdf" width="500" height="300">
+<embed src="ISL_fig_6_6.pdf" width="600" height="350">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;4: Lasso solution path for the <code>Credit</code> data.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;5: Lasso solution path for the <code>Credit</code> data.</figcaption><p></p>
 </figure>
 </div>
 <ul>
 <li><p>Why is it that the lasso, unlike ridge regression, results in coefficient estimates that are exactly equal to zero?</p>
 <p>One can show that the lasso and ridge regression coefficient estimates solve the problems <span class="math display">\[
-\text{minimize } \text{RSS} \text{ subject to } \sum_{j=1}^p |\beta_j| \le s
+\text{minimize } \text{RSS} \quad \text{ subject to } \sum_{j=1}^p |\beta_j| \le s
 \]</span> and <span class="math display">\[
-\text{minimize } \text{RSS} \text{ subject to } \sum_{j=1}^p \beta_j^2 \le s
+\text{minimize } \text{RSS} \quad \text{ subject to } \sum_{j=1}^p \beta_j^2 \le s
 \]</span> respectively.</p></li>
 </ul>
 <div id="fig-ridge-lasso-contour" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p align="center">
-<embed src="ISL_fig_6_7.pdf" width="500" height="400">
+<embed src="ISL_fig_6_7.pdf" width="600" height="450">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;5: Contours of the error and constraint functions for the lasso (left) and ridge regression (right). The solid blue areas are the constraint regions, <span class="math inline">\(|\beta_1| + |\beta_2| \le s\)</span> and <span class="math inline">\(\beta_1^2 + \beta_2^2 \le s\)</span>, while the red ellipses are the contours of the RSS.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;6: Contours of the error and constraint functions for the lasso (left) and ridge regression (right). The solid blue areas are the constraint regions, <span class="math inline">\(|\beta_1| + |\beta_2| \le s\)</span> and <span class="math inline">\(\beta_1^2 + \beta_2^2 \le s\)</span>, while the red ellipses are the contours of the RSS.</figcaption><p></p>
 </figure>
 </div>
 </section>
 <section id="comparing-ridge-and-lasso" class="level3" data-number="5.3">
 <h3 data-number="5.3" class="anchored" data-anchor-id="comparing-ridge-and-lasso"><span class="header-section-number">5.3</span> Comparing ridge and lasso</h3>
+<ul>
+<li>Simulation example with <span class="math inline">\(n=50\)</span> and <span class="math inline">\(p=45\)</span>. All 45 predictors are related to response.</li>
+</ul>
 <div id="fig-ridge-lasso-compare-1" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p align="center">
-<embed src="ISL_fig_6_8.pdf" width="500" height="300">
+<embed src="ISL_fig_6_8.pdf" width="600" height="350">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;6: Left: Plots of squared bias (black), variance (green), and test MSE (purple) for the lasso. Right: Comparison of squared bias, variance and test MSE between lasso (solid) and ridge (dashed). Both are plotted against their <span class="math inline">\(R^2\)</span> on the training data, as a common form of indexing. The crosses in both plots indicate the lasso model for which the MSE is smallest.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;7: Left: Plots of squared bias (black), variance (green), and test MSE (purple) for the lasso. Right: Comparison of squared bias, variance and test MSE between lasso (solid) and ridge (dashed). Both are plotted against their <span class="math inline">\(R^2\)</span> on the training data, as a common form of indexing. The crosses in both plots indicate the lasso model for which the MSE is smallest.</figcaption><p></p>
 </figure>
 </div>
+<ul>
+<li><ul>
+<li>Simulation example with <span class="math inline">\(n=50\)</span> and <span class="math inline">\(p=45\)</span>. Only 2 predictors are related to response.</li>
+</ul></li>
+</ul>
 <div id="fig-ridge-lasso-compare-2" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p align="center">
-<embed src="ISL_fig_6_9.pdf" width="500" height="300">
+<embed src="ISL_fig_6_9.pdf" width="600" height="350">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;7: Left: Plots of squared bias (black), variance (green), and test MSE (purple) for the lasso. The simulated data is similar, except that now only two predictors are related to the response. Right: Comparison of squared bias, variance and test MSE between lasso (solid) and ridge (dashed). Both are plotted against their <span class="math inline">\(R^2\)</span> on the training data, as a common form of indexing. The crosses in both plots indicate the lasso model for which the MSE is smallest.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;8: Left: Plots of squared bias (black), variance (green), and test MSE (purple) for the lasso. The simulated data is similar, except that now only two predictors are related to the response. Right: Comparison of squared bias, variance and test MSE between lasso (solid) and ridge (dashed). Both are plotted against their <span class="math inline">\(R^2\)</span> on the training data, as a common form of indexing. The crosses in both plots indicate the lasso model for which the MSE is smallest.</figcaption><p></p>
 </figure>
 </div>
 <ul>
@@ -977,9 +993,9 @@ C_p = \frac{1}{n} (\text{RSS} + 2d \hat{\sigma}^2),
 <div id="fig-ridge-lasso-credit" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p align="center">
-<embed src="ISL_fig_6_12.pdf" width="500" height="300">
+<embed src="ISL_fig_6_12.pdf" width="600" height="350">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;8: Credit data example.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;9: Left: Cross-validation errors that result from applying ridge regression to the <code>Credit</code> data set with various values of <span class="math inline">\(\lambda\)</span>. Right: The coefficient estimates as a function of <span class="math inline">\(\lambda\)</span>. The vertical dashed lines indicate the value of <span class="math inline">\(\lambda\)</span> selected by cross-validation.</figcaption><p></p>
 </figure>
 </div>
 </section>
@@ -1018,7 +1034,7 @@ y_i = \theta_0 + \sum_{m=1}^M \theta_m z_{im} + \epsilon_i, \quad i = 1,\ldots,n
 <p align="center">
 <embed src="ISL_fig_6_14.pdf" width="500" height="400">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;9: The population size (<code>pop</code>) and ad spending (<code>ad</code>) for 100 different cities are shown as purple circles. The green solid line indicates the first principal component, and the blue dashed line indicates the second principal component.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;10: The population size (<code>pop</code>) and ad spending (<code>ad</code>) for 100 different cities are shown as purple circles. The green solid line indicates the first principal component, and the blue dashed line indicates the second principal component.</figcaption><p></p>
 </figure>
 </div>
 <ul>
@@ -1026,16 +1042,16 @@ y_i = \theta_0 + \sum_{m=1}^M \theta_m z_{im} + \epsilon_i, \quad i = 1,\ldots,n
 Z_1 = 0.839 \times (\text{pop} - \bar{\text{pop}}) + 0.544 \times (\text{ad} - \bar{\text{ad}}).
 \]</span>
 <ul>
-<li><p>Out of all possible linear combination of <code>pop</code> and <code>ad</code> such that <span class="math inline">\(\phi_{11}^2 + \phi_{21}^2 = 1\)</span>, this particular combination yields the highest variance.</p></li>
+<li><p>Out of all possible linear combination of <code>pop</code> and <code>ad</code> such that <span class="math inline">\(\phi_{11}^2 + \phi_{21}^2 = 1\)</span> (why do we need this constraint?), this particular combination yields the highest variance.</p></li>
 <li><p>There is also another interpretation for PCA: the first principal component vector defines the line that is as close as possible to the data.</p></li>
 </ul></li>
 </ul>
 <div id="fig-advertising-pc-2" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p align="center">
-<embed src="ISL_fig_6_15.pdf" width="500" height="300">
+<embed src="ISL_fig_6_15.pdf" width="800" height="350">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;10: A subset of the advertising data. Left: The first principal component, chosen to minimize the sum of the squared perpendicular distances to each point, is shown in green. These distances are represented using the black dashed line segments. Right: The left-hand panel has been rotated so that the first principal component lies on the <span class="math inline">\(x\)</span>-axis.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;11: A subset of the advertising data. Left: The first principal component, chosen to minimize the sum of the squared perpendicular distances to each point, is shown in green. These distances are represented using the black dashed line segments. Right: The left-hand panel has been rotated so that the first principal component lies on the <span class="math inline">\(x\)</span>-axis.</figcaption><p></p>
 </figure>
 </div>
 <ul>
@@ -1046,7 +1062,7 @@ Z_1 = 0.839 \times (\text{pop} - \bar{\text{pop}}) + 0.544 \times (\text{ad} - \
 <p align="center">
 <embed src="ISL_fig_6_16.pdf" width="500" height="300">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;11: Plots of the first principal component scores <span class="math inline">\(z_{i1}\)</span> versus <code>pop</code> and <code>ad</code>. The relationships are strong.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;12: Plots of the first principal component scores <span class="math inline">\(z_{i1}\)</span> versus <code>pop</code> and <code>ad</code>. The relationships are strong.</figcaption><p></p>
 </figure>
 </div>
 <ul>
@@ -1059,7 +1075,7 @@ Z_2 = 0.544 \times (\text{pop} - \bar{\text{pop}}) - 0.839 \times (\text{ad} - \
 <p align="center">
 <embed src="ISL_fig_6_17.pdf" width="500" height="300">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;12: Plots of the second principal component scores <span class="math inline">\(z_{i2}\)</span> versus <code>pop</code> and <code>ad</code>. The relationships are weak.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;13: Plots of the second principal component scores <span class="math inline">\(z_{i2}\)</span> versus <code>pop</code> and <code>ad</code>. The relationships are weak.</figcaption><p></p>
 </figure>
 </div>
 <ul>
@@ -1070,7 +1086,7 @@ Z_2 = 0.544 \times (\text{pop} - \bar{\text{pop}}) - 0.839 \times (\text{ad} - \
 <p align="center">
 <embed src="ISL_fig_6_18.pdf" width="500" height="300">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;13: PCR was applied to two simulated data sets. The black, green, and purple lines correspond to squared bias, variance, and test mean squared error, respectively. Left: all 45 predictors are related to response. Right: Only 2 out of 45 predictors are related to response.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;14: PCR was applied to two simulated data sets. The black, green, and purple lines correspond to squared bias, variance, and test mean squared error, respectively. Left: all 45 predictors are related to response. Right: Only 2 out of 45 predictors are related to response.</figcaption><p></p>
 </figure>
 </div>
 <ul>
@@ -1081,7 +1097,7 @@ Z_2 = 0.544 \times (\text{pop} - \bar{\text{pop}}) - 0.839 \times (\text{ad} - \
 <p align="center">
 <embed src="ISL_fig_6_19.pdf" width="500" height="300">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;14: PCR, ridge regression, and the lasso were applied to a simulated data set in which the first five principal components of <span class="math inline">\(X\)</span> contain all the information about the response <span class="math inline">\(Y\)</span>. In each panel, the irreducible error <span class="math inline">\(\operatorname{Var}(\epsilon)\)</span> is shown as a horizontal dashed line. Left: Results for PCR. Right: Results for lasso (solid) and ridge regression (dotted). The <span class="math inline">\(x\)</span>-axis displays the shrinkage factor of the coefficient estimates, defined as the <span class="math inline">\(\ell_2\)</span> norm of the shrunken coefficient estimates divided by the <span class="math inline">\(\ell_2\)</span> norm of the least squares estimate.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;15: PCR, ridge regression, and the lasso were applied to a simulated data set in which the first five principal components of <span class="math inline">\(X\)</span> contain all the information about the response <span class="math inline">\(Y\)</span>. In each panel, the irreducible error <span class="math inline">\(\operatorname{Var}(\epsilon)\)</span> is shown as a horizontal dashed line. Left: Results for PCR. Right: Results for lasso (solid) and ridge regression (dotted). The <span class="math inline">\(x\)</span>-axis displays the shrinkage factor of the coefficient estimates, defined as the <span class="math inline">\(\ell_2\)</span> norm of the shrunken coefficient estimates divided by the <span class="math inline">\(\ell_2\)</span> norm of the least squares estimate.</figcaption><p></p>
 </figure>
 </div>
 <ul>
@@ -1092,7 +1108,7 @@ Z_2 = 0.544 \times (\text{pop} - \bar{\text{pop}}) - 0.839 \times (\text{ad} - \
 <p align="center">
 <embed src="ISL_fig_6_20.pdf" width="500" height="300">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;15: PCR was applied to the <code>Credit</code> data.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;16: PCR was applied to the <code>Credit</code> data.</figcaption><p></p>
 </figure>
 </div>
 </section>
@@ -1103,15 +1119,15 @@ Z_2 = 0.544 \times (\text{pop} - \bar{\text{pop}}) - 0.839 \times (\text{ad} - \
 <li><p>These directions are identified in an <strong>unsupervised way</strong>, since the response <span class="math inline">\(Y\)</span> is not used to help determine the principal component directions.</p></li>
 <li><p>That is, the response does not <strong>supervise</strong> the identification of the principal components.</p></li>
 <li><p>Consequently, PCR suffers from a potentially serious drawback: there is no guarantee that the directions that best explain the predictors will also be the best directions to use for predicting the response.</p></li>
-<li><p>Like PCR, partial least squares (PLS)s is a dimension reduction method, which first identifies a new set of features <span class="math inline">\(Z_1, \ldots, Z_M\)</span> that are linear combinations of the original features, and then fits a linear model via OLS using these <span class="math inline">\(M\)</span> new features.</p></li>
+<li><p>Like PCR, partial least squares (PLS) is a dimension reduction method, which first identifies a new set of features <span class="math inline">\(Z_1, \ldots, Z_M\)</span> that are linear combinations of the original features, and then fits a linear model via OLS using these <span class="math inline">\(M\)</span> new features.</p></li>
 <li><p>But unlike PCR, PLS identifies these new features in a supervised way. That is it makes use of the response <span class="math inline">\(Y\)</span> in order to identify new features that not only approximate the old features well, but also that <strong>are related to the response</strong>.</p></li>
 <li><p>Roughly speaking, the PLS approach attempts to find directions that help explain both the response and the predictors.</p></li>
 <li><p>PLS algorithm:</p>
 <ul>
-<li><p>After standardizing the p predictors, PLS computes the first direction <span class="math inline">\(Z_1\)</span> by setting each <span class="math inline">\(\phi_{1j}\)</span> in <a href="#eq-dimred-zs">Equation&nbsp;1</a> equal to the coefficient from the simple linear regression of <span class="math inline">\(Y\)</span> onto <span class="math inline">\(X_j\)</span>.</p></li>
+<li><p>After standardizing the <span class="math inline">\(p\)</span> predictors, PLS computes the first direction <span class="math inline">\(Z_1\)</span> by setting each <span class="math inline">\(\phi_{1j}\)</span> in <a href="#eq-dimred-zs">Equation&nbsp;1</a> equal to the coefficient from the simple linear regression of <span class="math inline">\(Y\)</span> onto <span class="math inline">\(X_j\)</span>.</p></li>
 <li><p>One can show that this coefficient is proportional to the correlation between <span class="math inline">\(Y\)</span> and <span class="math inline">\(X_j\)</span>.</p></li>
 <li><p>Hence, in computing <span class="math inline">\(Z_1 = \sum_{j=1}^p \phi_{1j} X_j\)</span>, PLS places the highest weight on the variables that are most strongly related to the response.</p></li>
-<li><p>Subsequent directions are found by taking residuals and then repeating the above prescription.</p></li>
+<li><p>Subsequent directions are found by taking residuals and then repeating the above procedure.</p></li>
 </ul></li>
 </ul>
 </section>
