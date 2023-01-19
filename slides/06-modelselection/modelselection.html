@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Dr.&nbsp;Hua Zhou @ UCLA">
+<meta name="dcterms.date" content="2023-01-18">
+
+<title>Linear Model Selection and Regularization (ISL 6)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="modelselection_files/libs/clipboard/clipboard.min.js"></script>
+<script src="modelselection_files/libs/quarto-html/quarto.js"></script>
+<script src="modelselection_files/libs/quarto-html/popper.min.js"></script>
+<script src="modelselection_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="modelselection_files/libs/quarto-html/anchor.min.js"></script>
+<link href="modelselection_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="modelselection_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="modelselection_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="modelselection_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="modelselection_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview"><span class="toc-section-number">1</span>  Overview</a></li>
+  <li><a href="#credit-data-set" id="toc-credit-data-set" class="nav-link" data-scroll-target="#credit-data-set"><span class="toc-section-number">2</span>  <code>Credit</code> data set</a></li>
+  <li><a href="#subset-selection" id="toc-subset-selection" class="nav-link" data-scroll-target="#subset-selection"><span class="toc-section-number">3</span>  Subset selection</a>
+  <ul>
+  <li><a href="#best-subset-selection" id="toc-best-subset-selection" class="nav-link" data-scroll-target="#best-subset-selection"><span class="toc-section-number">3.1</span>  Best subset selection</a></li>
+  <li><a href="#forward-stepwise-selection" id="toc-forward-stepwise-selection" class="nav-link" data-scroll-target="#forward-stepwise-selection"><span class="toc-section-number">3.2</span>  Forward stepwise selection</a></li>
+  <li><a href="#backward-stepwise-regression" id="toc-backward-stepwise-regression" class="nav-link" data-scroll-target="#backward-stepwise-regression"><span class="toc-section-number">3.3</span>  Backward stepwise regression</a></li>
+  <li><a href="#criteria-for-model-selection" id="toc-criteria-for-model-selection" class="nav-link" data-scroll-target="#criteria-for-model-selection"><span class="toc-section-number">3.4</span>  Criteria for model selection</a></li>
+  </ul></li>
+  <li><a href="#shrinkage-methods" id="toc-shrinkage-methods" class="nav-link" data-scroll-target="#shrinkage-methods"><span class="toc-section-number">4</span>  Shrinkage methods</a>
+  <ul>
+  <li><a href="#ridge-regression" id="toc-ridge-regression" class="nav-link" data-scroll-target="#ridge-regression"><span class="toc-section-number">4.1</span>  Ridge regression</a></li>
+  <li><a href="#lasso" id="toc-lasso" class="nav-link" data-scroll-target="#lasso"><span class="toc-section-number">4.2</span>  Lasso</a></li>
+  <li><a href="#comparing-ridge-and-lasso" id="toc-comparing-ridge-and-lasso" class="nav-link" data-scroll-target="#comparing-ridge-and-lasso"><span class="toc-section-number">4.3</span>  Comparing ridge and lasso</a></li>
+  <li><a href="#selecting-the-tuning-parameter-for-ridge-regression-and-lasso" id="toc-selecting-the-tuning-parameter-for-ridge-regression-and-lasso" class="nav-link" data-scroll-target="#selecting-the-tuning-parameter-for-ridge-regression-and-lasso"><span class="toc-section-number">4.4</span>  Selecting the tuning parameter for ridge regression and lasso</a></li>
+  </ul></li>
+  <li><a href="#dimension-reduction-methods" id="toc-dimension-reduction-methods" class="nav-link" data-scroll-target="#dimension-reduction-methods"><span class="toc-section-number">5</span>  Dimension reduction methods</a>
+  <ul>
+  <li><a href="#principal-components-regression" id="toc-principal-components-regression" class="nav-link" data-scroll-target="#principal-components-regression"><span class="toc-section-number">5.1</span>  Principal components regression</a></li>
+  <li><a href="#partial-least-squares-pls" id="toc-partial-least-squares-pls" class="nav-link" data-scroll-target="#partial-least-squares-pls"><span class="toc-section-number">5.2</span>  Partial least squares (PLS)</a></li>
+  </ul></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="toc-section-number">6</span>  Summary</a></li>
+  </ul>
+</nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Linear Model Selection and Regularization (ISL 6)</h1>
+<p class="subtitle lead">Econ 425T</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Dr.&nbsp;Hua Zhou @ UCLA </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">January 18, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<p>Credit: This note heavily uses material from the books <a href="https://www.statlearning.com/"><em>An Introduction to Statistical Learning: with Applications in R</em></a> (ISL2) and <a href="https://hastie.su.domains/ElemStatLearn/"><em>Elements of Statistical Learning: Data Mining, Inference, and Prediction</em></a> (ESL2).</p>
+<p>Display system information for reproducibility.</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Julia</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> IPython</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(IPython.sys_info())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{'commit_hash': 'add5877a4',
+ 'commit_source': 'installation',
+ 'default_encoding': 'utf-8',
+ 'ipython_path': '/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/IPython',
+ 'ipython_version': '8.8.0',
+ 'os_name': 'posix',
+ 'platform': 'macOS-10.16-x86_64-i386-64bit',
+ 'sys_executable': '/Library/Frameworks/Python.framework/Versions/3.10/bin/python3',
+ 'sys_platform': 'darwin',
+ 'sys_version': '3.10.9 (v3.10.9:1dd9be6584, Dec  6 2022, 14:37:36) [Clang '
+                '13.0.0 (clang-1300.0.29.30)]'}</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>R version 4.2.2 (2022-10-31)
+Platform: x86_64-apple-darwin17.0 (64-bit)
+Running under: macOS Big Sur ... 10.16
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.9        here_1.0.1        lattice_0.20-45   png_0.1-8        
+ [5] rprojroot_2.0.3   digest_0.6.30     grid_4.2.2        lifecycle_1.0.3  
+ [9] jsonlite_1.8.4    magrittr_2.0.3    evaluate_0.18     rlang_1.0.6      
+[13] stringi_1.7.8     cli_3.4.1         rstudioapi_0.14   Matrix_1.5-1     
+[17] reticulate_1.26   vctrs_0.5.1       rmarkdown_2.18    tools_4.2.2      
+[21] stringr_1.5.0     glue_1.6.2        htmlwidgets_1.6.0 xfun_0.35        
+[25] yaml_2.3.6        fastmap_1.1.0     compiler_4.2.2    htmltools_0.5.4  
+[29] knitr_1.41       </code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">using</span> <span class="bu">InteractiveUtils</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">versioninfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+<section id="overview" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="overview"><span class="header-section-number">1</span> Overview</h2>
+<ul>
+<li><p>In linear regression (ISL 3), we assume <span class="math display">\[
+Y = \beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p.
+\]</span></p></li>
+<li><p>In this lecture, we discuss some ways in which the simple linear model can be improved, by replacing ordinary least squares fitting with some alternative fitting procedures.</p></li>
+<li><p>Why consider alternatives to least squares?</p>
+<ul>
+<li><p><strong>Prediction accuracy</strong>: especially when <span class="math inline">\(p &gt; n\)</span>, to control the variance.</p></li>
+<li><p><strong>Model Interpretability</strong>: By removing irrelevant features - that is, by setting the corresponding coefficient estimates to zero - we can obtain a model that is more easily interpreted. We will present some approaches for automatically performing <strong>feature selection</strong>.</p></li>
+</ul></li>
+<li><p>Three classes of methods:</p>
+<ul>
+<li><p><strong>Subset selection</strong>: We identify a subset of the <span class="math inline">\(p\)</span> predictors that we believe to be related to the response. We then fit a model using least squares on the reduced set of variables.</p></li>
+<li><p><strong>Shrinkage</strong>: We fit a model involving all <span class="math inline">\(p\)</span> predictors, but the estimated coefficients are shrunken towards zero relative to the least squares estimates. This shrinkage (also known as <strong>regularization</strong>) has the effect of reducing variance and can also perform variable selection.</p></li>
+<li><p><strong>Dimension reduction</strong>: We project the <span class="math inline">\(p\)</span> predictors into a <span class="math inline">\(M\)</span>-dimensional subspace, where <span class="math inline">\(M &lt; p\)</span>. This is achieved by computing <span class="math inline">\(M\)</span> different <strong>linear combinations</strong>, or <strong>projections</strong>, of the variables. Then these <span class="math inline">\(M\)</span> projections are used as predictors to fit a linear regression model by least squares.</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="credit-data-set" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="credit-data-set"><span class="header-section-number">2</span> <code>Credit</code> data set</h2>
+<p>We will use the <code>Credit</code> data set as a running example. A documentation of this data set is at <a href="https://www.rdocumentation.org/packages/ISLR2/versions/1.3-2/topics/Credit">here</a>.</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Julia</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the pandas library</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Load numpy for array manipulation</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Load seaborn plotting library</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Set font sizes in plots</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>sns.<span class="bu">set</span>(font_scale <span class="op">=</span> <span class="dv">2</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Display all columns</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">'display.max_columns'</span>, <span class="va">None</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Import Advertising data</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>Credit <span class="op">=</span> pd.read_csv(<span class="st">"../data/Credit.csv"</span>)</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>Credit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      Income  Limit  Rating  Cards  Age  Education  Own Student Married  \
+0     14.891   3606     283      2   34         11   No      No     Yes   
+1    106.025   6645     483      3   82         15  Yes     Yes     Yes   
+2    104.593   7075     514      4   71         11   No      No      No   
+3    148.924   9504     681      3   36         11  Yes      No      No   
+4     55.882   4897     357      2   68         16   No      No     Yes   
+..       ...    ...     ...    ...  ...        ...  ...     ...     ...   
+395   12.096   4100     307      3   32         13   No      No     Yes   
+396   13.364   3838     296      5   65         17   No      No      No   
+397   57.872   4171     321      5   67         12  Yes      No     Yes   
+398   37.728   2525     192      1   44         13   No      No     Yes   
+399   18.701   5524     415      5   64          7  Yes      No      No   
+
+    Region  Balance  
+0    South      333  
+1     West      903  
+2     West      580  
+3     West      964  
+4    South      331  
+..     ...      ...  
+395  South      560  
+396   East      480  
+397  South      138  
+398  South        0  
+399   West      966  
+
+[400 rows x 11 columns]</code></pre>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Numerical summary</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>Credit.describe()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           Income         Limit      Rating       Cards         Age  \
+count  400.000000    400.000000  400.000000  400.000000  400.000000   
+mean    45.218885   4735.600000  354.940000    2.957500   55.667500   
+std     35.244273   2308.198848  154.724143    1.371275   17.249807   
+min     10.354000    855.000000   93.000000    1.000000   23.000000   
+25%     21.007250   3088.000000  247.250000    2.000000   41.750000   
+50%     33.115500   4622.500000  344.000000    3.000000   56.000000   
+75%     57.470750   5872.750000  437.250000    4.000000   70.000000   
+max    186.634000  13913.000000  982.000000    9.000000   98.000000   
+
+        Education      Balance  
+count  400.000000   400.000000  
+mean    13.450000   520.015000  
+std      3.125207   459.758877  
+min      5.000000     0.000000  
+25%     11.000000    68.750000  
+50%     14.000000   459.500000  
+75%     16.000000   863.000000  
+max     20.000000  1999.000000  </code></pre>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Graphical summary</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>sns.pairplot(data <span class="op">=</span> Credit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="modelselection_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="851"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(GGally) <span class="co"># ggpairs function</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ISLR2)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Cast to tibble</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>Credit <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(Credit) <span class="sc">%&gt;%</span> <span class="fu">print</span>(<span class="at">width =</span> <span class="cn">Inf</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 400 × 11
+   Income Limit Rating Cards   Age Education Own   Student Married Region
+    &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt; &lt;fct&gt;   &lt;fct&gt;   &lt;fct&gt; 
+ 1   14.9  3606    283     2    34        11 No    No      Yes     South 
+ 2  106.   6645    483     3    82        15 Yes   Yes     Yes     West  
+ 3  105.   7075    514     4    71        11 No    No      No      West  
+ 4  149.   9504    681     3    36        11 Yes   No      No      West  
+ 5   55.9  4897    357     2    68        16 No    No      Yes     South 
+ 6   80.2  8047    569     4    77        10 No    No      No      South 
+ 7   21.0  3388    259     2    37        12 Yes   No      No      East  
+ 8   71.4  7114    512     2    87         9 No    No      No      West  
+ 9   15.1  3300    266     5    66        13 Yes   No      No      South 
+10   71.1  6819    491     3    41        19 Yes   Yes     Yes     East  
+   Balance
+     &lt;dbl&gt;
+ 1     333
+ 2     903
+ 3     580
+ 4     964
+ 5     331
+ 6    1151
+ 7     203
+ 8     872
+ 9     279
+10    1350
+# … with 390 more rows</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Numerical summary</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(Credit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     Income           Limit           Rating          Cards      
+ Min.   : 10.35   Min.   :  855   Min.   : 93.0   Min.   :1.000  
+ 1st Qu.: 21.01   1st Qu.: 3088   1st Qu.:247.2   1st Qu.:2.000  
+ Median : 33.12   Median : 4622   Median :344.0   Median :3.000  
+ Mean   : 45.22   Mean   : 4736   Mean   :354.9   Mean   :2.958  
+ 3rd Qu.: 57.47   3rd Qu.: 5873   3rd Qu.:437.2   3rd Qu.:4.000  
+ Max.   :186.63   Max.   :13913   Max.   :982.0   Max.   :9.000  
+      Age          Education      Own      Student   Married     Region   
+ Min.   :23.00   Min.   : 5.00   No :193   No :360   No :155   East : 99  
+ 1st Qu.:41.75   1st Qu.:11.00   Yes:207   Yes: 40   Yes:245   South:199  
+ Median :56.00   Median :14.00                                 West :102  
+ Mean   :55.67   Mean   :13.45                                            
+ 3rd Qu.:70.00   3rd Qu.:16.00                                            
+ Max.   :98.00   Max.   :20.00                                            
+    Balance       
+ Min.   :   0.00  
+ 1st Qu.:  68.75  
+ Median : 459.50  
+ Mean   : 520.01  
+ 3rd Qu.: 863.00  
+ Max.   :1999.00  </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Graphical summary</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggpairs</span>(</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> Credit, </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">alpha =</span> <span class="fl">0.25</span>), </span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">lower =</span> <span class="fu">list</span>(<span class="at">continuous =</span> <span class="st">"smooth"</span>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Credit Data"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="modelselection_files/figure-html/unnamed-chunk-7-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+
+</div>
+</div>
+</div>
+</section>
+<section id="subset-selection" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="subset-selection"><span class="header-section-number">3</span> Subset selection</h2>
+<section id="best-subset-selection" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="best-subset-selection"><span class="header-section-number">3.1</span> Best subset selection</h3>
+<ul>
+<li><p><strong>Best subset selection</strong> algorithm:</p>
+<ol type="1">
+<li><p>Let <span class="math inline">\(\mathcal{M}_0\)</span> be the <strong>null model</strong>, which contains no predictors besides the intercept. This model simply predicts the sample mean for each observation.</p></li>
+<li><p>For <span class="math inline">\(k = 1,2, \ldots, p\)</span>:</p>
+<ol type="a">
+<li>Fit all <span class="math inline">\(\binom{p}{k}\)</span> models that contain exactly <span class="math inline">\(k\)</span> predictors.<br>
+</li>
+<li>Pick the best among these <span class="math inline">\(\binom{p}{k}\)</span> models, and call it <span class="math inline">\(\mathcal{M}_k\)</span>. Here <strong>best</strong> is defined as having the smallest RSS, or equivalently largest <span class="math inline">\(R^2\)</span>.</li>
+</ol></li>
+<li><p>Select a single best model from among <span class="math inline">\(\mathcal{M}_0, \ldots, \mathcal{M}_p\)</span> using cross-validated prediction error, <span class="math inline">\(C_p\)</span> (AIC), BIC, or adjusted <span class="math inline">\(R^2\)</span>.</p></li>
+</ol></li>
+<li><p>Best subset selection for the <code>Credit</code> data.</p></li>
+</ul>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<p>I don’t know of good Python package for best subset regression. Please see the R code.</p>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(leaps)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit best subset regression</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>bs_mod <span class="ot">&lt;-</span> <span class="fu">regsubsets</span>(</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  Balance <span class="sc">~</span> ., </span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> Credit, </span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"exhaustive"</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">nvmax =</span> <span class="dv">11</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>bs_mod</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Subset selection object
+Call: regsubsets.formula(Balance ~ ., data = Credit, method = "exhaustive", 
+    nvmax = 11)
+11 Variables  (and intercept)
+            Forced in Forced out
+Income          FALSE      FALSE
+Limit           FALSE      FALSE
+Rating          FALSE      FALSE
+Cards           FALSE      FALSE
+Age             FALSE      FALSE
+Education       FALSE      FALSE
+OwnYes          FALSE      FALSE
+StudentYes      FALSE      FALSE
+MarriedYes      FALSE      FALSE
+RegionSouth     FALSE      FALSE
+RegionWest      FALSE      FALSE
+1 subsets of each size up to 11
+Selection Algorithm: exhaustive
+          Income Limit Rating Cards Age Education OwnYes StudentYes MarriedYes
+1  ( 1 )  " "    " "   "*"    " "   " " " "       " "    " "        " "       
+2  ( 1 )  "*"    " "   "*"    " "   " " " "       " "    " "        " "       
+3  ( 1 )  "*"    " "   "*"    " "   " " " "       " "    "*"        " "       
+4  ( 1 )  "*"    "*"   " "    "*"   " " " "       " "    "*"        " "       
+5  ( 1 )  "*"    "*"   "*"    "*"   " " " "       " "    "*"        " "       
+6  ( 1 )  "*"    "*"   "*"    "*"   "*" " "       " "    "*"        " "       
+7  ( 1 )  "*"    "*"   "*"    "*"   "*" " "       "*"    "*"        " "       
+8  ( 1 )  "*"    "*"   "*"    "*"   "*" " "       "*"    "*"        " "       
+9  ( 1 )  "*"    "*"   "*"    "*"   "*" " "       "*"    "*"        "*"       
+10  ( 1 ) "*"    "*"   "*"    "*"   "*" " "       "*"    "*"        "*"       
+11  ( 1 ) "*"    "*"   "*"    "*"   "*" "*"       "*"    "*"        "*"       
+          RegionSouth RegionWest
+1  ( 1 )  " "         " "       
+2  ( 1 )  " "         " "       
+3  ( 1 )  " "         " "       
+4  ( 1 )  " "         " "       
+5  ( 1 )  " "         " "       
+6  ( 1 )  " "         " "       
+7  ( 1 )  " "         " "       
+8  ( 1 )  " "         "*"       
+9  ( 1 )  " "         "*"       
+10  ( 1 ) "*"         "*"       
+11  ( 1 ) "*"         "*"       </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Display selection criteria</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>bs_result <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">K =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">11</span>, </span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">R2 =</span> bs_mod<span class="sc">$</span>rsq,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">adjR2 =</span> bs_mod<span class="sc">$</span>adjr2,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">BIC =</span> bs_mod<span class="sc">$</span>bic,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">CP =</span> bs_mod<span class="sc">$</span>cp</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> <span class="fu">print</span>(<span class="at">width =</span> <span class="cn">Inf</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 11 × 5
+       K    R2 adjR2    BIC      CP
+   &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
+ 1     1 0.746 0.745  -536. 1800.  
+ 2     2 0.875 0.874  -814.  685.  
+ 3     3 0.950 0.949 -1173.   41.1 
+ 4     4 0.954 0.953 -1198.   11.1 
+ 5     5 0.954 0.954 -1197.    8.13
+ 6     6 0.955 0.954 -1196.    5.57
+ 7     7 0.955 0.954 -1191.    6.46
+ 8     8 0.955 0.954 -1186.    7.85
+ 9     9 0.955 0.954 -1180.    9.19
+10    10 0.955 0.954 -1175.   10.5 
+11    11 0.955 0.954 -1169.   12.0 </code></pre>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>cols <span class="ot">&lt;-</span> <span class="fu">names</span>(bs_result)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">5</span>) {</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  (bs_result <span class="sc">%&gt;%</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(K, <span class="sc">!!</span><span class="fu">sym</span>(cols[j])) <span class="sc">%&gt;%</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> K, <span class="at">y =</span> <span class="sc">!!</span><span class="fu">sym</span>(cols[j]))) <span class="sc">+</span> </span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">'Model Size'</span>, <span class="at">y =</span> cols[j])) <span class="sc">%&gt;%</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>()</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="modelselection_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="modelselection_files/figure-html/unnamed-chunk-9-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="modelselection_files/figure-html/unnamed-chunk-9-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="modelselection_files/figure-html/unnamed-chunk-9-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<ul>
+<li><p>Adjusted <span class="math inline">\(R^2\)</span> chooses the best model of size 7.</p>
+<p><span class="math inline">\(C_p\)</span> (and AIC) chooses the best model of size 6.</p>
+<p>BIC chooses the best model of size 4.</p></li>
+<li><p>Although we have presented best subset selection here for least squares regression, the same ideas apply to other types of models, such as logistic regression.</p></li>
+<li><p>The deviance (negative two times the maximized log-likelihood) plays the role of RSS for a broader class of models.</p></li>
+<li><p>For computational reasons, best subset selection cannot be applied with very large <span class="math inline">\(p\)</span>.</p></li>
+<li><p>Best subset selection may also suffer from statistical problems when <span class="math inline">\(p\)</span> is large: larger the search space, the higher the chance of finding models that look good on the training data, even though they might not have any predictive power on future data.</p></li>
+<li><p>Thus an enormous search space can lead to overfitting and high variance of the coefficient estimates.</p></li>
+<li><p>For both of these reasons, stepwise methods, which explore a far more restricted set of models, are attractive alternatives to best subset selection.</p></li>
+</ul>
+</section>
+<section id="forward-stepwise-selection" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="forward-stepwise-selection"><span class="header-section-number">3.2</span> Forward stepwise selection</h3>
+<ul>
+<li><p>Forward stepwise selection begins with a model containing no predictors, and then adds predictors to the model, one-at-a-time, until all of the predictors are in the model.</p></li>
+<li><p>In particular, at each step the variable that gives the greatest additional improvement to the fit is added to the model.</p></li>
+<li><ul>
+<li><p><strong>Forward stepwise selection</strong> algorithm:</p>
+<ol type="1">
+<li><p>Let <span class="math inline">\(\mathcal{M}_0\)</span> be the <strong>null model</strong>, which contains no predictors besides the intercept.</p></li>
+<li><p>For <span class="math inline">\(k = 0,1,\ldots, p-1\)</span>:</p>
+<ol type="a">
+<li>Consider all <span class="math inline">\(p-k\)</span> models that augment the predictors in <span class="math inline">\(\mathcal{M}_k\)</span> with one additional predictor.<br>
+</li>
+<li>Pick the best among these <span class="math inline">\(p-k\)</span> models, and call it <span class="math inline">\(\mathcal{M}_{k+1}\)</span>. Here <strong>best</strong> is defined as having the smallest RSS, or equivalently largest <span class="math inline">\(R^2\)</span>.</li>
+</ol></li>
+<li><p>Select a single best model from among <span class="math inline">\(\mathcal{M}_0, \ldots, \mathcal{M}_p\)</span> using cross-validated prediction error, <span class="math inline">\(C_p\)</span> (AIC), BIC, or adjusted <span class="math inline">\(R^2\)</span>.</p></li>
+</ol></li>
+</ul></li>
+<li><p>Forward stepwise selection for the <code>Credit</code> data.</p></li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(leaps)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit best subset regression</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>bs_mod <span class="ot">&lt;-</span> <span class="fu">regsubsets</span>(</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  Balance <span class="sc">~</span> ., </span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> Credit, </span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"forward"</span>,</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">nvmax =</span> <span class="dv">11</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>bs_mod</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Subset selection object
+Call: regsubsets.formula(Balance ~ ., data = Credit, method = "forward", 
+    nvmax = 11)
+11 Variables  (and intercept)
+            Forced in Forced out
+Income          FALSE      FALSE
+Limit           FALSE      FALSE
+Rating          FALSE      FALSE
+Cards           FALSE      FALSE
+Age             FALSE      FALSE
+Education       FALSE      FALSE
+OwnYes          FALSE      FALSE
+StudentYes      FALSE      FALSE
+MarriedYes      FALSE      FALSE
+RegionSouth     FALSE      FALSE
+RegionWest      FALSE      FALSE
+1 subsets of each size up to 11
+Selection Algorithm: forward
+          Income Limit Rating Cards Age Education OwnYes StudentYes MarriedYes
+1  ( 1 )  " "    " "   "*"    " "   " " " "       " "    " "        " "       
+2  ( 1 )  "*"    " "   "*"    " "   " " " "       " "    " "        " "       
+3  ( 1 )  "*"    " "   "*"    " "   " " " "       " "    "*"        " "       
+4  ( 1 )  "*"    "*"   "*"    " "   " " " "       " "    "*"        " "       
+5  ( 1 )  "*"    "*"   "*"    "*"   " " " "       " "    "*"        " "       
+6  ( 1 )  "*"    "*"   "*"    "*"   "*" " "       " "    "*"        " "       
+7  ( 1 )  "*"    "*"   "*"    "*"   "*" " "       "*"    "*"        " "       
+8  ( 1 )  "*"    "*"   "*"    "*"   "*" " "       "*"    "*"        " "       
+9  ( 1 )  "*"    "*"   "*"    "*"   "*" " "       "*"    "*"        "*"       
+10  ( 1 ) "*"    "*"   "*"    "*"   "*" " "       "*"    "*"        "*"       
+11  ( 1 ) "*"    "*"   "*"    "*"   "*" "*"       "*"    "*"        "*"       
+          RegionSouth RegionWest
+1  ( 1 )  " "         " "       
+2  ( 1 )  " "         " "       
+3  ( 1 )  " "         " "       
+4  ( 1 )  " "         " "       
+5  ( 1 )  " "         " "       
+6  ( 1 )  " "         " "       
+7  ( 1 )  " "         " "       
+8  ( 1 )  " "         "*"       
+9  ( 1 )  " "         "*"       
+10  ( 1 ) "*"         "*"       
+11  ( 1 ) "*"         "*"       </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Display selection criteria</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">K =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">11</span>, </span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">R2 =</span> bs_mod<span class="sc">$</span>rsq,</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">adjR2 =</span> bs_mod<span class="sc">$</span>adjr2,</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">BIC =</span> bs_mod<span class="sc">$</span>bic,</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">CP =</span> bs_mod<span class="sc">$</span>cp</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> <span class="fu">print</span>(<span class="at">width =</span> <span class="cn">Inf</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 11 × 5
+       K    R2 adjR2    BIC      CP
+   &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
+ 1     1 0.746 0.745  -536. 1800.  
+ 2     2 0.875 0.874  -814.  685.  
+ 3     3 0.950 0.949 -1173.   41.1 
+ 4     4 0.952 0.952 -1186.   23.2 
+ 5     5 0.954 0.954 -1197.    8.13
+ 6     6 0.955 0.954 -1196.    5.57
+ 7     7 0.955 0.954 -1191.    6.46
+ 8     8 0.955 0.954 -1186.    7.85
+ 9     9 0.955 0.954 -1180.    9.19
+10    10 0.955 0.954 -1175.   10.5 
+11    11 0.955 0.954 -1169.   12.0 </code></pre>
+</div>
+</div>
+<ul>
+<li><p>Best subset and forward stepwise selections start to differ from <span class="math inline">\(\mathcal{M}_4\)</span>.</p></li>
+<li><p>Computational advantage of forward stepwise selection over best subset selection is clear.</p></li>
+<li><p>It is not guaranteed to find the best possible model out of all <span class="math inline">\(2^p\)</span> models containing subsets of the <span class="math inline">\(p\)</span> predictors.</p></li>
+</ul>
+</section>
+<section id="backward-stepwise-regression" class="level3" data-number="3.3">
+<h3 data-number="3.3" class="anchored" data-anchor-id="backward-stepwise-regression"><span class="header-section-number">3.3</span> Backward stepwise regression</h3>
+<ul>
+<li><p><strong>Backward stepwise selection</strong> algorithm:</p>
+<ol type="1">
+<li><p>Let <span class="math inline">\(\mathcal{M}_0\)</span> be the <strong>full model</strong>, which contains all <span class="math inline">\(p\)</span> predictors.</p></li>
+<li><p>For <span class="math inline">\(k = p,p-1,\ldots, 1\)</span>:</p>
+<ol type="a">
+<li>Consider all <span class="math inline">\(k\)</span> models that contain all but one of the predictors in <span class="math inline">\(\mathcal{M}_k\)</span>, for a total of <span class="math inline">\(k-1\)</span> predictors.<br>
+</li>
+<li>Pick the best among these <span class="math inline">\(k\)</span> models, and call it <span class="math inline">\(\mathcal{M}_{k}\)</span>. Here <strong>best</strong> is defined as having the smallest RSS, or equivalently largest <span class="math inline">\(R^2\)</span>.</li>
+</ol></li>
+<li><p>Select a single best model from among <span class="math inline">\(\mathcal{M}_0, \ldots, \mathcal{M}_p\)</span> using cross-validated prediction error, <span class="math inline">\(C_p\)</span> (AIC), BIC, or adjusted <span class="math inline">\(R^2\)</span>.</p></li>
+</ol></li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(leaps)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit best subset regression</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>bs_mod <span class="ot">&lt;-</span> <span class="fu">regsubsets</span>(</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  Balance <span class="sc">~</span> ., </span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> Credit, </span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"backward"</span>,</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">nvmax =</span> <span class="dv">11</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> <span class="fu">summary</span>()</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>bs_mod</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Subset selection object
+Call: regsubsets.formula(Balance ~ ., data = Credit, method = "backward", 
+    nvmax = 11)
+11 Variables  (and intercept)
+            Forced in Forced out
+Income          FALSE      FALSE
+Limit           FALSE      FALSE
+Rating          FALSE      FALSE
+Cards           FALSE      FALSE
+Age             FALSE      FALSE
+Education       FALSE      FALSE
+OwnYes          FALSE      FALSE
+StudentYes      FALSE      FALSE
+MarriedYes      FALSE      FALSE
+RegionSouth     FALSE      FALSE
+RegionWest      FALSE      FALSE
+1 subsets of each size up to 11
+Selection Algorithm: backward
+          Income Limit Rating Cards Age Education OwnYes StudentYes MarriedYes
+1  ( 1 )  " "    "*"   " "    " "   " " " "       " "    " "        " "       
+2  ( 1 )  "*"    "*"   " "    " "   " " " "       " "    " "        " "       
+3  ( 1 )  "*"    "*"   " "    " "   " " " "       " "    "*"        " "       
+4  ( 1 )  "*"    "*"   " "    "*"   " " " "       " "    "*"        " "       
+5  ( 1 )  "*"    "*"   "*"    "*"   " " " "       " "    "*"        " "       
+6  ( 1 )  "*"    "*"   "*"    "*"   "*" " "       " "    "*"        " "       
+7  ( 1 )  "*"    "*"   "*"    "*"   "*" " "       "*"    "*"        " "       
+8  ( 1 )  "*"    "*"   "*"    "*"   "*" " "       "*"    "*"        " "       
+9  ( 1 )  "*"    "*"   "*"    "*"   "*" " "       "*"    "*"        "*"       
+10  ( 1 ) "*"    "*"   "*"    "*"   "*" " "       "*"    "*"        "*"       
+11  ( 1 ) "*"    "*"   "*"    "*"   "*" "*"       "*"    "*"        "*"       
+          RegionSouth RegionWest
+1  ( 1 )  " "         " "       
+2  ( 1 )  " "         " "       
+3  ( 1 )  " "         " "       
+4  ( 1 )  " "         " "       
+5  ( 1 )  " "         " "       
+6  ( 1 )  " "         " "       
+7  ( 1 )  " "         " "       
+8  ( 1 )  " "         "*"       
+9  ( 1 )  " "         "*"       
+10  ( 1 ) "*"         "*"       
+11  ( 1 ) "*"         "*"       </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Display selection criteria</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">K =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">11</span>, </span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">R2 =</span> bs_mod<span class="sc">$</span>rsq,</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">adjR2 =</span> bs_mod<span class="sc">$</span>adjr2,</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">BIC =</span> bs_mod<span class="sc">$</span>bic,</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">CP =</span> bs_mod<span class="sc">$</span>cp</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> <span class="fu">print</span>(<span class="at">width =</span> <span class="cn">Inf</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 11 × 5
+       K    R2 adjR2    BIC      CP
+   &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
+ 1     1 0.743 0.742  -531. 1829.  
+ 2     2 0.871 0.870  -802.  720.  
+ 3     3 0.949 0.948 -1165.   50.3 
+ 4     4 0.954 0.953 -1198.   11.1 
+ 5     5 0.954 0.954 -1197.    8.13
+ 6     6 0.955 0.954 -1196.    5.57
+ 7     7 0.955 0.954 -1191.    6.46
+ 8     8 0.955 0.954 -1186.    7.85
+ 9     9 0.955 0.954 -1180.    9.19
+10    10 0.955 0.954 -1175.   10.5 
+11    11 0.955 0.954 -1169.   12.0 </code></pre>
+</div>
+</div>
+<ul>
+<li><p>Like forward stepwise selection, the backward selection approach searches through only <span class="math inline">\(1 + p(p+1)/2\)</span> models, and so can be applied in settings where <span class="math inline">\(p\)</span> is too large to apply best subset selection.</p></li>
+<li><p>Like forward stepwise selection, backward stepwise selection is not guaranteed to yield the best model containing a subset of the <span class="math inline">\(p\)</span> predictors.</p></li>
+<li><p>Backward selection requires that the number of samples n is larger than the number of variables <span class="math inline">\(p\)</span> (so that the full model can be fit). In contrast, forward stepwise can be used even when <span class="math inline">\(n &lt; p\)</span>, and so is the only viable subset method when <span class="math inline">\(p\)</span> is very large.</p></li>
+</ul>
+</section>
+<section id="criteria-for-model-selection" class="level3" data-number="3.4">
+<h3 data-number="3.4" class="anchored" data-anchor-id="criteria-for-model-selection"><span class="header-section-number">3.4</span> Criteria for model selection</h3>
+<ul>
+<li><p>The model containing all of the predictors will always have the smallest RSS and the largest <span class="math inline">\(R^2\)</span>, since these quantities are related to the training error.</p></li>
+<li><p>We wish to choose a model with low test error, not a model with low training error. Recall that training error is usually a poor estimate of test error.</p></li>
+<li><p>Therefore, RSS and <span class="math inline">\(R^2\)</span> are not suitable for selecting the best model among a collection of models with different numbers of predictors.</p></li>
+<li><p>Two approaches for estimating test error:</p>
+<ul>
+<li><p>We can indirectly estimate test error by making an adjustment to the training error to account for the bias due to overfitting.</p></li>
+<li><p>We can directly estimate the test error, using either a validation set approach or a cross-validation approach, as discussed in next lectures.</p></li>
+</ul></li>
+<li><p>Indirect approaches.</p>
+<ul>
+<li><p>Mallow’s <span class="math inline">\(C_p\)</span>: <span class="math display">\[
+  C_p = \frac{1}{n} (\text{RSS} + 2d \hat{\sigma}^2),
+  \]</span> where <span class="math inline">\(d\)</span> is the total number of parameters used and <span class="math inline">\(\hat{\sigma}^2\)</span> is an estimate of the variance of error <span class="math inline">\(\epsilon\)</span>.</p></li>
+<li><p>The AIC criterion: <span class="math display">\[
+  \text{AIC} = -  2 \log L + 2d,
+  \]</span> where <span class="math inline">\(L\)</span> is the maximized value of the likelihood function for the estimated model.</p></li>
+<li><p>In the case of the linear model with Gaussian errors, maximum likelihood and least squares are the same thing, and <span class="math inline">\(C_p\)</span> and AIC are equivalent.</p></li>
+<li><p>BIC: <span class="math display">\[
+  \text{BIC} = \frac{1}{n}(\text{RSS} + \log(n) d \hat{\sigma}^2).
+  \]</span></p></li>
+<li><p>Since <span class="math inline">\(\log n &gt; 2\)</span> for any <span class="math inline">\(n &gt; 7\)</span>, the BIC statistic generally places a heavier penalty on models with many variables, and hence results in the selection of smaller models than <span class="math inline">\(C_p\)</span>.</p></li>
+<li><p>Adjusted <span class="math inline">\(R^2\)</span>: <span class="math display">\[
+  \text{Adjusted } R^2 = 1 - \frac{\text{RSS}/(n - d - 1)}{\text{TSS} / (n - 1)}.
+  \]</span> A large value of adjusted R2 indicates a model with a small test error.</p></li>
+<li><p>Maximizing the adjusted <span class="math inline">\(R^2\)</span> is equivalent to minimizing <span class="math inline">\(\text{RSS} / (n - d - 1)\)</span>.</p></li>
+</ul></li>
+</ul>
+<p align="center">
+<embed src="ISL_fig_6_2.pdf" width="500" height="300">
+</p>
+<ul>
+<li><p>Direct approaches: validation and cross-validation. We’ll discuss in details in the next lecture.</p>
+<ul>
+<li><p>This procedure has an advantage relative to AIC, BIC, <span class="math inline">\(C_p\)</span>, and adjusted <span class="math inline">\(R^2\)</span>, in that it provides a direct estimate of the test error, and <em>doesn’t require an estimate of the error variance <span class="math inline">\(\sigma^2\)</span></em>.</p></li>
+<li><p>It can also be used in a wider range of model selection tasks, even in cases where it is hard to pinpoint the model degrees of freedom (e.g.&nbsp;the number of predictors in the model) or hard to estimate the error variance <span class="math inline">\(\sigma^2\)</span>.</p></li>
+</ul></li>
+</ul>
+<p align="center">
+<embed src="ISL_fig_6_3.pdf" width="500" height="300">
+</p>
+</section>
+</section>
+<section id="shrinkage-methods" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="shrinkage-methods"><span class="header-section-number">4</span> Shrinkage methods</h2>
+<ul>
+<li><p>The subset selection methods use least squares to fit a linear model that contains a subset of the predictors.</p></li>
+<li><p>As an alternative, we can fit a model containing all <span class="math inline">\(p\)</span> predictors using a technique that <strong>constrains</strong> or <strong>regularizes</strong> the coefficient estimates, or equivalently, that shrinks the coefficient estimates towards zero.</p></li>
+<li><p>It may not be immediately obvious why such a constraint should improve the fit, but it turns out that shrinking the coefficient estimates can significantly reduce their variance.</p></li>
+</ul>
+<section id="ridge-regression" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="ridge-regression"><span class="header-section-number">4.1</span> Ridge regression</h3>
+<ul>
+<li><p>Recall that the least squares fitting procedure estimates <span class="math inline">\(\beta_0, \beta_1, \ldots, \beta_p\)</span> using the value that minimizes <span class="math display">\[
+\text{RSS} = \sum_{i=1}^n \left( y_i - \beta_0 - \sum_{j=1}^p \beta_j x_{ij} \right)^2.
+\]</span></p></li>
+<li><p>In contrast, the ridge regression coefficient estimates <span class="math inline">\(\hat{\beta}^R\)</span> are the values that minimize <span class="math display">\[
+\text{RSS} + \lambda \sum_{j=1}^p \beta_j^2,
+\]</span> where <span class="math inline">\(\lambda \ge 0\)</span> is a <strong>tuning parameter</strong>, to be determined separately.</p></li>
+<li><p>As with least squares, ridge regression seeks coefficient estimates that fit the data well, by making the RSS small.</p></li>
+<li><p>However, the second term, <span class="math inline">\(\lambda \sum_{j} \beta_j^2\)</span>, called a <strong>shrinkage penalty</strong>, is small when <span class="math inline">\(\beta_1, \ldots, \beta_p\)</span> are close to zero, and so it has the effect of <strong>shrinking</strong> the estimates of <span class="math inline">\(\beta_j\)</span> towards zero.</p></li>
+<li><p>The tuning parameter <span class="math inline">\(\lambda\)</span> serves to control the relative impact of these two terms on the regression coefficient estimates.</p></li>
+<li><p>Selecting a good value for <span class="math inline">\(\lambda\)</span> is critical; cross-validation is used for this.</p></li>
+</ul>
+<p align="center">
+<embed src="ISL_fig_6_4.pdf" width="500" height="300">
+</p>
+<ul>
+<li><p>The standard least squares coefficient estimates are <strong>scale equivariant</strong>: multiplying <span class="math inline">\(X_j\)</span> by a constant <span class="math inline">\(c\)</span> simply leads to a scaling of the least squares coefficient estimates by a factor of <span class="math inline">\(1/c\)</span>. In other words, regardless of how the <span class="math inline">\(j\)</span>th predictor is scaled, <span class="math inline">\(X_j \hat{\beta}_j\)</span> will remain the same.</p></li>
+<li><p>In contrast, the ridge regression coefficient estimates can change <strong>substantially</strong> when multiplying a given predictor by a constant, due to the sum of squared coefficients term in the penalty part of the ridge regression objective function.</p></li>
+<li><p>Therefore, it is best to apply ridge regression after <strong>standardizing</strong> the predictors, using the formula <span class="math display">\[
+\tilde{x}_{ij} = \frac{x_{ij}}{\sqrt{\frac{1}{n} \sum_{i=1}^n (x_{ij} - \bar{x}_j)^2}}.
+\]</span></p></li>
+<li><p>Why Does Ridge Regression Improve Over Least Squares? Answer: the bias-variance tradeoff.</p></li>
+</ul>
+<div id="fig-ridge-bias-variance-tradeoff" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<embed src="ISL_fig_6_5.pdf" width="500" height="300">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;1: Simulated data with <span class="math inline">\(n = 50\)</span> observations, <span class="math inline">\(p = 45\)</span> predictors, all having nonzero coefficients. Squared bias (black), variance (green), and test mean squared error (purple) for the ridge regression predictions on a simulated data set, as a function of <span class="math inline">\(\lambda\)</span> and <span class="math inline">\(\|\hat{\beta}_{\lambda}^R\| / \|\hat{\beta}\|_2\)</span>. The horizontal dashed lines indicate the minimum possible MSE. The purple crosses indicate the ridge regression models for which the MSE is smallest.</figcaption><p></p>
+</figure>
+</div>
+</section>
+<section id="lasso" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="lasso"><span class="header-section-number">4.2</span> Lasso</h3>
+<ul>
+<li><p>Ridge regression does have one obvious disadvantage: unlike subset selection, which will generally select models that involve just a subset of the variables, ridge regression will include all <span class="math inline">\(p\)</span> predictors in the final model.</p></li>
+<li><p><strong>Lasso</strong> is a relatively recent alternative to ridge regression that overcomes this disadvantage. The lasso coefficients, <span class="math inline">\(\hat{\beta}_\lambda^L\)</span>, minimize the quantity <span class="math display">\[
+\text{RSS} + \lambda \sum_{j=1}^p |\beta_j|.
+\]</span></p></li>
+<li><p>In statistical parlance, the lasso uses an <span class="math inline">\(\ell_1\)</span> (pronounced “ell 1”) penalty instead of an <span class="math inline">\(\ell_2\)</span> penalty. The <span class="math inline">\(\ell_1\)</span> norm of a coefficient vector <span class="math inline">\(\beta\)</span> is given by <span class="math inline">\(\|\beta\|_1 = \sum_j |\beta_j|\)</span>.</p></li>
+<li><p>As with ridge regression, the lasso shrinks the coecient estimates towards zero.</p></li>
+<li><p>However, in the case of the lasso, the <span class="math inline">\(\ell_1\)</span> penalty has the effect of forcing some of the coefficient estimates to be exactly equal to zero when the tuning parameter <span class="math inline">\(\lambda\)</span> is sufficiently large.</p></li>
+<li><p>Hence, much like best subset selection, the lasso performs <strong>variable selection</strong>.</p></li>
+<li><p>We say that the lasso yields <strong>sparse</strong> models. The models involve only a subset of the variables.</p></li>
+<li><p>As in ridge regression, selecting a good value of <span class="math inline">\(\lambda\)</span> for the lasso is critical; cross-validation is again the method of choice.</p></li>
+</ul>
+<p align="center">
+<embed src="ISL_fig_6_6.pdf" width="500" height="300">
+</p>
+<ul>
+<li>Why is it that the lasso, unlike ridge regression, results in coefficient estimates that are exactly equal to zero?</li>
+</ul>
+<p>One can show that the lasso and ridge regression coecient estimates solve the problems <span class="math display">\[
+\text{minimize } \text{RSS} \text{ subject to } \sum_{j=1}^p |\beta_j| \le s
+\]</span> and <span class="math display">\[
+\text{minimize } \text{RSS} \text{ subject to } \sum_{j=1}^p \beta_j^2 \le s
+\]</span> respectively.</p>
+<div id="fig-ridge-lasso-contour" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<embed src="ISL_fig_6_7.pdf" width="500" height="400">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;2: Contours of the error and constraint functions for the lasso (left) and ridge regression (right). The solid blue areas are the constraint regions, <span class="math inline">\(|\beta_1| + |\beta_2| \le s\)</span> and <span class="math inline">\(\beta_1^2 + \beta_2^2 \le s\)</span>, while the red ellipses are the contours of the RSS.</figcaption><p></p>
+</figure>
+</div>
+</section>
+<section id="comparing-ridge-and-lasso" class="level3" data-number="4.3">
+<h3 data-number="4.3" class="anchored" data-anchor-id="comparing-ridge-and-lasso"><span class="header-section-number">4.3</span> Comparing ridge and lasso</h3>
+<div id="fig-ridge-lasso-compare-1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<embed src="ISL_fig_6_8.pdf" width="500" height="300">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3: Left: Plots of squared bias (black), variance (green), and test MSE (purple) for the lasso. Right: Comparison of squared bias, variance and test MSE between lasso (solid) and ridge (dashed). Both are plotted against their <span class="math inline">\(R^2\)</span> on the training data, as a common form of indexing. The crosses in both plots indicate the lasso model for which the MSE is smallest.</figcaption><p></p>
+</figure>
+</div>
+<div id="fig-ridge-lasso-compare-2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<embed src="ISL_fig_6_8.pdf" width="500" height="300">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;4: Left: Plots of squared bias (black), variance (green), and test MSE (purple) for the lasso. The simulated data is similar, except that now only two predictors are related to the response. Right: Comparison of squared bias, variance and test MSE between lasso (solid) and ridge (dashed). Both are plotted against their <span class="math inline">\(R^2\)</span> on the training data, as a common form of indexing. The crosses in both plots indicate the lasso model for which the MSE is smallest.</figcaption><p></p>
+</figure>
+</div>
+<ul>
+<li><p>These two examples illustrate that neither ridge regression nor the lasso will universally dominate the other.</p></li>
+<li><p>In general, one might expect the lasso to perform better when the response is a function of only a relatively small number of predictors.</p></li>
+<li><p>However, the number of predictors that is related to the response is never known <em>a priori</em> for real data sets.</p></li>
+<li><p>A technique such as cross-validation can be used in order to determine which approach is better on a particular data set.</p></li>
+</ul>
+</section>
+<section id="selecting-the-tuning-parameter-for-ridge-regression-and-lasso" class="level3" data-number="4.4">
+<h3 data-number="4.4" class="anchored" data-anchor-id="selecting-the-tuning-parameter-for-ridge-regression-and-lasso"><span class="header-section-number">4.4</span> Selecting the tuning parameter for ridge regression and lasso</h3>
+<ul>
+<li><p>As for subset selection, for ridge regression and lasso we require a method to determine which of the models under consideration is best.</p></li>
+<li><p>That is, we require a method selecting a value for the tuning parameter <span class="math inline">\(\lambda\)</span> or equivalently, the value of the constraint <span class="math inline">\(s\)</span>.</p></li>
+<li><p><strong>Cross-validation</strong> provides a simple way to tackle this problem. We choose a grid of <span class="math inline">\(\lambda\)</span> values, and compute the cross-validation error rate for each value of <span class="math inline">\(\lambda\)</span>.</p></li>
+<li><p>We then select the tuning parameter value for which the cross-validation error is smallest.</p></li>
+<li><p>Finally, the model is re-fit using all of the available observations and the selected value of the tuning parameter.</p></li>
+</ul>
+<div id="fig-ridge-lasso-credit" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<embed src="ISL_fig_6_12.pdf" width="500" height="300">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;5: Credit data example.</figcaption><p></p>
+</figure>
+</div>
+</section>
+</section>
+<section id="dimension-reduction-methods" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="dimension-reduction-methods"><span class="header-section-number">5</span> Dimension reduction methods</h2>
+<ul>
+<li><p>The methods that we have discussed so far in this chapter have involved fitting linear regression models, via least squares or a shrunken approach, using the original predictors, <span class="math inline">\(X_1, X_2, \ldots, X_p\)</span>.</p></li>
+<li><p>We now explore a class of approaches that transform the predictors and then fit a least squares model using the <strong>transformed variables</strong>. We will refer to these techniques as <strong>dimension reduction</strong> methods.</p></li>
+<li><p>Let <span class="math inline">\(Z_1, Z_2, \ldots, Z_M\)</span> represent <span class="math inline">\(M &lt; p\)</span> <strong>linear combinations</strong> of our original <span class="math inline">\(p\)</span> predictors. That is <span id="eq-dimred-zs"><span class="math display">\[
+Z_m = \sum_{j=1}^p \phi_{mj} X_j
+\tag{1}\]</span></span> for some constants <span class="math inline">\(\phi_{m1}, \ldots, \phi_{mp}\)</span>.</p></li>
+<li><p>We can then fit the linear regression model, <span id="eq-dimred-model"><span class="math display">\[
+y_i = \theta_0 + \sum_{m=1}^M \theta_m z_{im} + \epsilon_i, \quad i = 1,\ldots,n,
+\tag{2}\]</span></span> using ordinary least squares. Here <span class="math inline">\(\theta_0, \theta_1, \ldots, \theta_M\)</span> are the regression coefficients.</p></li>
+<li><p>Notice that <span class="math display">\[
+\sum_{m=1}^M \theta_m z_{im} = \sum_{m=1}^M \theta_m \sum_{j=1}^p \phi_{mj} x_{ij} = \sum_{j=1}^p \sum_{m=1}^m \theta_m \phi_{mj} x_{ij} = \sum_{j=1}^p \beta_j x_{ij},
+\]</span> where <span class="math display">\[
+\beta_j = \sum_{m=1}^m \theta_m \phi_{mj}.
+\]</span> #{eq-dimred-constraint}</p></li>
+<li><p>Hence model <a href="#eq-dimred-model">Equation&nbsp;2</a> can be thought of as a special case of the original linear regression model.</p></li>
+<li><p>Dimension reduction serves to constrain the estimated <span class="math inline">\(\beta_j\)</span> coefficients, since now they must take the form <strong>?@eq-dimred-constraint</strong>.</p></li>
+<li><p>Can win in the bias-variance tradeoff.</p></li>
+</ul>
+<section id="principal-components-regression" class="level3" data-number="5.1">
+<h3 data-number="5.1" class="anchored" data-anchor-id="principal-components-regression"><span class="header-section-number">5.1</span> Principal components regression</h3>
+<ul>
+<li><p><strong>Principal components regression (PCR)</strong> applies principal components analysis (PCA) to define the linear combinations of the predictors, for use in our regression.</p></li>
+<li><p>The first principal component is that (normalized) linear combination of the variables with the largest variance.</p></li>
+<li><p>The second principal component has largest variance, subject to being uncorrelated with the first.</p></li>
+<li><p>And so on.</p></li>
+<li><p>Hence with many correlated original variables, we replace them with a small set of principal components that capture their joint variation.</p></li>
+</ul>
+<div id="fig-advertising-pc-1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<embed src="ISL_fig_6_14.pdf" width="500" height="400">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;6: The population size (<code>pop</code>) and ad spending (<code>ad</code>) for 100 different cities are shown as purple circles. The green solid line indicates the first principal component, and the blue dashed line indicates the second principal component.</figcaption><p></p>
+</figure>
+</div>
+<div id="fig-advertising-pc-2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<embed src="ISL_fig_6_15.pdf" width="500" height="300">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;7: A subset of the advertising data. Left: The first principal component, chosen to minimize the sum of the squared perpendicular distances to each point, is shown in green. These distances are represented using the black dashed line segments. Right: The left-hand panel has been rotated so that the first principal component lies on the <span class="math inline">\(x\)</span>-axis.</figcaption><p></p>
+</figure>
+</div>
+<div id="fig-advertising-pc-3" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<embed src="ISL_fig_6_16.pdf" width="500" height="300">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;8: Plots of the first principal component scores <span class="math inline">\(z_{i1}\)</span> versus <code>pop</code> and <code>ad</code>. The relationships are strong.</figcaption><p></p>
+</figure>
+</div>
+<div id="fig-advertising-pc-3" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<embed src="ISL_fig_6_17.pdf" width="500" height="300">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;9: Plots of the second principal component scores <span class="math inline">\(z_{i2}\)</span> versus <code>pop</code> and <code>ad</code>. The relationships are weak.</figcaption><p></p>
+</figure>
+</div>
+<div id="fig-sim-pcr" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<embed src="ISL_fig_6_18.pdf" width="500" height="300">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;10: PCR was applied to two simulated data sets. The black, green, and purple lines correspond to squared bias, variance, and test mean squared error, respectively.</figcaption><p></p>
+</figure>
+</div>
+<div id="fig-credit-pcr" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<embed src="ISL_fig_6_20.pdf" width="500" height="300">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;11: PCR was applied to the <code>Credit</code> data.</figcaption><p></p>
+</figure>
+</div>
+</section>
+<section id="partial-least-squares-pls" class="level3" data-number="5.2">
+<h3 data-number="5.2" class="anchored" data-anchor-id="partial-least-squares-pls"><span class="header-section-number">5.2</span> Partial least squares (PLS)</h3>
+<ul>
+<li><p>PCR identifies linear combinations, or <strong>directions</strong>, that best represent the predictors <span class="math inline">\(X_1, \ldots, X_p\)</span>.</p></li>
+<li><p>These directions are identified in an <strong>unsupervised way</strong>, since the response <span class="math inline">\(Y\)</span> is not used to help determine the principal component directions.</p></li>
+<li><p>That is, the response does not <strong>supervise</strong> the identification of the principal components.</p></li>
+<li><p>Consequently, PCR suffers from a potentially serious drawback: there is no guarantee that the directions that best explain the predictors will also be the best directions to use for predicting the response.</p></li>
+<li><p>Like PCR, partial least squares (PLS)s is a dimension reduction method, which first identifies a new set of features <span class="math inline">\(Z_1, \ldots, Z_M\)</span> that are linear combinations of the original features, and then fits a linear model via OLS using these <span class="math inline">\(M\)</span> new features.</p></li>
+<li><p>But unlike PCR, PLS identifies these new features in a supervised way. That is it makes use of the response <span class="math inline">\(Y\)</span> in order to identify new features that not only approximate the old features well, but also that <strong>are related to the response</strong>.</p></li>
+<li><p>Roughly speaking, the PLS approach attempts to find directions that help explain both the response and the predictors.</p></li>
+<li><p>PLS algorithm:</p>
+<ul>
+<li><p>After standardizing the p predictors, PLS computes the first direction <span class="math inline">\(Z_1\)</span> by setting each <span class="math inline">\(\phi_{1j}\)</span> in <a href="#eq-dimred-zs">Equation&nbsp;1</a> equal to the coefficient from the simple linear regression of <span class="math inline">\(Y\)</span> onto <span class="math inline">\(X_j\)</span>.</p></li>
+<li><p>One can show that this coefficient is proportional to the correlation between <span class="math inline">\(Y\)</span> and <span class="math inline">\(X_j\)</span>.</p></li>
+<li><p>Hence, in computing <span class="math inline">\(Z_1 = \sum_{j=1}^p \phi_{1j} X_j\)</span>, PLS places the highest weight on the variables that are most strongly related to the response.</p></li>
+<li><p>Subsequent directions are found by taking residuals and then repeating the above prescription.</p></li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section id="summary" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="summary"><span class="header-section-number">6</span> Summary</h2>
+<ul>
+<li><p>Model selection methods are an essential tool for data analysis, especially for big datasets involving many predictors.</p></li>
+<li><p>Research into methods that give <strong>sparsity</strong>, such as the lasso is an especially hot area.</p></li>
+<li><p>Later, we will return to sparsity in more detail, and will describe related approaches such as the <strong>elastic net</strong>.</p></li>
+</ul>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
