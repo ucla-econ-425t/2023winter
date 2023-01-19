@@ -1,6 +1,6 @@
 ---
 title: "Econ 425T Homework 1"
-subtitle: "Due Jan 20, 2023 @ 11:59PM"
+subtitle: "Due Jan 25, 2023 @ 11:59PM"
 author: "YOUR NAME and UID"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 format:
