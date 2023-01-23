@@ -14,7 +14,7 @@ Zoom link: <https://ucla.zoom.us/j/98083064607>
 Office hours will be on Zoom.  
 
 Slack channel: <https://uclaecon425t2-zqd6620.slack.com>  
-Invite link: <https://join.slack.com/t/slack-cwa8850/shared_invite/zt-1lbvkli06-9s1GlVvtL_kZYjx9sk6HqA>
+Invite link: <https://join.slack.com/t/uclaecon425t2-zqd6620/signup?x=x-p4492610974806-4499098090339-4680755103011>
 
 - ISL refers to the book _An Introduction to Statistical Learning: with Applications in R_ (2021, 2nd Edition). 
 
