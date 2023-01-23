@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Dr.&nbsp;Hua Zhou @ UCLA">
-<meta name="dcterms.date" content="2023-01-18">
+<meta name="dcterms.date" content="2023-01-22">
 
 <title>Resampling Methods (ISL 5)</title>
 <style>
@@ -150,7 +150,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 18, 2023</p>
+      <p class="date">January 22, 2023</p>
     </div>
   </div>
   
@@ -237,18 +237,18 @@ loaded via a namespace (and not attached):
 <li><p><strong>Test error</strong> is the average error that results from using a learning method to predict the response on a new observation, one that was not used in training the method.</p></li>
 <li><p><strong>Training error</strong> can be easily calculated by applying the statistical learning method to the observations used in its training.</p></li>
 <li><p>But the training error rate often is quite different from the test error rate, and in particular the former can dramatically underestimate the latter.</p></li>
-<li><p>HW Bonus question???</p></li>
+<li><p>HW2 Bonus question rigorously justifies that the training error is an under-estimate of the test error.</p></li>
 </ul>
 <p><img src="training_vs_test.png" class="img-fluid"></p>
 <ul>
 <li><p>Best solution: a large designated test set. Often not available.</p></li>
-<li><p>Some methods make a mathematical adjustment to the training error rate in order to estimate the test error rate. These include the Cp statistic, AIC and BIC. They are discussed elsewhere in this course.</p></li>
+<li><p>Some methods make a mathematical adjustment to the training error rate in order to estimate the test error rate. These include the <span class="math inline">\(C_p\)</span> statistic, AIC and BIC, which are discussed in Chapter 6.</p></li>
+<li><p>Here we instead consider a class of methods that estimate the test error by <strong>holding out</strong> a subset of the training observations from the fitting process, and then applying the learning method to those held out observations.</p></li>
 </ul>
 </section>
 <section id="validation-set-approach" class="level2" data-number="3">
 <h2 data-number="3" class="anchored" data-anchor-id="validation-set-approach"><span class="header-section-number">3</span> Validation-set approach</h2>
 <ul>
-<li><p>Here we instead consider a class of methods that estimate the test error by <em>holding out</em> a subset of the training observations from the fitting process, and then applying the learning method to those held out observations.</p></li>
 <li><p>Here we randomly divide the available set of samples into two parts: a <strong>training set</strong> and a <strong>validation</strong> or <strong>hold-out set</strong>.</p></li>
 <li><p>The model is fit on the training set, and the fitted model is used to predict the responses for the observations in the validation set.</p></li>
 <li><p>The resulting validation-set error provides an estimate of the test error. This is typically assessed using MSE in the case of a quantitative response and misclassification rate in the case of a qualitative (discrete) response.</p></li>
@@ -256,7 +256,7 @@ loaded via a namespace (and not attached):
 <div id="fig-validation-set" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p align="center">
-<embed src="ISL_fig_5_1.pdf" class="img-fluid" width="500">
+<embed src="ISL_fig_5_1.pdf" class="img-fluid" width="600">
 </p>
 <p></p><figcaption class="figure-caption">Figure&nbsp;1: A random splitting into two halves: left part is training set, right part is validation set.</figcaption><p></p>
 </figure>
@@ -264,7 +264,7 @@ loaded via a namespace (and not attached):
 <div id="fig-validation-auto" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p align="center">
-<embed src="ISL_fig_5_2.pdf" class="img-fluid" width="500">
+<embed src="ISL_fig_5_2.pdf" width="600" height="350">
 </p>
 <p></p><figcaption class="figure-caption">Figure&nbsp;2: The validation set approach was used on the <code>Auto</code> data set in order to estimate the test error that results from predicting mpg using polynomial functions of <code>horsepower</code>. Left: Validation error estimates for a single split into training and validation data sets. Right: The validation method was repeated ten times, each time using a different random split of the observations into a training set and a validation set. This illustrates the variability in the estimated test MSE that results from this approach.</figcaption><p></p>
 </figure>
@@ -289,24 +289,24 @@ loaded via a namespace (and not attached):
 <div id="fig-10-fold-cv-auto" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p align="center">
-<embed src="ISL_fig_5_5.pdf" class="img-fluid" width="500">
+<embed src="ISL_fig_5_5.pdf" width="600" height="350">
 </p>
 <p></p><figcaption class="figure-caption">Figure&nbsp;3: A schematic display of 5-fold CV. A set of <span class="math inline">\(n\)</span> observations is randomly split into five non-overlapping groups. Each of these fifths acts as a validation set (shown in beige), and the remainder as a training set (shown in blue). The test error is estimated by averaging the five resulting MSE estimates.</figcaption><p></p>
 </figure>
 </div>
 <ul>
-<li><p>Let the <span class="math inline">\(K\)</span> parts be <span class="math inline">\(C_1, C_2, \ldots, C_K\)</span>, where <span class="math inline">\(C_k\)</span> denotes the indices of the observations in part <span class="math inline">\(k\)</span>. There are <span class="math inline">\(n_k\)</span> observations in part <span class="math inline">\(k\)</span>: if <span class="math inline">\(N\)</span> is a multiple of K, then <span class="math inline">\(n_k = n / K\)</span>.</p></li>
+<li><p>Let the <span class="math inline">\(K\)</span> parts be <span class="math inline">\(C_1, C_2, \ldots, C_K\)</span>, where <span class="math inline">\(C_k\)</span> denotes the indices of the observations in part <span class="math inline">\(k\)</span>. There are <span class="math inline">\(n_k\)</span> observations in part <span class="math inline">\(k\)</span>. If <span class="math inline">\(N\)</span> is a multiple of K, then <span class="math inline">\(n_k = n / K\)</span>.</p></li>
 <li><p>Compute <span class="math display">\[
 \text{CV}_{(K)} = \sum_{k=1}^K \frac{n_k}{n} \text{MSE}_k,
 \]</span> where <span class="math display">\[
-\text{MSE}_k = \sum_{i \in C_k} (y_i - \hat y_i)^2 / n_k$,
+\text{MSE}_k = \frac{1}{n_k} \sum_{i \in C_k} (y_i - \hat y_i)^2,
 \]</span> and <span class="math inline">\(\hat y_i\)</span> is the fit for observation <span class="math inline">\(i\)</span>, obtained from the data with part <span class="math inline">\(k\)</span> removed.</p></li>
 </ul>
 <section id="loocv" class="level3" data-number="4.1">
 <h3 data-number="4.1" class="anchored" data-anchor-id="loocv"><span class="header-section-number">4.1</span> LOOCV</h3>
 <ul>
-<li><p>Setting <span class="math inline">\(K=n\)</span> yields <span class="math inline">\(n\)</span>-fold or <strong>leave-one out cross-validation (LOOCV)</strong>.</p>
-<p>With least-squares linear or polynomial regression, an amazing shortcut makes the cost of LOOCV the same as that of a single model fit! <span class="math display">\[
+<li><p>The special case <span class="math inline">\(K=n\)</span> yields <span class="math inline">\(n\)</span>-fold or <strong>leave-one out cross-validation (LOOCV)</strong>.</p></li>
+<li><p>With least-squares linear or polynomial regression, an amazing shortcut makes the cost of LOOCV the same as that of a single model fit! <span class="math display">\[
 \text{CV}_{(n)} = \frac{1}{n} \sum_{i=1}^n \left( \frac{y_i - \hat y_i}{1 - h_i} \right)^2,
 \]</span> where <span class="math inline">\(\hat y_i\)</span> is the <span class="math inline">\(i\)</span>th fitted value from the original least squares fit, and <span class="math inline">\(h_i\)</span> is the leverage (diagonal of the “hat” matrix). This is like the ordinary MSE, except the <span class="math inline">\(i\)</span>th residual is divided by <span class="math inline">\(1 - h_i\)</span>.</p></li>
 <li><p>LOOCV sometimes useful, but typically doesn’t shake up the data enough. The estimates from each fold are highly correlated and hence their average can have high variance.</p></li>
@@ -315,7 +315,7 @@ loaded via a namespace (and not attached):
 <div id="fig-10-fold-cv-auto" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p align="center">
-<embed src="ISL_fig_5_4.pdf" class="img-fluid" width="500">
+<embed src="ISL_fig_5_4.pdf" width="600" height="350">
 </p>
 <p></p><figcaption class="figure-caption">Figure&nbsp;4: Cross-validation was used on the <code>Auto</code> data set in order to estimate the test error that results from predicting <code>mpg</code> using polynomial functions of <code>horsepower</code>. Left: The LOOCV error curve. Right: 10-fold CV was run nine separate times, each with a different random split of the data into ten parts. The figure shows the nine slightly different CV error curves.</figcaption><p></p>
 </figure>
@@ -323,9 +323,9 @@ loaded via a namespace (and not attached):
 <div id="fig-true-vs-estimated-test-MSE" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p align="center">
-<embed src="ISL_fig_5_6.pdf" class="img-fluid" width="500">
+<embed src="ISL_fig_5_6.pdf" width="600" height="350">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;5: Blue: true test MSE. Black dashed line: LOOCV estimate of test MSE. Orange: 10-fold CV estimate of test MSE. The crosses indicate the minimum of each of the MSE curves.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;5: Blue: true test MSE. Black dashed line: LOOCV estimate of test MSE. Orange: 10-fold CV estimate of test MSE. The crosses indicate the minimum of each of the MSE curves. <a href="https://ucla-econ-425t.github.io/2023winter/slides/02-statlearn/statlearn.html#fig-tradeoff-truth">Left data</a>. <a href="https://ucla-econ-425t.github.io/2023winter/slides/02-statlearn/statlearn.html#fig-tradeoff-smooth-truth">Middle data</a>. <a href="https://ucla-econ-425t.github.io/2023winter/slides/02-statlearn/statlearn.html#fig-tradeoff-wiggly-truth">Right data</a>.</figcaption><p></p>
 </figure>
 </div>
 </section>
@@ -345,7 +345,7 @@ loaded via a namespace (and not attached):
 <li><p>Compute <span class="math display">\[
 \text{CV}_k = \sum_{k=1}^K \frac{n_k}{n} \text{Err}_k,
 \]</span> where <span class="math display">\[
-\text{Err}_k = \frac{1}{n_k} \sum_{i \in C_k} I(y_i \ne \hat y_i)$.
+\text{Err}_k = \frac{1}{n_k} \sum_{i \in C_k} I(y_i \ne \hat y_i).
 \]</span></p></li>
 <li><p>The estimated standard deviation of <span class="math inline">\(\text{CV}_k\)</span> is <span class="math display">\[
 \hat{\text{SE}}(\text{CV}_k) = \sqrt{\frac{1}{K} \sum_{k=1}^K \frac{(\text{Err}_k - \bar{\text{Err}_k})^2}{K-1}}.
@@ -375,7 +375,7 @@ loaded via a namespace (and not attached):
 <div id="fig-unrealistic-toy" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p align="center">
-<embed src="ISL_fig_5_9.pdf" class="img-fluid" width="500">
+<embed src="ISL_fig_5_9.pdf" width="600" height="600">
 </p>
 <p></p><figcaption class="figure-caption">Figure&nbsp;6: Each panel displays 100 simulated returns for investments <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>. From left to right and top to bottom, the resulting estimates for <span class="math inline">\(\alpha\)</span> are 0.576, 0.532, 0.657, and 0.651.</figcaption><p></p>
 </figure>
@@ -396,9 +396,9 @@ loaded via a namespace (and not attached):
 <div id="fig-bootstrap-toy" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p align="center">
-<embed src="ISL_fig_5_11.pdf" class="img-fluid" width="500">
+<embed src="ISL_fig_5_11.pdf" width="600" height="600">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;7: A graphical illustration of the bootstrap approach on a small sample containing <span class="math inline">\(n = 3\)</span> observations. Each bootstrap data set contains n observations, sampled with replacement from the original data set. Each bootstrap data set is used to obtain an estimate of <span class="math inline">\(\alpha\)</span>.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;7: A graphical illustration of the bootstrap approach on a small sample containing <span class="math inline">\(n = 3\)</span> observations. Each bootstrap data set contains <span class="math inline">\(n\)</span> observations, sampled with replacement from the original data set. Each bootstrap data set is used to obtain an estimate of <span class="math inline">\(\alpha\)</span>.</figcaption><p></p>
 </figure>
 </div>
 <ul>
@@ -408,7 +408,7 @@ loaded via a namespace (and not attached):
 <li><p>However, the bootstrap approach allows us to use a computer to mimic the process of obtaining new data sets, so that we can estimate the variability of our estimate without generating additional samples.</p></li>
 <li><p>Rather than repeatedly obtaining independent data sets from the population, we instead obtain distinct data sets by repeatedly sampling observations from the original data set <strong>with replacement</strong>.</p></li>
 <li><p>Each of these “bootstrap data sets” is created by sampling with replacement, and is the same size as our original dataset. As a result some observations may appear more than once in a given bootstrap data set and some not at all.</p></li>
-<li><p>Denoting the firrst bootstrap data set by <span class="math inline">\(Z^{*1}\)</span>, we use <span class="math inline">\(Z^{*1}\)</span> to produce a new bootstrap estimate for <span class="math inline">\(\alpha\)</span>, which we call <span class="math inline">\(\hat{\alpha}^{*1}\)</span>.</p></li>
+<li><p>Denoting the first bootstrap data set by <span class="math inline">\(Z^{*1}\)</span>, we use <span class="math inline">\(Z^{*1}\)</span> to produce a new bootstrap estimate for <span class="math inline">\(\alpha\)</span>, which we call <span class="math inline">\(\hat{\alpha}^{*1}\)</span>.</p></li>
 <li><p>This procedure is repeated <span class="math inline">\(B\)</span> times for some large value of <span class="math inline">\(B\)</span> (say 100 or 1000), in order to produce <span class="math inline">\(B\)</span> different bootstrap data sets <span class="math inline">\(Z^{*1}, Z^{*2}, \ldots, Z^{*B}\)</span>, and <span class="math inline">\(B\)</span> corresponding <span class="math inline">\(\alpha\)</span> estimates, <span class="math inline">\(\hat{\alpha}^{*1}, \hat{\alpha}^{*2}, \ldots, \hat{\alpha}^{*B}\)</span>.</p></li>
 <li><p>We estimate the standard error of these bootstrap estimates using the formula <span class="math display">\[
 \operatorname{SE}_B(\hat{\alpha}) = \sqrt{\frac{1}{B-1} \sum_{r=1}^B (\hat{\alpha}^{*r} - \bar{\hat{\alpha}}^{*})^2}.
@@ -419,18 +419,22 @@ loaded via a namespace (and not attached):
 <div id="fig-unrealistic-vs-bootstrap-toy" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p align="center">
-<embed src="ISL_fig_5_10.pdf" class="img-fluid" width="500">
+<embed src="ISL_fig_5_10.pdf" width="500" height="350">
 </p>
 <p></p><figcaption class="figure-caption">Figure&nbsp;8: Left: A histogram of the estimates of <span class="math inline">\(\alpha\)</span> obtained by generating 1,000 simulated data sets from the true population. Center: A histogram of the estimates of <span class="math inline">\(\alpha\)</span> obtained from 1,000 bootstrap samples from a single data set. Right: The estimates of <span class="math inline">\(\alpha\)</span> displayed in the left and center panels are shown as boxplots. In each panel, the pink line indicates the true value of <span class="math inline">\(\alpha\)</span>.</figcaption><p></p>
 </figure>
 </div>
-<p>::: {#fig-bootstrap-general-pic}</p>
-<p align="center">
-<img src="bootstrarp.png" class="img-fluid" width="500">
-</p>
 </section>
 <section id="bootstrap-in-general" class="level2" data-number="8">
 <h2 data-number="8" class="anchored" data-anchor-id="bootstrap-in-general"><span class="header-section-number">8</span> Bootstrap in general</h2>
+<div id="fig-bootstrap-general-pic" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<img src="bootstrap.png" class="img-fluid figure-img" width="500">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;9: Bootstrap general scheme.</figcaption><p></p>
+</figure>
+</div>
 <ul>
 <li><p>In more complex data situations, figuring out the appropriate way to generate bootstrap samples can require some thought.</p>
 <p>For example, if the data is a time series (e.g., stock prices), we can’t simply sample the observations with replacement (why not?). We can instead create blocks of consecutive observations, and sample those with replacements. Then we paste together sampled blocks to obtain a bootstrap dataset.</p></li>
@@ -444,7 +448,7 @@ loaded via a namespace (and not attached):
 <ul>
 <li><p>In cross-validation, each of the <span class="math inline">\(K\)</span> validation folds is distinct from the other <span class="math inline">\(K-1\)</span> folds used for training: there is no overlap. This is crucial for its success.</p></li>
 <li><p>To estimate prediction error using the bootstrap, we could think about using each bootstrap dataset as our training sample, and the original sample as our validation sample.</p></li>
-<li><p>But each bootstrap sample has significant overlap with the original data. About two-thirds of the original data points appear in each bootstrap sample.</p></li>
+<li><p>But each bootstrap sample has significant overlap with the original data. About two-thirds of the original data points appear in each bootstrap sample. (HW2)</p></li>
 <li><p>This will cause the bootstrap to seriously underestimate the true prediction error.</p></li>
 <li><p>The other way around - with original sample = training sample, bootstrap dataset = validation sample - is worse!</p></li>
 <li><p>Can partly fix this problem by only using predictions for those observations that did not (by chance) occur in the current bootstrap sample.</p></li>

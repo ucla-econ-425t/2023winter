@@ -67,17 +67,17 @@ versioninfo()
     
 - But the training error rate often is quite different from the test error rate, and in particular the former can dramatically underestimate the latter.
 
-- HW Bonus question???
+- HW2 Bonus question rigorously justifies that the training error is an under-estimate of the test error.
 
 ![](training_vs_test.png)
 
 - Best solution: a large designated test set. Often not available.
 
-- Some methods make a mathematical adjustment to the training error rate in order to estimate the test error rate. These include the Cp statistic, AIC and BIC. They are discussed elsewhere in this course.
+- Some methods make a mathematical adjustment to the training error rate in order to estimate the test error rate. These include the $C_p$ statistic, AIC and BIC, which are discussed in Chapter 6.
+
+- Here we instead consider a class of methods that estimate the test error by **holding out** a subset of the training observations from the fitting process, and then applying the learning method to those held out observations.
 
 ## Validation-set approach
-
-- Here we instead consider a class of methods that estimate the test error by _holding out_ a subset of the training observations from the fitting process, and then applying the learning method to those held out observations.
 
 - Here we randomly divide the available set of samples into two parts: a **training set** and a **validation** or **hold-out set**.
 
@@ -88,7 +88,7 @@ versioninfo()
 ::: {#fig-validation-set}
 
 <p align="center">
-![](ISL_fig_5_1.pdf){width=500px}
+![](ISL_fig_5_1.pdf){width=600px}
 </p>
 
 A random splitting into two halves: left part is training set, right part is validation set.
@@ -98,7 +98,7 @@ A random splitting into two halves: left part is training set, right part is val
 ::: {#fig-validation-auto}
 
 <p align="center">
-![](ISL_fig_5_2.pdf){width=500px}
+![](ISL_fig_5_2.pdf){width=600px height=350px}
 </p>
 
 The validation set approach was used on the `Auto` data set in order to estimate the test error that results from predicting mpg using polynomial functions of `horsepower`. Left: Validation error estimates for a single split into training and validation data sets. Right: The validation method was repeated ten times, each time using a different random split of the observations into a training set and a validation set. This illustrates the variability in the estimated test MSE that results from this approach.
@@ -127,14 +127,14 @@ idea of the test error of the final chosen model.
 ::: {#fig-10-fold-cv-auto}
 
 <p align="center">
-![](ISL_fig_5_5.pdf){width=500px}
+![](ISL_fig_5_5.pdf){width=600px height=350px}
 </p>
 
 A schematic display of 5-fold CV. A set of $n$ observations is randomly split into five non-overlapping groups. Each of these fifths acts as a validation set (shown in beige), and the remainder as a training set (shown in blue). The test error is estimated by averaging the five resulting MSE estimates.
 
 :::
 
-- Let the $K$ parts be $C_1, C_2, \ldots, C_K$, where $C_k$ denotes the indices of the observations in part $k$. There are $n_k$ observations in part $k$: if $N$ is a multiple of K, then $n_k = n / K$.
+- Let the $K$ parts be $C_1, C_2, \ldots, C_K$, where $C_k$ denotes the indices of the observations in part $k$. There are $n_k$ observations in part $k$. If $N$ is a multiple of K, then $n_k = n / K$.
 
 - Compute 
 $$
@@ -142,15 +142,15 @@ $$
 $$
 where
 $$
-\text{MSE}_k = \sum_{i \in C_k} (y_i - \hat y_i)^2 / n_k$,
+\text{MSE}_k = \frac{1}{n_k} \sum_{i \in C_k} (y_i - \hat y_i)^2,
 $$
 and $\hat y_i$ is the fit for observation $i$, obtained from the data with part $k$ removed.
 
 ### LOOCV
 
-- Setting $K=n$ yields $n$-fold or **leave-one out cross-validation (LOOCV)**.
+- The special case $K=n$ yields $n$-fold or **leave-one out cross-validation (LOOCV)**.
 
-    With least-squares linear or polynomial regression, an
+- With least-squares linear or polynomial regression, an
 amazing shortcut makes the cost of LOOCV the same as that of a single model fit!
 $$
 \text{CV}_{(n)} = \frac{1}{n} \sum_{i=1}^n \left( \frac{y_i - \hat y_i}{1 - h_i} \right)^2,
@@ -164,7 +164,7 @@ where $\hat y_i$ is the $i$th fitted value from the original least squares fit, 
 ::: {#fig-10-fold-cv-auto}
 
 <p align="center">
-![](ISL_fig_5_4.pdf){width=500px}
+![](ISL_fig_5_4.pdf){width=600px height=350px}
 </p>
 
 Cross-validation was used on the `Auto` data set in order to estimate the test error that results from predicting `mpg` using polynomial functions of `horsepower`. Left: The LOOCV error curve. Right: 10-fold CV was run nine separate times, each with a different random split of the data into ten parts. The figure shows the nine slightly different CV error curves.
@@ -174,10 +174,10 @@ Cross-validation was used on the `Auto` data set in order to estimate the test e
 ::: {#fig-true-vs-estimated-test-MSE}
 
 <p align="center">
-![](ISL_fig_5_6.pdf){width=500px}
+![](ISL_fig_5_6.pdf){width=600px height=350px}
 </p>
 
-Blue: true test MSE. Black dashed line: LOOCV estimate of test MSE. Orange: 10-fold CV estimate of test MSE. The crosses indicate the minimum of each of the MSE curves.
+Blue: true test MSE. Black dashed line: LOOCV estimate of test MSE. Orange: 10-fold CV estimate of test MSE. The crosses indicate the minimum of each of the MSE curves. [Left data](https://ucla-econ-425t.github.io/2023winter/slides/02-statlearn/statlearn.html#fig-tradeoff-truth). [Middle data](https://ucla-econ-425t.github.io/2023winter/slides/02-statlearn/statlearn.html#fig-tradeoff-smooth-truth). [Right data](https://ucla-econ-425t.github.io/2023winter/slides/02-statlearn/statlearn.html#fig-tradeoff-wiggly-truth).
 
 :::
 
@@ -200,7 +200,7 @@ $$
 $$
 where
 $$
-\text{Err}_k = \frac{1}{n_k} \sum_{i \in C_k} I(y_i \ne \hat y_i)$.
+\text{Err}_k = \frac{1}{n_k} \sum_{i \in C_k} I(y_i \ne \hat y_i).
 $$
 - The estimated standard deviation of $\text{CV}_k$ is
 $$
@@ -240,7 +240,7 @@ $$
 ::: {#fig-unrealistic-toy}
 
 <p align="center">
-![](ISL_fig_5_9.pdf){width=500px}
+![](ISL_fig_5_9.pdf){width=600px height=600px}
 </p>
 
 Each panel displays 100 simulated returns for investments $X$
@@ -270,10 +270,10 @@ This gives us a very good idea of the accuracy of $\hat{\alpha}$: $\text{SE}(\ha
 ::: {#fig-bootstrap-toy}
 
 <p align="center">
-![](ISL_fig_5_11.pdf){width=500px}
+![](ISL_fig_5_11.pdf){width=600px height=600px}
 </p>
 
-A graphical illustration of the bootstrap approach on a small sample containing $n = 3$ observations. Each bootstrap data set contains n observations, sampled with replacement from the original data set. Each bootstrap data set is used to obtain an estimate of $\alpha$.
+A graphical illustration of the bootstrap approach on a small sample containing $n = 3$ observations. Each bootstrap data set contains $n$ observations, sampled with replacement from the original data set. Each bootstrap data set is used to obtain an estimate of $\alpha$.
 
 :::
 
@@ -287,7 +287,7 @@ A graphical illustration of the bootstrap approach on a small sample containing 
     
     - Each of these "bootstrap data sets" is created by sampling with replacement, and is the same size as our original dataset. As a result some observations may appear more than once in a given bootstrap data set and some not at all.
     
-    - Denoting the firrst bootstrap data set by $Z^{*1}$, we use $Z^{*1}$ to produce a new bootstrap estimate for $\alpha$, which we call $\hat{\alpha}^{*1}$. 
+    - Denoting the first bootstrap data set by $Z^{*1}$, we use $Z^{*1}$ to produce a new bootstrap estimate for $\alpha$, which we call $\hat{\alpha}^{*1}$. 
     
     - This procedure is repeated $B$ times for some large value of $B$ (say 100 or 1000), in order to produce $B$ different bootstrap data sets $Z^{*1}, Z^{*2}, \ldots, Z^{*B}$, and $B$ corresponding $\alpha$ estimates, $\hat{\alpha}^{*1}, \hat{\alpha}^{*2}, \ldots, \hat{\alpha}^{*B}$. 
     
@@ -301,21 +301,25 @@ $$
 ::: {#fig-unrealistic-vs-bootstrap-toy}
 
 <p align="center">
-![](ISL_fig_5_10.pdf){width=500px}
+![](ISL_fig_5_10.pdf){width=500px height=350px}
 </p>
 
 Left: A histogram of the estimates of $\alpha$ obtained by generating 1,000 simulated data sets from the true population. Center: A histogram of the estimates of $\alpha$ obtained from 1,000 bootstrap samples from a single data set. Right: The estimates of $\alpha$ displayed in the left and center panels are shown as boxplots. In each panel, the pink line indicates the true value of $\alpha$.
 
 :::
 
+
+## Bootstrap in general
+
 ::: {#fig-bootstrap-general-pic}
 
 <p align="center">
-![](bootstrarp.png){width=500px}
+![](bootstrap.png){width=500px}
 </p>
-:::
 
-## Bootstrap in general
+Bootstrap general scheme.
+
+:::
 
 - In more complex data situations, figuring out the appropriate way to generate bootstrap samples can require some thought.
     
@@ -335,7 +339,7 @@ Left: A histogram of the estimates of $\alpha$ obtained by generating 1,000 simu
     
     - To estimate prediction error using the bootstrap, we could think about using each bootstrap dataset as our training sample, and the original sample as our validation sample. 
     
-    - But each bootstrap sample has significant overlap with the original data. About two-thirds of the original data points appear in each bootstrap sample.
+    - But each bootstrap sample has significant overlap with the original data. About two-thirds of the original data points appear in each bootstrap sample. (HW2)
     
     - This will cause the bootstrap to seriously underestimate the true prediction error.
     
