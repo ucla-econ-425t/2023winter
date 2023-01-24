@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="YOUR NAME and UID">
+<meta name="dcterms.date" content="2023-01-24">
+
+<title>Econ 425T Homework 2</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="hw2_files/libs/clipboard/clipboard.min.js"></script>
+<script src="hw2_files/libs/quarto-html/quarto.js"></script>
+<script src="hw2_files/libs/quarto-html/popper.min.js"></script>
+<script src="hw2_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="hw2_files/libs/quarto-html/anchor.min.js"></script>
+<link href="hw2_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="hw2_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="hw2_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="hw2_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="hw2_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#least-squares-is-mle" id="toc-least-squares-is-mle" class="nav-link active" data-scroll-target="#least-squares-is-mle"><span class="toc-section-number">1</span>  Least squares is MLE</a></li>
+  <li><a href="#isl-exercise-6.6.1-10pts" id="toc-isl-exercise-6.6.1-10pts" class="nav-link" data-scroll-target="#isl-exercise-6.6.1-10pts"><span class="toc-section-number">2</span>  ISL Exercise 6.6.1 (10pts)</a></li>
+  <li><a href="#isl-exercise-6.6.3-10pts" id="toc-isl-exercise-6.6.3-10pts" class="nav-link" data-scroll-target="#isl-exercise-6.6.3-10pts"><span class="toc-section-number">3</span>  ISL Exercise 6.6.3 (10pts)</a></li>
+  <li><a href="#isl-exercise-6.6.4-10pts" id="toc-isl-exercise-6.6.4-10pts" class="nav-link" data-scroll-target="#isl-exercise-6.6.4-10pts"><span class="toc-section-number">4</span>  ISL Exercise 6.6.4 (10pts)</a></li>
+  <li><a href="#isl-exercise-6.6.5-10pts" id="toc-isl-exercise-6.6.5-10pts" class="nav-link" data-scroll-target="#isl-exercise-6.6.5-10pts"><span class="toc-section-number">5</span>  ISL Exercise 6.6.5 (10pts)</a></li>
+  <li><a href="#isl-exercise-6.6.11-30pts" id="toc-isl-exercise-6.6.11-30pts" class="nav-link" data-scroll-target="#isl-exercise-6.6.11-30pts"><span class="toc-section-number">6</span>  ISL Exercise 6.6.11 (30pts)</a></li>
+  <li><a href="#isl-exercise-5.4.2-10pts" id="toc-isl-exercise-5.4.2-10pts" class="nav-link" data-scroll-target="#isl-exercise-5.4.2-10pts"><span class="toc-section-number">7</span>  ISL Exercise 5.4.2 (10pts)</a></li>
+  <li><a href="#isl-exercise-5.4.9-20pts" id="toc-isl-exercise-5.4.9-20pts" class="nav-link" data-scroll-target="#isl-exercise-5.4.9-20pts"><span class="toc-section-number">8</span>  ISL Exercise 5.4.9 (20pts)</a></li>
+  <li><a href="#bonus-question-20pts" id="toc-bonus-question-20pts" class="nav-link" data-scroll-target="#bonus-question-20pts"><span class="toc-section-number">9</span>  Bonus question (20pts)</a></li>
+  </ul>
+</nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Econ 425T Homework 2</h1>
+<p class="subtitle lead">Due Feb 3, 2023 @ 11:59PM</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>YOUR NAME and UID </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">January 24, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="least-squares-is-mle" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="least-squares-is-mle"><span class="header-section-number">1</span> Least squares is MLE</h2>
+<p>Show that in the case of linear model with Gaussian errors, maximum likelihood and least squares are the same thing, and <span class="math inline">\(C_p\)</span> and AIC are equivalent.</p>
+</section>
+<section id="isl-exercise-6.6.1-10pts" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="isl-exercise-6.6.1-10pts"><span class="header-section-number">2</span> ISL Exercise 6.6.1 (10pts)</h2>
+</section>
+<section id="isl-exercise-6.6.3-10pts" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="isl-exercise-6.6.3-10pts"><span class="header-section-number">3</span> ISL Exercise 6.6.3 (10pts)</h2>
+</section>
+<section id="isl-exercise-6.6.4-10pts" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="isl-exercise-6.6.4-10pts"><span class="header-section-number">4</span> ISL Exercise 6.6.4 (10pts)</h2>
+</section>
+<section id="isl-exercise-6.6.5-10pts" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="isl-exercise-6.6.5-10pts"><span class="header-section-number">5</span> ISL Exercise 6.6.5 (10pts)</h2>
+</section>
+<section id="isl-exercise-6.6.11-30pts" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="isl-exercise-6.6.11-30pts"><span class="header-section-number">6</span> ISL Exercise 6.6.11 (30pts)</h2>
+<p>You must follow the <a href="https://ucla-econ-425t.github.io/2023winter/slides/06-modelselection/workflow_lasso.html">typical machine learning paradigm</a> to compare <em>at least</em> 3 methods: least squares, lasso, and ridge. Report final results as</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: center;">Method</th>
+<th style="text-align: center;">CV RMSE</th>
+<th style="text-align: center;">Test RMSE</th>
+<th style="text-align: center;"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">LS</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Ridge</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Lasso</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">…</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="isl-exercise-5.4.2-10pts" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="isl-exercise-5.4.2-10pts"><span class="header-section-number">7</span> ISL Exercise 5.4.2 (10pts)</h2>
+</section>
+<section id="isl-exercise-5.4.9-20pts" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="isl-exercise-5.4.9-20pts"><span class="header-section-number">8</span> ISL Exercise 5.4.9 (20pts)</h2>
+</section>
+<section id="bonus-question-20pts" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="bonus-question-20pts"><span class="header-section-number">9</span> Bonus question (20pts)</h2>
+<p>Consider a linear regression, fit by least squares to a set of training data <span class="math inline">\((x_1, y_1), \ldots, (x_N, y_N)\)</span> drawn at random from a population. Let <span class="math inline">\(\hat \beta\)</span> be the least squares estimate. Suppose we have some test data <span class="math inline">\((\tilde{x}_1, \tilde{y}_1), \ldots, (\tilde{x}_M, \tilde{y}_M)\)</span> drawn at random from the same population as the training data. If <span class="math inline">\(R_{\text{train}}(\beta) = \frac{1}{N} \sum_{i=1}^N (y_i - \beta^T x_i)^2\)</span> and <span class="math inline">\(R_{\text{test}}(\beta) = \frac{1}{M} \sum_{i=1}^M (\tilde{y}_i - \beta^T \tilde{x}_i)^2\)</span>. Show that <span class="math display">\[
+\operatorname{E}[R_{\text{train}}(\hat{\beta})] &lt; \operatorname{E}[R_{\text{test}}(\hat{\beta})].
+\]</span></p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
