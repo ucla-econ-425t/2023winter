@@ -40,15 +40,6 @@ print(IPython.sys_info())
 sessionInfo()
 ```
 
-## Julia
-
-```{julia}
-#| eval: false
-using InteractiveUtils
-
-versioninfo()
-```
-
 :::
 
 ## Overview
@@ -130,8 +121,6 @@ ggpairs(
   ) + 
   labs(title = "Credit Data")
 ```
-
-#### Julia
 
 :::
 
@@ -410,6 +399,54 @@ separately.
 
 - Selecting a good value for $\lambda$ is critical. Cross-validation can be used for this. 
 
+::: {.panel-tabset}
+
+#### Python
+
+```{python}
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.compose import make_column_transformer
+
+y = Credit.Balance
+# Dummy encoding for categorical variables
+coltr = make_column_transformer(
+  (StandardScaler(), ['Income', 'Limit', 'Rating', 'Cards', 'Age', 'Education']),
+  (OneHotEncoder(drop = 'first'), ['Own', 'Student', 'Married', 'Region'])
+)
+X = coltr.fit_transform(Credit.drop('Balance', axis = 1))
+X.shape
+```
+
+```{python}
+from sklearn.linear_model import Ridge
+
+clf = Ridge()
+# Ridge regularization parameter
+alphas = np.logspace(start = -3, stop = 5, base = 10)
+# Train the model with different regularization strengths
+coefs = []
+for a in alphas:
+  clf.set_params(alpha = a)
+  clf.fit(X, y)
+  coefs.append(clf.coef_)
+```
+```{python}
+# Visualize Ridge solution path
+plt.figure(figsize = (10, 6))
+ax = plt.gca()
+ax.plot(alphas, coefs)
+ax.set_xscale("log")
+plt.xlabel("alpha")
+plt.ylabel("Coefficients")
+plt.title("Ridge solution path of Credit data")
+plt.axis("tight")
+plt.show()
+```
+
+#### R
+
+:::
+
 ::: {#fig-ridge-credit}
 
 <p align="center">
@@ -463,6 +500,41 @@ $$
 
 - As in ridge regression, selecting a good value of $\lambda$ for the lasso is critical. Cross-validation is again the method of choice.
 
+::: {.panel-tabset}
+
+#### Python
+
+```{python}
+from sklearn.linear_model import Lasso
+
+clf = Lasso()
+# Ridge regularization parameter
+alphas = np.logspace(start = -3, stop = 4, base = 10)
+# Train the model with different regularization strengths
+coefs = []
+for a in alphas:
+  clf.set_params(alpha = a)
+  clf.fit(X, y)
+  coefs.append(clf.coef_)
+```
+
+```{python}
+# Visualize Ridge solution path
+plt.figure(figsize = (10, 8))
+ax = plt.gca()
+ax.plot(alphas, coefs)
+ax.set_xscale("log")
+plt.xlabel("alpha")
+plt.ylabel("Coefficients")
+plt.title("Lasso solution path of Credit data")
+plt.axis("tight")
+plt.show()
+```
+
+#### R
+
+:::
+
 ::: {#fig-lasso-credit}
 
 <p align="center">
@@ -509,7 +581,7 @@ Left: Plots of squared bias (black), variance (green), and test MSE (purple) for
 
 :::
 
-- - Simulation example with $n=50$ and $p=45$. Only 2 predictors are related to response.
+- Simulation example with $n=50$ and $p=45$. Only 2 predictors are related to response.
 
 ::: {#fig-ridge-lasso-compare-2}
 
@@ -637,7 +709,7 @@ A subset of the advertising data. Left: The first principal component, chosen to
 ::: {#fig-advertising-pc-3}
 
 <p align="center">
-![](ISL_fig_6_16.pdf){width=500px height=300px}
+![](ISL_fig_6_16.pdf){width=800px height=350px}
 </p>
 
 Plots of the first principal component scores $z_{i1}$ versus `pop` and `ad`. The relationships are strong.
@@ -652,7 +724,7 @@ $$
 ::: {#fig-advertising-pc-3}
 
 <p align="center">
-![](ISL_fig_6_17.pdf){width=500px height=300px}
+![](ISL_fig_6_17.pdf){width=800px height=350px}
 </p>
 
 Plots of the second principal component scores $z_{i2}$ versus `pop` and `ad`. The relationships are weak.
@@ -664,19 +736,19 @@ Plots of the second principal component scores $z_{i2}$ versus `pop` and `ad`. T
 ::: {#fig-sim-pcr}
 
 <p align="center">
-![](ISL_fig_6_18.pdf){width=500px height=300px}
+![](ISL_fig_6_18.pdf){width=800px height=350px}
 </p>
 
 PCR was applied to two simulated data sets. The black, green, and purple lines correspond to squared bias, variance, and test mean squared error, respectively. Left: all 45 predictors are related to response. Right: Only 2 out of 45 predictors are related to response.
 
 :::
 
-- PCR applied to a data set where the first 5 pincipal components are related to response.
+- PCR applied to a data set where the first 5 principal components are related to response.
 
 ::: {#fig-sim-pcr}
 
 <p align="center">
-![](ISL_fig_6_19.pdf){width=500px height=300px}
+![](ISL_fig_6_19.pdf){width=800px height=350px}
 </p>
 
 PCR, ridge regression, and the lasso were applied to a simulated
@@ -689,7 +761,7 @@ data set in which the first five principal components of $X$ contain all the inf
 ::: {#fig-credit-pcr}
 
 <p align="center">
-![](ISL_fig_6_20.pdf){width=500px height=300px}
+![](ISL_fig_6_20.pdf){width=800px height=350px}
 </p>
 
 PCR was applied to the `Credit` data. 
