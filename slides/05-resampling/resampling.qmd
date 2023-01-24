@@ -101,17 +101,17 @@ A random splitting into two halves: left part is training set, right part is val
 ![](ISL_fig_5_2.pdf){width=600px height=350px}
 </p>
 
-The validation set approach was used on the `Auto` data set in order to estimate the test error that results from predicting mpg using polynomial functions of `horsepower`. Left: Validation error estimates for a single split into training and validation data sets. Right: The validation method was repeated ten times, each time using a different random split of the observations into a training set and a validation set. This illustrates the variability in the estimated test MSE that results from this approach.
+The validation set approach was used on the `Auto` data set in order to estimate the test error that results from predicting `mpg` using polynomial functions of `horsepower`. Left: Validation error estimates for a single split into training and validation data sets. Right: The validation method was repeated ten times, each time using a different random split of the observations into a training set and a validation set. This illustrates the variability in the estimated test MSE that results from this approach.
 
 :::
 
 - Drawbacks of validation set approach
 
-    - The validation estimate of the test error can be highly variable, depending on precisely which observations are included in the training set and which observations are included in the validation set.
+    - The validation estimate of the test error can be **highly variable**, depending on precisely which observations are included in the training set and which observations are included in the validation set.
     
     - In the validation approach, only a subset of the observations - those that are included in the training set rather than in the validation set - are used to fit the model.
     
-    - This suggests that the validation set error may tend to _overestimate_ the test error for the model fit on the entire data set. (Why?)
+    - This suggests that the validation set error may tend to **overestimate the test error** for the model fit on the entire data set. (Why?)
     
 ## $K$-fold cross-validation
 
@@ -134,7 +134,7 @@ A schematic display of 5-fold CV. A set of $n$ observations is randomly split in
 
 :::
 
-- Let the $K$ parts be $C_1, C_2, \ldots, C_K$, where $C_k$ denotes the indices of the observations in part $k$. There are $n_k$ observations in part $k$. If $N$ is a multiple of K, then $n_k = n / K$.
+- Let the $K$ parts be $C_1, C_2, \ldots, C_K$, where $C_k$ denotes the indices of the observations in part $k$. There are $n_k$ observations in part $k$. If $N$ is a multiple of $K$, then $n_k = n / K$.
 
 - Compute 
 $$
@@ -192,7 +192,7 @@ bias-variance trade-off.
 
 ## Cross-validation for classification problems
 
-- We divide the data into $K$ roughly equal-sized parts $C_1, C_2, \ldots, C_K$. $C_k$ denotes the indices of the observations in part $k$. There are $n_k$ observations in part $k$: if $n$ is a multiple of $K$, then $n_k = n / K$.
+- We divide the data into $K$ roughly equal-sized parts $C_1, C_2, \ldots, C_K$. $C_k$ denotes the indices of the observations in part $k$. There are $n_k$ observations in part $k$. If $n$ is a multiple of $K$, then $n_k = n / K$.
 
 - Compute
 $$
@@ -348,7 +348,3 @@ Bootstrap general scheme.
     - Can partly fix this problem by only using predictions for those observations that did not (by chance) occur in the current bootstrap sample.
     
     - But the method gets complicated, and in the end, cross-validation provides a simpler, more attractive approach for estimating prediction error.
-    
-## Pre-validation
-
-TODO

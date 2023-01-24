@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Dr.&nbsp;Hua Zhou @ UCLA">
-<meta name="dcterms.date" content="2023-01-22">
+<meta name="dcterms.date" content="2023-01-24">
 
 <title>Resampling Methods (ISL 5)</title>
 <style>
@@ -122,7 +122,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#cross-validation-for-classification-problems" id="toc-cross-validation-for-classification-problems" class="nav-link" data-scroll-target="#cross-validation-for-classification-problems"><span class="toc-section-number">6</span>  Cross-validation for classification problems</a></li>
   <li><a href="#bootstrap" id="toc-bootstrap" class="nav-link" data-scroll-target="#bootstrap"><span class="toc-section-number">7</span>  Bootstrap</a></li>
   <li><a href="#bootstrap-in-general" id="toc-bootstrap-in-general" class="nav-link" data-scroll-target="#bootstrap-in-general"><span class="toc-section-number">8</span>  Bootstrap in general</a></li>
-  <li><a href="#pre-validation" id="toc-pre-validation" class="nav-link" data-scroll-target="#pre-validation"><span class="toc-section-number">9</span>  Pre-validation</a></li>
   </ul>
 </nav>
 </div>
@@ -150,7 +149,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 22, 2023</p>
+      <p class="date">January 24, 2023</p>
     </div>
   </div>
   
@@ -266,15 +265,15 @@ loaded via a namespace (and not attached):
 <p align="center">
 <embed src="ISL_fig_5_2.pdf" width="600" height="350">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;2: The validation set approach was used on the <code>Auto</code> data set in order to estimate the test error that results from predicting mpg using polynomial functions of <code>horsepower</code>. Left: Validation error estimates for a single split into training and validation data sets. Right: The validation method was repeated ten times, each time using a different random split of the observations into a training set and a validation set. This illustrates the variability in the estimated test MSE that results from this approach.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;2: The validation set approach was used on the <code>Auto</code> data set in order to estimate the test error that results from predicting <code>mpg</code> using polynomial functions of <code>horsepower</code>. Left: Validation error estimates for a single split into training and validation data sets. Right: The validation method was repeated ten times, each time using a different random split of the observations into a training set and a validation set. This illustrates the variability in the estimated test MSE that results from this approach.</figcaption><p></p>
 </figure>
 </div>
 <ul>
 <li><p>Drawbacks of validation set approach</p>
 <ul>
-<li><p>The validation estimate of the test error can be highly variable, depending on precisely which observations are included in the training set and which observations are included in the validation set.</p></li>
+<li><p>The validation estimate of the test error can be <strong>highly variable</strong>, depending on precisely which observations are included in the training set and which observations are included in the validation set.</p></li>
 <li><p>In the validation approach, only a subset of the observations - those that are included in the training set rather than in the validation set - are used to fit the model.</p></li>
-<li><p>This suggests that the validation set error may tend to <em>overestimate</em> the test error for the model fit on the entire data set. (Why?)</p></li>
+<li><p>This suggests that the validation set error may tend to <strong>overestimate the test error</strong> for the model fit on the entire data set. (Why?)</p></li>
 </ul></li>
 </ul>
 </section>
@@ -295,7 +294,7 @@ loaded via a namespace (and not attached):
 </figure>
 </div>
 <ul>
-<li><p>Let the <span class="math inline">\(K\)</span> parts be <span class="math inline">\(C_1, C_2, \ldots, C_K\)</span>, where <span class="math inline">\(C_k\)</span> denotes the indices of the observations in part <span class="math inline">\(k\)</span>. There are <span class="math inline">\(n_k\)</span> observations in part <span class="math inline">\(k\)</span>. If <span class="math inline">\(N\)</span> is a multiple of K, then <span class="math inline">\(n_k = n / K\)</span>.</p></li>
+<li><p>Let the <span class="math inline">\(K\)</span> parts be <span class="math inline">\(C_1, C_2, \ldots, C_K\)</span>, where <span class="math inline">\(C_k\)</span> denotes the indices of the observations in part <span class="math inline">\(k\)</span>. There are <span class="math inline">\(n_k\)</span> observations in part <span class="math inline">\(k\)</span>. If <span class="math inline">\(N\)</span> is a multiple of <span class="math inline">\(K\)</span>, then <span class="math inline">\(n_k = n / K\)</span>.</p></li>
 <li><p>Compute <span class="math display">\[
 \text{CV}_{(K)} = \sum_{k=1}^K \frac{n_k}{n} \text{MSE}_k,
 \]</span> where <span class="math display">\[
@@ -341,7 +340,7 @@ loaded via a namespace (and not attached):
 <section id="cross-validation-for-classification-problems" class="level2" data-number="6">
 <h2 data-number="6" class="anchored" data-anchor-id="cross-validation-for-classification-problems"><span class="header-section-number">6</span> Cross-validation for classification problems</h2>
 <ul>
-<li><p>We divide the data into <span class="math inline">\(K\)</span> roughly equal-sized parts <span class="math inline">\(C_1, C_2, \ldots, C_K\)</span>. <span class="math inline">\(C_k\)</span> denotes the indices of the observations in part <span class="math inline">\(k\)</span>. There are <span class="math inline">\(n_k\)</span> observations in part <span class="math inline">\(k\)</span>: if <span class="math inline">\(n\)</span> is a multiple of <span class="math inline">\(K\)</span>, then <span class="math inline">\(n_k = n / K\)</span>.</p></li>
+<li><p>We divide the data into <span class="math inline">\(K\)</span> roughly equal-sized parts <span class="math inline">\(C_1, C_2, \ldots, C_K\)</span>. <span class="math inline">\(C_k\)</span> denotes the indices of the observations in part <span class="math inline">\(k\)</span>. There are <span class="math inline">\(n_k\)</span> observations in part <span class="math inline">\(k\)</span>. If <span class="math inline">\(n\)</span> is a multiple of <span class="math inline">\(K\)</span>, then <span class="math inline">\(n_k = n / K\)</span>.</p></li>
 <li><p>Compute <span class="math display">\[
 \text{CV}_k = \sum_{k=1}^K \frac{n_k}{n} \text{Err}_k,
 \]</span> where <span class="math display">\[
@@ -455,10 +454,6 @@ loaded via a namespace (and not attached):
 <li><p>But the method gets complicated, and in the end, cross-validation provides a simpler, more attractive approach for estimating prediction error.</p></li>
 </ul></li>
 </ul>
-</section>
-<section id="pre-validation" class="level2" data-number="9">
-<h2 data-number="9" class="anchored" data-anchor-id="pre-validation"><span class="header-section-number">9</span> Pre-validation</h2>
-<p>TODO</p>
 </section>
 
 </main>
