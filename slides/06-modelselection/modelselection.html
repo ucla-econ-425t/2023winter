@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Dr.&nbsp;Hua Zhou @ UCLA">
-<meta name="dcterms.date" content="2023-01-23">
+<meta name="dcterms.date" content="2023-01-24">
 
 <title>Linear Model Selection and Regularization (ISL 6)</title>
 <style>
@@ -164,7 +164,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">January 23, 2023</p>
+      <p class="date">January 24, 2023</p>
     </div>
   </div>
   
@@ -832,16 +832,15 @@ C_p = \frac{1}{n} (\text{RSS} + 2d \hat{\sigma}^2),
 </figure>
 </div>
 <ul>
-<li><p><span class="math inline">\(C_p\)</span>, AIC and BIC have rigorous theoretical justification. As sample size <span class="math inline">\(n\)</span> is very large, they are guaranteed to find the best model. Adjusted <span class="math inline">\(R^2\)</span> is less motivated in statistical theory.</p></li>
+<li><p><span class="math inline">\(C_p\)</span>, AIC and BIC have theoretical justification. As sample size <span class="math inline">\(n\)</span> is very large, they are guaranteed to find the best model. Adjusted <span class="math inline">\(R^2\)</span> is less motivated in statistical theory.</p></li>
 <li><p>Indirect methods hold great computational advantage. They just require a single fit of the training data.</p></li>
 </ul>
 </section>
 <section id="direct-approaches-validation-and-cross-validation" class="level3" data-number="4.2">
 <h3 data-number="4.2" class="anchored" data-anchor-id="direct-approaches-validation-and-cross-validation"><span class="header-section-number">4.2</span> Direct approaches: validation and cross-validation</h3>
-<p>We’ll discuss validation and cross-validation (CV) in details in Chapter 5.</p>
+<p>We’ll discuss validation and cross-validation (CV) in details in <strong>Chapter 5</strong>. - This procedure has an advantage relative to AIC, BIC, <span class="math inline">\(C_p\)</span>, and adjusted <span class="math inline">\(R^2\)</span>, in that it provides a direct estimate of the test error, and <em>doesn’t require an estimate of the error variance <span class="math inline">\(\sigma^2\)</span></em>.</p>
 <ul>
-<li><p>This procedure has an advantage relative to AIC, BIC, <span class="math inline">\(C_p\)</span>, and adjusted <span class="math inline">\(R^2\)</span>, in that it provides a direct estimate of the test error, and <em>doesn’t require an estimate of the error variance <span class="math inline">\(\sigma^2\)</span></em>.</p></li>
-<li><p>It can also be used in a wider range of model selection tasks, even in cases where it is hard to pinpoint the model degrees of freedom (e.g.&nbsp;the number of predictors in the model) or hard to estimate the error variance <span class="math inline">\(\sigma^2\)</span>.</p></li>
+<li>It can also be used in a wider range of model selection tasks, even in cases where it is hard to pinpoint the model degrees of freedom (e.g.&nbsp;the number of predictors in the model) or hard to estimate the error variance <span class="math inline">\(\sigma^2\)</span>.</li>
 </ul>
 <div id="fig-bic-val-cv-credit" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -871,70 +870,232 @@ C_p = \frac{1}{n} (\text{RSS} + 2d \hat{\sigma}^2),
 \]</span> where <span class="math inline">\(\lambda \ge 0\)</span> is a <strong>tuning parameter</strong>, to be determined separately.</p></li>
 <li><p>Similar to least squares, ridge regression seeks coefficient estimates that fit the data well, by making the RSS small.</p></li>
 <li><p>However, the second term, <span class="math inline">\(\lambda \sum_{j} \beta_j^2\)</span>, called a <strong>shrinkage penalty</strong>, is small when <span class="math inline">\(\beta_1, \ldots, \beta_p\)</span> are close to zero, and so it has the effect of <strong>shrinking</strong> the estimates of <span class="math inline">\(\beta_j\)</span> towards zero.</p></li>
-<li><p>The tuning parameter <span class="math inline">\(\lambda\)</span> serves to control the relative impact of these two terms on the regression coefficient estimates.</p></li>
-<li><p>Selecting a good value for <span class="math inline">\(\lambda\)</span> is critical. Cross-validation can be used for this.</p></li>
 </ul>
 <div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">R</a></li></ul>
 <div class="tab-content">
 <div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<p>Since scikit-learn only takes arrays <span class="math inline">\(X\)</span> and <span class="math inline">\(y\)</span>, we first apply transformers to transform the dataframe <code>Credit</code> into arrays.</p>
+<p>There are two ways to treat dummy coding of of categorical variables: standardize or not. For consistency with ISL textbook, we standardize dummy coding here:</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> OneHotEncoder, StandardScaler</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.compose <span class="im">import</span> make_column_transformer</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> Credit.Balance</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Dummy encoding for categorical variables</span></span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>coltr <span class="op">=</span> make_column_transformer(</span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  (StandardScaler(), [<span class="st">'Income'</span>, <span class="st">'Limit'</span>, <span class="st">'Rating'</span>, <span class="st">'Cards'</span>, <span class="st">'Age'</span>, <span class="st">'Education'</span>]),</span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  (OneHotEncoder(drop <span class="op">=</span> <span class="st">'first'</span>), [<span class="st">'Own'</span>, <span class="st">'Student'</span>, <span class="st">'Married'</span>, <span class="st">'Region'</span>])</span>
-<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> coltr.fit_transform(Credit.drop(<span class="st">'Balance'</span>, axis <span class="op">=</span> <span class="dv">1</span>))</span>
-<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>X.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> Pipeline</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Response vector</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> Credit.Balance</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Dummy encoding for categorical variables</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>cattr <span class="op">=</span> make_column_transformer(</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>  (OneHotEncoder(drop <span class="op">=</span> <span class="st">'first'</span>), [<span class="st">'Own'</span>, <span class="st">'Student'</span>, <span class="st">'Married'</span>, <span class="st">'Region'</span>]),</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>  remainder <span class="op">=</span> <span class="st">'passthrough'</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Standardization for ALL variables including dummy coding</span></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Note the order of columns changed (dummy coding go first)</span></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>pipe <span class="op">=</span> Pipeline([(<span class="st">'cat_tf'</span>, cattr), (<span class="st">'std_tf'</span>, StandardScaler())])</span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> pipe.fit_transform(Credit.drop(<span class="st">'Balance'</span>, axis <span class="op">=</span> <span class="dv">1</span>))</span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>X.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(400, 11)</code></pre>
 </div>
 </div>
+<p>Alternatively (and preferred), we don’t standardize dummy coding for categorical variables.</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> Ridge</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>clf <span class="op">=</span> Ridge()</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Ridge regularization parameter</span></span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>alphas <span class="op">=</span> np.logspace(start <span class="op">=</span> <span class="op">-</span><span class="dv">3</span>, stop <span class="op">=</span> <span class="dv">5</span>, base <span class="op">=</span> <span class="dv">10</span>)</span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Train the model with different regularization strengths</span></span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>coefs <span class="op">=</span> []</span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> a <span class="kw">in</span> alphas:</span>
-<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>  clf.set_params(alpha <span class="op">=</span> a)</span>
-<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>  clf.fit(X, y)</span>
-<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>  coefs.append(clf.coef_)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>rom sklearn.preprocessing <span class="im">import</span> OneHotEncoder, StandardScaler</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.compose <span class="im">import</span> make_column_transformer</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Response vector</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> Credit.Balance</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Dummy encoding for categorical variables</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Standardization for continuous variables</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>coltr <span class="op">=</span> make_column_transformer(</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>  (StandardScaler(), [<span class="st">'Income'</span>, <span class="st">'Limit'</span>, <span class="st">'Rating'</span>, <span class="st">'Cards'</span>, <span class="st">'Age'</span>, <span class="st">'Education'</span>]),</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>  (OneHotEncoder(drop <span class="op">=</span> <span class="st">'first'</span>), [<span class="st">'Own'</span>, <span class="st">'Student'</span>, <span class="st">'Married'</span>, <span class="st">'Region'</span>])</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> coltr.fit_transform(Credit.drop(<span class="st">'Balance'</span>, axis <span class="op">=</span> <span class="dv">1</span>))</span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a>X.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Fit ridge regression at a grid of tuning/regularization parameter values. Note the regularization parameter in the <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html">ridge regression in scikit-learn</a> is called <span class="math inline">\(\alpha\)</span>.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> Ridge</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>clf <span class="op">=</span> Ridge()</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Ridge regularization parameter</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>alphas <span class="op">=</span> np.logspace(start <span class="op">=</span> <span class="op">-</span><span class="dv">3</span>, stop <span class="op">=</span> <span class="dv">5</span>, base <span class="op">=</span> <span class="dv">10</span>)</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Train the model with different regularization strengths</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>coefs <span class="op">=</span> []</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> a <span class="kw">in</span> alphas:</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>  clf.set_params(alpha <span class="op">=</span> a)</span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>  clf.fit(X, y)</span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>  coefs.append(clf.coef_)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <style>#sk-container-id-1 {color: black;background-color: white;}#sk-container-id-1 pre{padding: 0;}#sk-container-id-1 div.sk-toggleable {background-color: white;}#sk-container-id-1 label.sk-toggleable__label {cursor: pointer;display: block;width: 100%;margin-bottom: 0;padding: 0.3em;box-sizing: border-box;text-align: center;}#sk-container-id-1 label.sk-toggleable__label-arrow:before {content: "▸";float: left;margin-right: 0.25em;color: #696969;}#sk-container-id-1 label.sk-toggleable__label-arrow:hover:before {color: black;}#sk-container-id-1 div.sk-estimator:hover label.sk-toggleable__label-arrow:before {color: black;}#sk-container-id-1 div.sk-toggleable__content {max-height: 0;max-width: 0;overflow: hidden;text-align: left;background-color: #f0f8ff;}#sk-container-id-1 div.sk-toggleable__content pre {margin: 0.2em;color: black;border-radius: 0.25em;background-color: #f0f8ff;}#sk-container-id-1 input.sk-toggleable__control:checked~div.sk-toggleable__content {max-height: 200px;max-width: 100%;overflow: auto;}#sk-container-id-1 input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {content: "▾";}#sk-container-id-1 div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-1 div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-1 input.sk-hidden--visually {border: 0;clip: rect(1px 1px 1px 1px);clip: rect(1px, 1px, 1px, 1px);height: 1px;margin: -1px;overflow: hidden;padding: 0;position: absolute;width: 1px;}#sk-container-id-1 div.sk-estimator {font-family: monospace;background-color: #f0f8ff;border: 1px dotted black;border-radius: 0.25em;box-sizing: border-box;margin-bottom: 0.5em;}#sk-container-id-1 div.sk-estimator:hover {background-color: #d4ebff;}#sk-container-id-1 div.sk-parallel-item::after {content: "";width: 100%;border-bottom: 1px solid gray;flex-grow: 1;}#sk-container-id-1 div.sk-label:hover label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-1 div.sk-serial::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: 0;}#sk-container-id-1 div.sk-serial {display: flex;flex-direction: column;align-items: center;background-color: white;padding-right: 0.2em;padding-left: 0.2em;position: relative;}#sk-container-id-1 div.sk-item {position: relative;z-index: 1;}#sk-container-id-1 div.sk-parallel {display: flex;align-items: stretch;justify-content: center;background-color: white;position: relative;}#sk-container-id-1 div.sk-item::before, #sk-container-id-1 div.sk-parallel-item::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: -1;}#sk-container-id-1 div.sk-parallel-item {display: flex;flex-direction: column;z-index: 1;position: relative;background-color: white;}#sk-container-id-1 div.sk-parallel-item:first-child::after {align-self: flex-end;width: 50%;}#sk-container-id-1 div.sk-parallel-item:last-child::after {align-self: flex-start;width: 50%;}#sk-container-id-1 div.sk-parallel-item:only-child::after {width: 0;}#sk-container-id-1 div.sk-dashed-wrapped {border: 1px dashed gray;margin: 0 0.4em 0.5em 0.4em;box-sizing: border-box;padding-bottom: 0.4em;background-color: white;}#sk-container-id-1 div.sk-label label {font-family: monospace;font-weight: bold;display: inline-block;line-height: 1.2em;}#sk-container-id-1 div.sk-label-container {text-align: center;}#sk-container-id-1 div.sk-container {/* jupyter's `normalize.less` sets `[hidden] { display: none; }` but bootstrap.min.css set `[hidden] { display: none !important; }` so we also need the `!important` here to be able to override the default hidden behavior on the sphinx rendered scikit-learn.org. See: https://github.com/scikit-learn/scikit-learn/issues/21755 */display: inline-block !important;position: relative;}#sk-container-id-1 div.sk-text-repr-fallback {display: none;}</style><div id="sk-container-id-1" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>Ridge(alpha=100000.0)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br>On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden=""><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-1" type="checkbox" checked=""><label for="sk-estimator-id-1" class="sk-toggleable__label sk-toggleable__label-arrow">Ridge</label><div class="sk-toggleable__content"><pre>Ridge(alpha=100000.0)</pre></div></div></div></div></div>
 </div>
 </div>
+<p>Visualize Ridge solution path</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize Ridge solution path</span></span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize <span class="op">=</span> (<span class="dv">10</span>, <span class="dv">6</span>))</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> plt.gca()</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>ax.plot(alphas, coefs)</span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>ax.set_xscale(<span class="st">"log"</span>)</span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"alpha"</span>)</span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Coefficients"</span>)</span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Ridge solution path of Credit data"</span>)</span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">"tight"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize Ridge solution path</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize <span class="op">=</span> (<span class="dv">8</span>, <span class="dv">8</span>))</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> plt.gca()</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>ax.plot(alphas, coefs)</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>ax.set_xscale(<span class="st">"log"</span>)</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>ax.legend(</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  labels <span class="op">=</span> [<span class="st">"_"</span>, <span class="st">"Student"</span>, <span class="st">"_"</span>, <span class="st">"_"</span>, <span class="st">"_"</span>, <span class="st">"Income"</span>, <span class="st">"Limit"</span>, <span class="st">"Rating"</span>, <span class="st">"_"</span>, <span class="st">"_"</span>, <span class="st">"_"</span>],</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>  fontsize <span class="op">=</span> <span class="dv">16</span></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="vs">r"$\alpha$"</span>)</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Coefficients"</span>)</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Ridge solution path of Credit data"</span>)</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">"tight"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>(0.00039810717055349735, 251188.6431509582, -310.39750022746307, 475.66904859875615)</code></pre>
+<pre><code>(0.00039810717055349735, 251188.6431509582, -310.39797654386797, 475.6739288757183)</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="modelselection_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="modelselection_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="768"></p>
 </figure>
 </div>
 </div>
 </div>
 </div>
 <div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<p>Data pre-processing by recipe.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>norm_recipe <span class="ot">&lt;-</span> </span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">recipe</span>(</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    Balance <span class="sc">~</span> ., </span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> Credit</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create traditional dummy variables</span></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_dummy</span>(<span class="fu">all_nominal</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># zero-variance filter</span></span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_zv</span>(<span class="fu">all_predictors</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># center and scale numeric data</span></span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(<span class="fu">all_predictors</span>()) <span class="sc">%&gt;%</span></span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># step_log(Salary, base = 10) %&gt;%</span></span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># estimate the means and standard deviations</span></span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prep</span>(<span class="at">training =</span> Credit, <span class="at">retain =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a>norm_recipe</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Recipe
 
+Inputs:
+
+      role #variables
+   outcome          1
+ predictor         10
+
+Training data contained 400 data points and no missing data.
+
+Operations:
+
+Dummy variables from Own, Student, Married, Region [trained]
+Zero variance filter removed &lt;none&gt; [trained]
+Centering and scaling for Income, Limit, Rating, Cards, Age, Education, O... [trained]</code></pre>
+</div>
+</div>
+<p>Set up ridge model.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>lambda_grid <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">10</span><span class="sc">^</span><span class="fu">seq</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">5</span>, <span class="at">length.out =</span> <span class="dv">100</span>))</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>ridge_mod <span class="ot">&lt;-</span> </span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># mixture = 0 (ridge), mixture = 1 (lasso)</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">linear_reg</span>(<span class="at">penalty =</span> <span class="dv">1</span>, <span class="at">mixture =</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"glmnet"</span>, <span class="at">path_values =</span> lambda_grid)</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>ridge_mod</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear Regression Model Specification (regression)
+
+Main Arguments:
+  penalty = 1
+  mixture = 0
+
+Engine-Specific Arguments:
+  path_values = lambda_grid
+
+Computational engine: glmnet </code></pre>
+</div>
+</div>
+<p>Bundle recipe and model into a workfolow.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>ridge_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(ridge_mod) <span class="sc">%&gt;%</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(norm_recipe)</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>ridge_wf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow ════════════════════════════════════════════════════════════════════
+Preprocessor: Recipe
+Model: linear_reg()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+3 Recipe Steps
+
+• step_dummy()
+• step_zv()
+• step_normalize()
+
+── Model ───────────────────────────────────────────────────────────────────────
+Linear Regression Model Specification (regression)
+
+Main Arguments:
+  penalty = 1
+  mixture = 0
+
+Engine-Specific Arguments:
+  path_values = lambda_grid
+
+Computational engine: glmnet </code></pre>
+</div>
+</div>
+<p>Fit ridge regression.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>fit_ridge <span class="ot">&lt;-</span> ridge_wf <span class="sc">%&gt;%</span> <span class="fu">fit</span>(<span class="at">data =</span> Credit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Visualize ridge solution path</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>broom<span class="sc">:::</span><span class="fu">tidy.glmnet</span>(fit_ridge<span class="sc">$</span>fit<span class="sc">$</span>fit<span class="sc">$</span>fit) <span class="sc">%&gt;%</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">width =</span> <span class="cn">Inf</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(term <span class="sc">!=</span> <span class="st">"(Intercept)"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> lambda, <span class="at">y =</span> estimate, <span class="at">color =</span> term)) <span class="sc">+</span> </span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>() <span class="sc">+</span></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">quote</span>(lambda),</span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Standardized Coefficients"</span>,</span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Ridge solution path for Credit data"</span></span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,212 × 5
+   term         step estimate  lambda dev.ratio
+   &lt;chr&gt;       &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;
+ 1 (Intercept)     1     520. 100000     0.0161
+ 2 (Intercept)     2     520.  83022.    0.0193
+ 3 (Intercept)     3     520.  68926.    0.0231
+ 4 (Intercept)     4     520.  57224.    0.0277
+ 5 (Intercept)     5     520.  47508.    0.0332
+ 6 (Intercept)     6     520.  39442.    0.0396
+ 7 (Intercept)     7     520.  32745.    0.0473
+ 8 (Intercept)     8     520.  27186.    0.0564
+ 9 (Intercept)     9     520.  22570.    0.0671
+10 (Intercept)    10     520.  18738.    0.0797
+# … with 1,202 more rows</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Transformation introduced infinite values in continuous x-axis</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="modelselection_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -943,7 +1104,7 @@ C_p = \frac{1}{n} (\text{RSS} + 2d \hat{\sigma}^2),
 <p align="center">
 <embed src="ISL_fig_6_4.pdf" width="600" height="350">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;3: Ridge solution path for the <code>Credit</code> data.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3: Ridge solution path for the <code>Credit</code> data (ISL2 Figure 6.4).</figcaption><p></p>
 </figure>
 </div>
 <ul>
@@ -962,6 +1123,10 @@ C_p = \frac{1}{n} (\text{RSS} + 2d \hat{\sigma}^2),
 <p></p><figcaption class="figure-caption">Figure&nbsp;4: Simulated data with <span class="math inline">\(n = 50\)</span> observations, <span class="math inline">\(p = 45\)</span> predictors, all having nonzero coefficients. Squared bias (black), variance (green), and test mean squared error (purple) for the ridge regression predictions on a simulated data set, as a function of <span class="math inline">\(\lambda\)</span> and <span class="math inline">\(\|\hat{\beta}_{\lambda}^R\|_2 / \|\hat{\beta}\|_2\)</span>. The horizontal dashed lines indicate the minimum possible MSE. The purple crosses indicate the ridge regression models for which the test MSE is smallest.</figcaption><p></p>
 </figure>
 </div>
+<ul>
+<li><p>The tuning parameter <span class="math inline">\(\lambda\)</span> serves to control the relative impact of these two terms on the regression coefficient estimates.</p></li>
+<li><p>Selecting a good value for <span class="math inline">\(\lambda\)</span> is critical. <strong>Cross-validation</strong> can be used for this.</p></li>
+</ul>
 </section>
 <section id="lasso" class="level3" data-number="5.2">
 <h3 data-number="5.2" class="anchored" data-anchor-id="lasso"><span class="header-section-number">5.2</span> Lasso</h3>
@@ -982,46 +1147,144 @@ C_p = \frac{1}{n} (\text{RSS} + 2d \hat{\sigma}^2),
 <div class="tab-content">
 <div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> Lasso</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>clf <span class="op">=</span> Lasso()</span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Ridge regularization parameter</span></span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>alphas <span class="op">=</span> np.logspace(start <span class="op">=</span> <span class="op">-</span><span class="dv">3</span>, stop <span class="op">=</span> <span class="dv">4</span>, base <span class="op">=</span> <span class="dv">10</span>)</span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Train the model with different regularization strengths</span></span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>coefs <span class="op">=</span> []</span>
-<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> a <span class="kw">in</span> alphas:</span>
-<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>  clf.set_params(alpha <span class="op">=</span> a)</span>
-<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>  clf.fit(X, y)</span>
-<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>  coefs.append(clf.coef_)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> Lasso</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>clf <span class="op">=</span> Lasso()</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Ridge regularization parameter</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>alphas <span class="op">=</span> np.logspace(start <span class="op">=</span> <span class="op">-</span><span class="dv">3</span>, stop <span class="op">=</span> <span class="dv">4</span>, base <span class="op">=</span> <span class="dv">10</span>)</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Train the model with different regularization strengths</span></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>coefs <span class="op">=</span> []</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> a <span class="kw">in</span> alphas:</span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>  clf.set_params(alpha <span class="op">=</span> a)</span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>  clf.fit(X, y)</span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>  coefs.append(clf.coef_)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <style>#sk-container-id-2 {color: black;background-color: white;}#sk-container-id-2 pre{padding: 0;}#sk-container-id-2 div.sk-toggleable {background-color: white;}#sk-container-id-2 label.sk-toggleable__label {cursor: pointer;display: block;width: 100%;margin-bottom: 0;padding: 0.3em;box-sizing: border-box;text-align: center;}#sk-container-id-2 label.sk-toggleable__label-arrow:before {content: "▸";float: left;margin-right: 0.25em;color: #696969;}#sk-container-id-2 label.sk-toggleable__label-arrow:hover:before {color: black;}#sk-container-id-2 div.sk-estimator:hover label.sk-toggleable__label-arrow:before {color: black;}#sk-container-id-2 div.sk-toggleable__content {max-height: 0;max-width: 0;overflow: hidden;text-align: left;background-color: #f0f8ff;}#sk-container-id-2 div.sk-toggleable__content pre {margin: 0.2em;color: black;border-radius: 0.25em;background-color: #f0f8ff;}#sk-container-id-2 input.sk-toggleable__control:checked~div.sk-toggleable__content {max-height: 200px;max-width: 100%;overflow: auto;}#sk-container-id-2 input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {content: "▾";}#sk-container-id-2 div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-2 div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-2 input.sk-hidden--visually {border: 0;clip: rect(1px 1px 1px 1px);clip: rect(1px, 1px, 1px, 1px);height: 1px;margin: -1px;overflow: hidden;padding: 0;position: absolute;width: 1px;}#sk-container-id-2 div.sk-estimator {font-family: monospace;background-color: #f0f8ff;border: 1px dotted black;border-radius: 0.25em;box-sizing: border-box;margin-bottom: 0.5em;}#sk-container-id-2 div.sk-estimator:hover {background-color: #d4ebff;}#sk-container-id-2 div.sk-parallel-item::after {content: "";width: 100%;border-bottom: 1px solid gray;flex-grow: 1;}#sk-container-id-2 div.sk-label:hover label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-2 div.sk-serial::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: 0;}#sk-container-id-2 div.sk-serial {display: flex;flex-direction: column;align-items: center;background-color: white;padding-right: 0.2em;padding-left: 0.2em;position: relative;}#sk-container-id-2 div.sk-item {position: relative;z-index: 1;}#sk-container-id-2 div.sk-parallel {display: flex;align-items: stretch;justify-content: center;background-color: white;position: relative;}#sk-container-id-2 div.sk-item::before, #sk-container-id-2 div.sk-parallel-item::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: -1;}#sk-container-id-2 div.sk-parallel-item {display: flex;flex-direction: column;z-index: 1;position: relative;background-color: white;}#sk-container-id-2 div.sk-parallel-item:first-child::after {align-self: flex-end;width: 50%;}#sk-container-id-2 div.sk-parallel-item:last-child::after {align-self: flex-start;width: 50%;}#sk-container-id-2 div.sk-parallel-item:only-child::after {width: 0;}#sk-container-id-2 div.sk-dashed-wrapped {border: 1px dashed gray;margin: 0 0.4em 0.5em 0.4em;box-sizing: border-box;padding-bottom: 0.4em;background-color: white;}#sk-container-id-2 div.sk-label label {font-family: monospace;font-weight: bold;display: inline-block;line-height: 1.2em;}#sk-container-id-2 div.sk-label-container {text-align: center;}#sk-container-id-2 div.sk-container {/* jupyter's `normalize.less` sets `[hidden] { display: none; }` but bootstrap.min.css set `[hidden] { display: none !important; }` so we also need the `!important` here to be able to override the default hidden behavior on the sphinx rendered scikit-learn.org. See: https://github.com/scikit-learn/scikit-learn/issues/21755 */display: inline-block !important;position: relative;}#sk-container-id-2 div.sk-text-repr-fallback {display: none;}</style><div id="sk-container-id-2" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>Lasso(alpha=10000.0)</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br>On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden=""><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-2" type="checkbox" checked=""><label for="sk-estimator-id-2" class="sk-toggleable__label sk-toggleable__label-arrow">Lasso</label><div class="sk-toggleable__content"><pre>Lasso(alpha=10000.0)</pre></div></div></div></div></div>
 </div>
 </div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize Ridge solution path</span></span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize <span class="op">=</span> (<span class="dv">10</span>, <span class="dv">8</span>))</span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> plt.gca()</span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>ax.plot(alphas, coefs)</span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>ax.set_xscale(<span class="st">"log"</span>)</span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"alpha"</span>)</span>
-<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Coefficients"</span>)</span>
-<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Lasso solution path of Credit data"</span>)</span>
-<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">"tight"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize Ridge solution path</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize <span class="op">=</span> (<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> plt.gca()</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>ax.plot(alphas, coefs)</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>ax.set_xscale(<span class="st">"log"</span>)</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>ax.legend(</span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>  labels <span class="op">=</span> [<span class="st">"_"</span>, <span class="st">"Student"</span>, <span class="st">"_"</span>, <span class="st">"_"</span>, <span class="st">"_"</span>, <span class="st">"Income"</span>, <span class="st">"Limit"</span>, <span class="st">"Rating"</span>, <span class="st">"_"</span>, <span class="st">"_"</span>, <span class="st">"_"</span>],</span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>  fontsize <span class="op">=</span> <span class="dv">16</span></span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="vs">r"$\alpha$"</span>)</span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Coefficients"</span>)</span>
+<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Lasso solution path of Credit data"</span>)</span>
+<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">"tight"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>(0.00044668359215096305, 22387.21138568338, -310.91919045417643, 486.5300358140538)</code></pre>
+<pre><code>(0.00044668359215096305, 22387.21138568338, -310.9193819137132, 486.5300590239814)</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="modelselection_files/figure-html/unnamed-chunk-15-3.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="modelselection_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="960"></p>
 </figure>
 </div>
 </div>
 </div>
 </div>
 <div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
+<p>Set up lasso model.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>lambda_grid <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">10</span><span class="sc">^</span><span class="fu">seq</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">4</span>, <span class="at">length.out =</span> <span class="dv">100</span>))</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>lasso_mod <span class="ot">&lt;-</span> </span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># mixture = 0 (ridge), mixture = 1 (lasso)</span></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">linear_reg</span>(<span class="at">penalty =</span> <span class="dv">1</span>, <span class="at">mixture =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"glmnet"</span>, <span class="at">path_values =</span> lambda_grid)</span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>lasso_mod</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear Regression Model Specification (regression)
 
+Main Arguments:
+  penalty = 1
+  mixture = 1
+
+Engine-Specific Arguments:
+  path_values = lambda_grid
+
+Computational engine: glmnet </code></pre>
+</div>
+</div>
+<p>Bundle recipe and model into a workfolow.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>lasso_wf <span class="ot">&lt;-</span> <span class="fu">workflow</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(lasso_mod) <span class="sc">%&gt;%</span></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(norm_recipe)</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>lasso_wf</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow ════════════════════════════════════════════════════════════════════
+Preprocessor: Recipe
+Model: linear_reg()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+3 Recipe Steps
+
+• step_dummy()
+• step_zv()
+• step_normalize()
+
+── Model ───────────────────────────────────────────────────────────────────────
+Linear Regression Model Specification (regression)
+
+Main Arguments:
+  penalty = 1
+  mixture = 1
+
+Engine-Specific Arguments:
+  path_values = lambda_grid
+
+Computational engine: glmnet </code></pre>
+</div>
+</div>
+<p>Fit ridge regression.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>fit_lasso <span class="ot">&lt;-</span> lasso_wf <span class="sc">%&gt;%</span> <span class="fu">fit</span>(<span class="at">data =</span> Credit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Visualize ridge solution path</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>broom<span class="sc">:::</span><span class="fu">tidy.glmnet</span>(fit_lasso<span class="sc">$</span>fit<span class="sc">$</span>fit<span class="sc">$</span>fit) <span class="sc">%&gt;%</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">width =</span> <span class="cn">Inf</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(term <span class="sc">!=</span> <span class="st">"(Intercept)"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> lambda, <span class="at">y =</span> estimate, <span class="at">color =</span> term)) <span class="sc">+</span> </span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>() <span class="sc">+</span></span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">quote</span>(lambda), </span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Standardized Coefficients"</span>,</span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Lasso solution path for Credit data"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 781 × 5
+   term         step estimate lambda dev.ratio
+   &lt;chr&gt;       &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt;
+ 1 (Intercept)     1     520. 10000          0
+ 2 (Intercept)     2     520.  8498.         0
+ 3 (Intercept)     3     520.  7221.         0
+ 4 (Intercept)     4     520.  6136.         0
+ 5 (Intercept)     5     520.  5214.         0
+ 6 (Intercept)     6     520.  4431.         0
+ 7 (Intercept)     7     520.  3765.         0
+ 8 (Intercept)     8     520.  3199.         0
+ 9 (Intercept)     9     520.  2719.         0
+10 (Intercept)    10     520.  2310.         0
+# … with 771 more rows</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Transformation introduced infinite values in continuous x-axis</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="modelselection_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -1030,7 +1293,7 @@ C_p = \frac{1}{n} (\text{RSS} + 2d \hat{\sigma}^2),
 <p align="center">
 <embed src="ISL_fig_6_6.pdf" width="600" height="350">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;5: Lasso solution path for the <code>Credit</code> data.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;5: Lasso solution path for the <code>Credit</code> data (ISL Figure 6.6).</figcaption><p></p>
 </figure>
 </div>
 <ul>
@@ -1046,7 +1309,7 @@ C_p = \frac{1}{n} (\text{RSS} + 2d \hat{\sigma}^2),
 <p align="center">
 <embed src="ISL_fig_6_7.pdf" width="600" height="450">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;6: Contours of the error and constraint functions for the lasso (left) and ridge regression (right). The solid blue areas are the constraint regions, <span class="math inline">\(|\beta_1| + |\beta_2| \le s\)</span> and <span class="math inline">\(\beta_1^2 + \beta_2^2 \le s\)</span>, while the red ellipses are the contours of the RSS.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;6: Contours of the RSS and constraint functions for the lasso (left) and ridge regression (right). The solid blue areas are the constraint regions, <span class="math inline">\(|\beta_1| + |\beta_2| \le s\)</span> and <span class="math inline">\(\beta_1^2 + \beta_2^2 \le s\)</span>, while the red ellipses are the contours of the RSS.</figcaption><p></p>
 </figure>
 </div>
 </section>
@@ -1078,7 +1341,7 @@ C_p = \frac{1}{n} (\text{RSS} + 2d \hat{\sigma}^2),
 <li><p>These two examples illustrate that neither ridge regression nor the lasso will universally dominate the other.</p></li>
 <li><p>In general, one might expect the lasso to perform better when the response is a function of only a relatively small number of predictors.</p></li>
 <li><p>However, the number of predictors that is related to the response is never known <em>a priori</em> for real data sets.</p></li>
-<li><p>A technique such as cross-validation can be used in order to determine which approach is better on a particular data set.</p></li>
+<li><p>A technique such as <strong>cross-validation</strong> can be used in order to determine which approach is better on a particular data set.</p></li>
 </ul>
 </section>
 <section id="selecting-the-tuning-parameter-for-ridge-regression-and-lasso" class="level3" data-number="5.4">
@@ -1095,7 +1358,7 @@ C_p = \frac{1}{n} (\text{RSS} + 2d \hat{\sigma}^2),
 <p align="center">
 <embed src="ISL_fig_6_12.pdf" width="600" height="350">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;9: Left: Cross-validation errors that result from applying ridge regression to the <code>Credit</code> data set with various values of <span class="math inline">\(\lambda\)</span>. Right: The coefficient estimates as a function of <span class="math inline">\(\lambda\)</span>. The vertical dashed lines indicate the value of <span class="math inline">\(\lambda\)</span> selected by cross-validation.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;9: Left: Cross-validation errors that result from applying ridge regression to the <code>Credit</code> data set with various values of <span class="math inline">\(\lambda\)</span>. Right: The coefficient estimates as a function of <span class="math inline">\(\lambda\)</span>. The vertical dashed lines indicate the value of <span class="math inline">\(\lambda\)</span> selected by cross-validation. (ISL Figure 6.12)</figcaption><p></p>
 </figure>
 </div>
 </section>
@@ -1206,7 +1469,7 @@ Z_2 = 0.544 \times (\text{pop} - \bar{\text{pop}}) - 0.839 \times (\text{ad} - \
 <div id="fig-credit-pcr" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p align="center">
-<embed src="ISL_fig_6_20.pdf" width="800" height="350">
+<embed src="ISL_fig_6_20.pdf" width="800" height="400">
 </p>
 <p></p><figcaption class="figure-caption">Figure&nbsp;16: PCR was applied to the <code>Credit</code> data.</figcaption><p></p>
 </figure>
