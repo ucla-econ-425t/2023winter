@@ -161,19 +161,13 @@ Hitters_test.shape
 Hitters_other.shape
 ```
 
-Since scikit-learn works with arrays $X$ and $y$ instead of dataframes, we retrieve the corresponding arrays from test and non-test sets.
+Separate $X$ and $y$.
 ```{python}
-from sklearn import preprocessing
-
 # Non-test X and y
 X_other = Hitters_other.drop('Salary', axis = 1)
-# Encode dummy variable
-X_other = preprocessing.OrdinalEncoder().fit_transform(X_other)
 y_other = Hitters_other.Salary
 # Test X and y
 X_test = Hitters_test.drop('Salary', axis = 1)
-# Encode dummy variable
-X_test = preprocessing.OrdinalEncoder().fit_transform(X_test)
 y_test = Hitters_test.Salary
 ```
 
@@ -205,10 +199,19 @@ For regularization methods such as ridge and lasso, it is essential to center an
 
 #### Python
 
-Pre-processor for standardizing numeric predictors.
+Pre-processor for one-hot coding of categorical variables and then standardizing all numeric predictors.
 ```{python}
-scalar = preprocessing.StandardScaler()
-scalar
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.compose import make_column_transformer
+from sklearn.pipeline import Pipeline
+
+# OHE transformer for categorical variables
+cattf = make_column_transformer(
+  (OneHotEncoder(drop = 'first'), ['League', 'Division', 'NewLeague']),
+  remainder = 'passthrough'
+)
+# Standardization transformer
+scalar = StandardScaler()
 ```
 
 #### R
@@ -260,6 +263,35 @@ lasso_mod
 
 :::
 
+## Pipeline (Python) or workflow (R)
+
+Here we bundle the preprocessing step (Python) or recipe (R) and model.
+
+::: {.panel-tabset}
+
+#### Python
+
+```{python}
+pipe = Pipeline(steps = [
+  ("cat_tf", cattf),
+  ("std_tf", scalar), 
+  ("model", lasso)
+  ])
+pipe
+```
+
+#### R
+
+```{r}
+lr_wf <- 
+  workflow() %>%
+  add_model(lasso_mod) %>%
+  add_recipe(norm_recipe)
+lr_wf
+```
+
+:::
+
 ## Tuning grid
 
 Set up the grid for tuning in the range of $10^{-2}-10^3$.
@@ -272,7 +304,6 @@ Set up the grid for tuning in the range of $10^{-2}-10^3$.
 # Tune hyper-parameter(s)
 alphas = np.logspace(start = -3, stop = 2, base = 10, num = 100)
 tuned_parameters = {"model__alpha": alphas}
-tuned_parameters
 ```
 
 #### R
@@ -281,33 +312,6 @@ tuned_parameters
 lambda_grid <-
   grid_regular(penalty(range = c(-2, 3), trans = log10_trans()), levels = 100)
 lambda_grid
-```
-
-:::
-
-## Pipeline (Python) or workflow (R)
-
-Here we bundle the preprocessing step (Python) or recipe (R) and model.
-
-::: {.panel-tabset}
-
-#### Python
-
-```{python}
-from sklearn.pipeline import Pipeline
-
-pipe = Pipeline(steps = [("scalar", scalar), ("model", lasso)])
-pipe
-```
-
-#### R
-
-```{r}
-lr_wf <- 
-  workflow() %>%
-  add_model(lasso_mod) %>%
-  add_recipe(norm_recipe)
-lr_wf
 ```
 
 :::
@@ -347,17 +351,17 @@ cv_res = pd.DataFrame({
   "rmse": -search.cv_results_["mean_test_score"]
   })
 
-  
+plt.figure()
 sns.relplot(
   data = cv_res,
   x = "alpha",
-  y = "rmse",
-  height = 8
+  y = "rmse"
   ).set(
     xlabel = "alpha",
     ylabel = "CV RMSE",
     xscale = "log"
-)
+);
+plt.show()
 ```
 
 Best CV RMSE:
@@ -433,7 +437,7 @@ from sklearn.metrics import mean_squared_error
 mean_squared_error(y_test, search.best_estimator_.predict(X_test), squared = False)
 ```
 
-Test RMSE seems to be a bit off. **Did I do anything wrong?**
+Test RMSE seems to be a bit off.
 
 #### R
 
