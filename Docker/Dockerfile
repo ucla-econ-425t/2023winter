@@ -42,11 +42,14 @@ USER ${NB_UID}
 # R packages including IRKernel which gets installed globally.
 # r-e1071: dependency of the caret R package
 RUN mamba install --quiet --yes \
+    'r-gam' \
     'r-GGally' \
+    'r-ggformula' \
     'r-gtsummary' \
     'r-ISLR2' \
     'r-JuliaCall' \
     'r-leaps' \
+    'r-mgcViz' \
     'r-quantmod' \
     'r-reticulate' && \
     mamba clean --all -f -y && \
