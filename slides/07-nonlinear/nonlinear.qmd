@@ -353,7 +353,7 @@ $$
 
 - A **cubic spline** with knots at $\xi_k$, $k = 1,\ldots,K$, is a piecewise cubic polynomial with continuous derivatives up to order 2 at each knot.
 
-- Again we can represent this model with truncated power basis functions
+- Again we can represent this model with **truncated power basis functions**
 $$
 y_i = \beta_0 + \beta_1 b_1(x_i) + \beta_2 b_2(x_i) + \cdots + \beta_{K+3} b_{K+3}(x_i) + \epsilon_i,
 $$
@@ -374,7 +374,7 @@ $$
 
 - A cubic spline with $K$ knots costs $K+4$ parameters or degrees of freedom. That is $4(K+1)$ polynomial coefficients minus $3K$ constraints.
 
-- B-spline basis functions:
+- While the truncated power basis is conceptually simple, it is not too attractive numerically: powers of large numbers can lead to severe rounding problems. In practice, **B-spline basis functions** are preferred for their computational efficiency. See ESL Chapter 5 Appendix.
 
 ```{python}
 #| code-fold: true
@@ -404,11 +404,11 @@ ns_plot = SplineTransformer(
 fig, axes = plt.subplots(ncols = 2, figsize = (20, 6))
 axes[0].plot(x_plot, bs_plot)
 # axes[0].legend(axes[0].lines, [f"spline {n}" for n in range(4)])
-axes[0].set_title("Cubic Splines")
+axes[0].set_title("B-splines")
 
 axes[1].plot(x_plot, ns_plot)
 # axes[1].legend(axes[0].lines, [f"spline {n}" for n in range(8)])
-axes[1].set_title("Natural Cubic Splines")
+axes[1].set_title("B-splines with linearity at boundary")
 plt.show()
 ```
 
@@ -508,7 +508,7 @@ Wage %>%
       df = 16,
       color = "red"
     ) +
-  # Natural cubic spline
+  # Smoothing spline with GCV tuned df
   geom_spline(
     # df = 6.8,
     cv = TRUE,
@@ -529,11 +529,17 @@ Wage %>%
 ![](ISL_fig_7_9.pdf){width=600px height=600px}
 </p>
 
-With a sliding weight function, we fit separate linear fits over the range of $X$ by weighted least squares. 
+- With a sliding weight function, we fit separate linear fits over the range of $X$ by weighted least squares. 
 
-**Locally weighted linear regression**: `loess` function in R and `lowess` in Python.
+- At $X=x_0$,
+$$
+\text{minimize} \quad \sum_{i=1}^n K(x_i, x_0) (y_i - \beta_0 - \beta_1 x_i)^2,
+$$
+where $K$ is a weighting function that assigns heavier weight for $x_i$ close to $x_0$ and zero weight for points furthest from $x_0$.
 
-Anecdotally, loess gives better appearance, but is $O(N^2)$ in memory, so does not work for larger data sets.
+- **Locally weighted linear regression**: `loess` function in R and `lowess` in Python.
+
+- Anecdotally, loess gives better appearance, but is $O(N^2)$ in memory, so does not work for larger data sets.
 
 ## Generalized additive model (GAM)
 

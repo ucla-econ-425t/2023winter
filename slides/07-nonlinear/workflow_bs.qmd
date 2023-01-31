@@ -97,7 +97,7 @@ Graphical summary takes longer to run so suppressed here.
 #| eval: true
 # Graphical summaries
 plt.figure()
-sns.pairplot(data = Wage)
+sns.pairplot(data = Wage);
 plt.show()
 ```
 
