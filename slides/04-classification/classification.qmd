@@ -40,15 +40,6 @@ print(IPython.sys_info())
 sessionInfo()
 ```
 
-## Julia
-
-```{julia}
-#| eval: false
-using InteractiveUtils
-
-versioninfo()
-```
-
 :::
 
 ## Overview of classification
@@ -85,7 +76,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 # Set font sizes in plots
-sns.set(font_scale = 2)
+sns.set(font_scale = 1.2)
 # Display all columns
 pd.set_option('display.max_columns', None)
 
@@ -96,6 +87,7 @@ Default
 
 ```{python}
 # Visualize income ~ balance
+plt.figure()
 sns.relplot(
   data = Default, 
   x = 'balance', 
@@ -107,11 +99,12 @@ sns.relplot(
   xlabel = 'Balance', 
   ylabel = 'Income'
   )
-plt.clf()  
+plt.show()  
 ```
 
 ```{python}
 # Visualize balance ~ default
+plt.figure()
 sns.boxplot(
   data = Default, 
   x = 'default', 
@@ -120,10 +113,12 @@ sns.boxplot(
   xlabel = 'Default', 
   ylabel = 'Balance'
   )
+plt.show()  
 ```
 
 ```{python}
 # Visualize income ~ default
+plt.figure()
 sns.boxplot(
   data = Default, 
   x = 'default', 
@@ -132,10 +127,12 @@ sns.boxplot(
   xlabel = 'Default', 
   ylabel = 'Income'
   )
+plt.show()  
 ```
 
 ```{python}
 # Visualize student ~ default
+plt.figure()
 sns.countplot(
   data = Default, 
   x = 'default', 
@@ -144,6 +141,7 @@ sns.countplot(
   xlabel = 'Default', 
   ylabel = 'Count'
   )
+plt.show()  
 ```
 
 #### R
@@ -166,9 +164,7 @@ ggpairs(
   labs(title = "Credit Default Data")
 ```
 
-#### Julia
-
-:::
+::: 
 
 ## Linear vs logistic regression
 
@@ -181,7 +177,7 @@ Y = \begin{cases}
 $$
 can we simply perform a linear regression of $Y$ on $X$ and classify as `Yes` if $\hat Y > 0.5$? 
 
-    - Since $\operatorname{E}(Y \mid X = x) = \operatorname{Pr}(Y=1 \mid X = x)$, we might think that linear regression if perfect for this task.  
+    - Since $\operatorname{E}(Y \mid X = x) = \operatorname{Pr}(Y=1 \mid X = x)$, we might think that linear regression is perfect for this task.  
     
     - The issue is that linear regression may produce probabilities <0 or >1, which does not make sense. 
     
@@ -197,6 +193,7 @@ can we simply perform a linear regression of $Y$ on $X$ and classify as `Yes` if
 # 0-1 (No-Yes) coding
 Default['y'] = (Default['default'] == 'Yes').astype(int)
 # Linear regression fit vs logistic regression fit
+plt.figure()
 sns.regplot(
   data = Default, 
   x = 'balance', 
@@ -214,6 +211,7 @@ sns.regplot(
     xlabel = 'Balance', 
     ylabel = 'Probability of Default'
   )
+plt.show()  
 ```
 
 #### R
@@ -241,8 +239,6 @@ Default %>%
     y = "Probability of Default"
     )
 ```
-
-#### Julia
 
 :::
 
@@ -287,17 +283,33 @@ $$
 
 ```{python}
 from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import make_column_transformer
+from sklearn.pipeline import Pipeline
 
-# code student as numerical 0/1
-Default['x_student'] = Default['student'] == 'Yes'
-y, X = Default['default'], Default[['x_student', 'balance', 'income']]
+# Code student as numerical 0/1
+col_tf = make_column_transformer(
+  # OHE transformer for categorical variables
+  (OneHotEncoder(drop = 'first'), ['student']),
+  remainder = 'passthrough'
+  )
+X = Default[['student', 'balance', 'income']]
+y = Default['default']
+
+# Pipeline
+pipe_logit = Pipeline(steps = [
+  ("col_tf", col_tf),
+  ("model", LogisticRegression())
+])
 
 # Fit logistic regression
-logit_fit = LogisticRegression().fit(X, y)
+logit_fit = pipe_logit.fit(X, y)
 logit_fit
+
 # Predicted labels from logistic regression
 logit_pred = logit_fit.predict(X)
-# Confusion matrix from the QDA
+
+# Confusion matrix from the logistic regression
 logit_cfm = pd.crosstab(
   logit_pred, 
   y,
@@ -324,19 +336,52 @@ logit_mod = smf.logit(
   data = Default
   ).fit()
 logit_mod.summary()
+
+# Predicted labels from logistic regression
+logit_smpred = np.where(logit_mod.predict(X) > 0.5, 'Yes', 'No')
+  
+# Confusion matrix from the logistic regression
+logit_smcfm = pd.crosstab(
+  logit_smpred, 
+  y,
+  margins = True, 
+  rownames = ['Predicted Default Stats'],
+  colnames = ['True Default Status']
+  )
 ```
+
+Overall accuracy of logistic regression (by statsmodels)
+```{python}
+(logit_smcfm.loc['Yes', 'Yes'] + logit_smcfm.loc['No', 'No']) / logit_smcfm.loc['All', 'All']
+```
+
 
 #### R
 
 ```{r}
 library(gtsummary)
 
-logit_mod <- glm(default ~ balance + income + student, family = binomial, data = Default)
-logit_mod
-logit_mod %>% tbl_regression()
-```
+logit_mod <- glm(
+  default ~ balance + income + student, 
+  family = binomial, 
+  data = Default
+  )
+summary(logit_mod)
+# logit_mod %>% tbl_regression()
 
-#### Julia
+# Predicted labels from logistic regression
+logit_pred = ifelse(
+  predict(logit_mod, Default, type = "response") > 0.5,
+  "Yes",
+  "No"
+)
+
+# Confusion matrix
+logit_cfm = table(Predicted = logit_pred, Default = Default$default)
+
+# Accuracy
+(logit_cfm['Yes', 'Yes'] + logit_cfm['No', 'No']) / sum(logit_cfm)
+```
 
 :::
 
@@ -360,6 +405,7 @@ logit_mod %>% tbl_regression()
 #| code-fold: true
 
 # Visualize balance ~ default
+plt.figure()
 sns.boxplot(
   data = Default, 
   x = 'student', 
@@ -367,7 +413,8 @@ sns.boxplot(
   ).set(
   xlabel = 'Student Status', 
   ylabel = 'Credit Card Balance'
-  )
+  );
+plt.show()  
 ```
 
 ```{python}
@@ -376,6 +423,7 @@ sns.boxplot(
 # Add predicted probabilities to DataFrame
 Default['yhat'] = logit_mod.predict()
 # Visualize yhat ~ balance
+plt.figure()
 sns.relplot(
   data = Default,
   x = 'balance',
@@ -386,7 +434,8 @@ sns.relplot(
 ).set(
   xlabel = 'Credit Card Balance',
   ylabel = 'Default Rate'
-)
+);
+plt.show()
 ```
 
 Student status confounds with credit card balance. Students tend to have higher balances than non-students. Even though students default less at than non-students for each level of balance, marginally their default rate is higher than for non-students.
@@ -417,8 +466,6 @@ Default %>%
     )
 ```
 
-#### Julia
-
 :::
 
 ## Multinomial logit regression
@@ -433,8 +480,7 @@ In Python, we can fit multinomial logit model by [`statsmodels.discrete.discrete
 
 ## Discriminant analysis
 
-- Another approach for classification is to model the distribution of $X$ in each of
-the classes separately, and then use **Bayes theorem** to flip things around and obtain $\operatorname{Pr}(Y = j \mid X)$.
+- Another approach for classification is to model the distribution of $X$ in each of the classes separately, and then use **Bayes theorem** to flip things around and obtain $\operatorname{Pr}(Y = j \mid X)$.
 
 - When we use normal (Gaussian) distributions for each class, this leads to linear or quadratic discriminant analysis.
 
@@ -442,7 +488,8 @@ the classes separately, and then use **Bayes theorem** to flip things around and
 
 - [Thomas Bayes](https://en.wikipedia.org/wiki/Thomas_Bayes) was a famous mathematician whose name represents a big subfield of statistical and probabilistic modeling. Here we focus on a simple result, known as **Bayes theorem**:
 \begin{eqnarray*}
-\operatorname{Pr}(Y = k \mid X = x) &=& \frac{\operatorname{Pr}(X = x \mid Y = k) \cdot \operatorname{Pr}(Y = k)}{\operatorname{Pr}(X = x)} \\
+& & \operatorname{Pr}(Y = k \mid X = x) \\
+&=& \frac{\operatorname{Pr}(X = x \mid Y = k) \cdot \operatorname{Pr}(Y = k)}{\operatorname{Pr}(X = x)} \\
 &=& \frac{\pi_k f_k(x)}{\sum_{\ell=1}^K \pi_\ell f_\ell(x)},
 \end{eqnarray*}
 where   
@@ -459,13 +506,13 @@ where
     
 ### Linear discriminant analysis (LDA)
     
-- Assume $X \in \mathbb{R}^p$ in the k-th class is distributed as as $N(\mu_k, \boldsymbol(\Sigma))$ with density
+- Assume $X \in \mathbb{R}^p$ in the $k$-th class is distributed as as $N(\mu_k, \boldsymbol{\Sigma})$ with density
 $$
 f_k(x) = \frac{1}{(2\pi)^{p/2} |\boldsymbol{\Sigma}|^{1/2}} e^{- \frac{1}{2} (x - \mu)^T \boldsymbol{\Sigma}^{-1} (x - \mu_k)}.
 $$
 To classify $X=x$, we need to see which of $p_k(x)$ is small. Taking logs, and discarding terms that do not depend on $k$, we just need to assign $x$ to the class with the largest **discriminant score**
 $$
-\delta_k(x) = x^T \boldsymbol{\Sigma}^{-1} \mu_k - \frac{1}{2} \mu^T \boldsymbol{\Sigma}^{-1} \mu_k + \log \pi_k,
+\delta_k(x) = x^T \boldsymbol{\Sigma}^{-1} \mu_k - \frac{1}{2} \mu_k^T \boldsymbol{\Sigma}^{-1} \mu_k + \log \pi_k,
 $$
 which is a linear function in $x$!
 
@@ -484,7 +531,7 @@ $$
 ::: {#fig-tradeoff-truth}
 
 <p align="center">
-![](ISL_fig_4_6.pdf){width=500px height=300px}
+![](ISL_fig_4_6.pdf){width=500px height=350px}
 </p>
 
 Here $\pi_1 = \pi_2 = \pi_3 = 1/3$. The dashed lines are known as the Bayes decision boundaries. Were they known, they would yield the fewest misclassification errors, among all possible classifiers. The black line is the LDA decision boundary.
@@ -500,10 +547,18 @@ Here $\pi_1 = \pi_2 = \pi_3 = 1/3$. The dashed lines are known as the Bayes deci
 ```{python}
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
+# Pipeline
+pipe_lda = Pipeline(steps = [
+  ("col_tf", col_tf),
+  ("model", LinearDiscriminantAnalysis())
+])
+
 # Fit LDA
-lda_fit = LinearDiscriminantAnalysis().fit(X, y)
+lda_fit = pipe_lda.fit(X, y)
+
 # Predicted labels from LDA
 lda_pred = lda_fit.predict(X)
+
 # Confusion matrix
 lda_cfm = pd.crosstab(
   lda_pred, 
@@ -525,15 +580,21 @@ Overall training accuracy of LDA is
 library(MASS)
 
 # Fit LDA
-lda_mod <- lda(default ~ balance + income + student, data = Default)
+lda_mod <- lda(
+  default ~ balance + income + student, 
+  data = Default
+  )
 lda_mod
+
 # Predicted labels from LDA
 lda_pred = predict(lda_mod, Default)
-# Confusion matrix
-table(Predicted = lda_pred$class, Default = Default$default)
-```
 
-#### Julia
+# Confusion matrix
+lda_cfm = table(Predicted = lda_pred$class, Default = Default$default)
+
+# Accuracy
+(lda_cfm['Yes', 'Yes'] + lda_cfm['No', 'No']) / sum(lda_cfm)
+```
 
 :::
 
@@ -541,18 +602,18 @@ table(Predicted = lda_pred$class, Default = Default$default)
 
 - In LDA, the normal distribution for each class shares the same covariance $\boldsymbol{\Sigma}$.
 
-- If we assume that the normal distribution for class $k$ has covariance $\boldsymbol{\Sigma}_k$, then it leads to the *quadratic discriminant analysis** (QDA).
+- If we assume that the normal distribution for class $k$ has covariance $\boldsymbol{\Sigma}_k$, then it leads to the **quadratic discriminant analysis** (QDA).
 
 - The discriminant function takes the form
 $$
 \delta_k(x) = - \frac{1}{2} (x - \mu_k)^T \boldsymbol{\Sigma}_k^{-1} (x - \mu_k) + \log \pi_k - \frac{1}{2} \log |\boldsymbol{\Sigma}|,
 $$
-which is a quadratic function.
+which is a quadratic function in $x$.
 
 ::: {#fig-lda-vs-qda}
 
 <p align="center">
-![](ISL_fig_4_9.pdf){width=500px height=300px}
+![](ISL_fig_4_9.pdf){width=600px height=350px}
 </p>
 
 The Bayes (purple dashed), LDA (black dotted), and QDA (green solid) decision boundaries for a two-class problem. Left: $\boldsymbol{\Sigma}_1 = \boldsymbol{\Sigma}_2$. Right: $\boldsymbol{\Sigma}_1 \ne \boldsymbol{\Sigma}_2$.
@@ -566,10 +627,18 @@ The Bayes (purple dashed), LDA (black dotted), and QDA (green solid) decision bo
 ```{python}
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 
+# Pipeline
+pipe_qda = Pipeline(steps = [
+  ("col_tf", col_tf),
+  ("model", QuadraticDiscriminantAnalysis())
+])
+
 # Fit QDA
-qda_fit = QuadraticDiscriminantAnalysis().fit(X, y)
+qda_fit = pipe_qda.fit(X, y)
+
 # Predicted labels from QDA
 qda_pred = qda_fit.predict(X)
+
 # Confusion matrix from the QDA
 qda_cfm = pd.crosstab(
   qda_pred, 
@@ -580,6 +649,7 @@ qda_cfm = pd.crosstab(
   )
 qda_cfm
 ```
+
 Overall training accuracy of QDA is
 ```{python}
 (qda_cfm.loc['Yes', 'Yes'] + qda_cfm.loc['No', 'No']) / qda_cfm.loc['All', 'All']
@@ -589,15 +659,21 @@ Overall training accuracy of QDA is
 
 ```{r}
 # Fit QDA
-qda_mod <- qda(default ~ balance + income + student, data = Default)
+qda_mod <- qda(
+  default ~ balance + income + student, 
+  data = Default
+  )
 qda_mod
+
 # Predicted probabilities from QDA
 qda_pred = predict(qda_mod, Default)
-# Confusion matrix
-table(Predicted = qda_pred$class, Default = Default$default)
-```
 
-#### Julia
+# Confusion matrix
+qda_cfm = table(Predicted = qda_pred$class, Default = Default$default)
+
+# Accuracy
+(qda_cfm['Yes', 'Yes'] + qda_cfm['No', 'No']) / sum(qda_cfm)
+```
 
 :::
 
@@ -621,10 +697,18 @@ categories.
 ```{python}
 from sklearn.naive_bayes import GaussianNB
 
+# Pipeline
+pipe_nb = Pipeline(steps = [
+  ("col_tf", col_tf),
+  ("model", GaussianNB())
+])
+
 # Fit Naive Bayes classifier
-nb_fit = GaussianNB().fit(X, y)
+nb_fit = pipe_nb.fit(X, y)
+
 # Predicted labels by NB classifier
 nb_pred = nb_fit.predict(X)
+
 # Confusion matrix of NB classifier
 nb_cfm = pd.crosstab(
   nb_pred, 
@@ -646,15 +730,22 @@ Overall training accuracy of Naive Bayes classifier is
 ```{r}
 library(e1071)
 
-nb_mod <- naiveBayes(default ~ balance + income + student, data = Default)
+# Fit Naive Bayes classifier
+nb_mod <- naiveBayes(
+  default ~ balance + income + student, 
+  data = Default
+  )
 nb_mod
+
 # Predicted labels from Naive Bayes
 nb_pred = predict(nb_mod, Default)
-# Confusion matrix
-table(Predicted = nb_pred, Default = Default$default)
-```
 
-#### Julia
+# Confusion matrix
+nb_cfm = table(Predicted = nb_pred, Default = Default$default)
+
+# Accuracy
+(nb_cfm['Yes', 'Yes'] + nb_cfm['No', 'No']) / sum(nb_cfm)
+```
 
 :::
 
@@ -677,10 +768,19 @@ and then classifies the test observation $x_0$ to the class with the largest pro
 ```{python}
 from sklearn.neighbors import KNeighborsClassifier
 
+# Pipeline
+pipe_knn = Pipeline(steps = [
+  ("col_tf", col_tf),
+  ("model", KNeighborsClassifier(n_neighbors = 5))
+])
+
+
 # Fit KNN with K = 5
-knn_fit = KNeighborsClassifier(n_neighbors = 5).fit(X, y)
+knn_fit = pipe_knn.fit(X, y)
+
 # Predicted labels from KNN
 knn_pred = knn_fit.predict(X)
+
 # Confusion matrix of KNN
 knn_cfm = pd.crosstab(
   knn_pred, 
@@ -691,6 +791,7 @@ knn_cfm = pd.crosstab(
   )
 knn_cfm
 ```
+
 Overall training accuracy of KNN classifier with $K=5$ is
 ```{python}
 (knn_cfm.loc['Yes', 'Yes'] + knn_cfm.loc['No', 'No']) / knn_cfm.loc['All', 'All']
@@ -699,15 +800,31 @@ Overall training accuracy of KNN classifier with $K=5$ is
 #### R
 
 ```{r}
+library(class)
+
+X_default <- Default %>% 
+  mutate(x_student = as.integer(student == "Yes")) %>%
+  dplyr::select(x_student, balance, income)
+
+# KNN prediction with K = 5
+knn_pred <- knn(
+  train = X_default, 
+  test = X_default,
+  cl = Default$default,
+  k = 5
+  )
+
+# Confusion matrix
+knn_cfm = table(Predicted = knn_pred, Default = Default$default)
+
+# Accuracy
+(knn_cfm['Yes', 'Yes'] + knn_cfm['No', 'No']) / sum(knn_cfm)
 ```
-
-#### Julia
-
 :::
 
 ## Evaluation of classification performance: false positive, false negative, ROC and AUC
 
-- Let's summarize the classification performance of diffiferent classifiers on the training data. 
+- Let's summarize the classification performance of different classifiers on the training data. 
 
 ::: {.panel-tabset}
 
@@ -739,12 +856,10 @@ sm_df = pd.DataFrame(
   },
   index = ['logit', 'LDA', 'QDA', 'NB', 'KNN', 'Null']
   )
-sm_df
+sm_df.sort_values('acc')
 ```
 
 #### R
-
-#### Julia
 
 :::
 
@@ -762,9 +877,10 @@ from sklearn.metrics import roc_curve
 from sklearn.metrics import RocCurveDisplay
 
 # plt.rcParams.update({'font.size': 12})
-for m in classifiers:
-    roc_display = RocCurveDisplay.from_estimator(m, X, y)
-    plt.show()
+for idx, m in enumerate(classifiers):
+  plt.figure()
+  roc_display = RocCurveDisplay.from_estimator(m, X, y, name = sm_df.iloc[idx].name)
+  plt.show()
 ```
 
 ## Comparison between classifiers
@@ -795,5 +911,4 @@ So it has the same form as logistic regression. The difference is in how the par
 
 - KNN classifier is non-parametric and can dominate LDA and logistic regression when the decision boundary is highly nonlinear, provided that $n$ is very large and $p$ is small.
 
-- See Section 4.5 for theoretical and empirical comparisons of logistic regression, LDA, QDA, NB, and KNN.
-
+- See ISL Section 4.5 for theoretical and empirical comparisons of logistic regression, LDA, QDA, NB, and KNN.
