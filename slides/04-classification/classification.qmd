@@ -98,7 +98,7 @@ sns.relplot(
   ).set(
   xlabel = 'Balance', 
   ylabel = 'Income'
-  )
+  );
 plt.show()  
 ```
 
@@ -112,7 +112,7 @@ sns.boxplot(
   ).set(
   xlabel = 'Default', 
   ylabel = 'Balance'
-  )
+  );
 plt.show()  
 ```
 
@@ -126,7 +126,7 @@ sns.boxplot(
   ).set(
   xlabel = 'Default', 
   ylabel = 'Income'
-  )
+  );
 plt.show()  
 ```
 
@@ -140,7 +140,7 @@ sns.countplot(
   ).set(
   xlabel = 'Default', 
   ylabel = 'Count'
-  )
+  );
 plt.show()  
 ```
 
@@ -319,9 +319,19 @@ logit_cfm = pd.crosstab(
   )
 logit_cfm
 ```
-Overall training accuracy of logistic regression is
+Overall training accuracy of logistic regression (using 0.5 as threshold) is
 ```{python}
 (logit_cfm.loc['Yes', 'Yes'] + logit_cfm.loc['No', 'No']) / logit_cfm.loc['All', 'All']
+```
+The area-under-ROC curve (AUC) of logistic regression (sklearn) is
+```{python}
+from sklearn.metrics import roc_auc_score
+
+logit_auc = roc_auc_score(
+  y,
+  logit_fit.predict_proba(X)[:, 1]
+)
+logit_auc
 ```
 
 #### Python (statsmodels)
@@ -355,6 +365,14 @@ Overall accuracy of logistic regression (by statsmodels)
 (logit_smcfm.loc['Yes', 'Yes'] + logit_smcfm.loc['No', 'No']) / logit_smcfm.loc['All', 'All']
 ```
 
+The area-under-ROC curve (AUC) of logistic regression (statsmodels) is
+```{python}
+logit_smauc = roc_auc_score(
+  y,
+  logit_mod.predict(X)
+)
+logit_smauc
+```
 
 #### R
 
@@ -489,6 +507,7 @@ In Python, we can fit multinomial logit model by [`statsmodels.discrete.discrete
 - [Thomas Bayes](https://en.wikipedia.org/wiki/Thomas_Bayes) was a famous mathematician whose name represents a big subfield of statistical and probabilistic modeling. Here we focus on a simple result, known as **Bayes theorem**:
 \begin{eqnarray*}
 & & \operatorname{Pr}(Y = k \mid X = x) \\
+&=& \frac{\operatorname{Pr}(X = x, Y = k)}{\operatorname{Pr}(X = x)} \\
 &=& \frac{\operatorname{Pr}(X = x \mid Y = k) \cdot \operatorname{Pr}(Y = k)}{\operatorname{Pr}(X = x)} \\
 &=& \frac{\pi_k f_k(x)}{\sum_{\ell=1}^K \pi_\ell f_\ell(x)},
 \end{eqnarray*}
@@ -502,13 +521,11 @@ where
     
     - If $n$ is small and the distribution of the predictors $X$ is approximately normal in each of the classes, the linear discriminant model is again more stable than the logistic regression model.
     
-    - Linear discriminant analysis is popular when we have more than two response classes, because it also provides low-dimensional views of the data.
-    
 ### Linear discriminant analysis (LDA)
     
 - Assume $X \in \mathbb{R}^p$ in the $k$-th class is distributed as as $N(\mu_k, \boldsymbol{\Sigma})$ with density
 $$
-f_k(x) = \frac{1}{(2\pi)^{p/2} |\boldsymbol{\Sigma}|^{1/2}} e^{- \frac{1}{2} (x - \mu)^T \boldsymbol{\Sigma}^{-1} (x - \mu_k)}.
+f_k(x) = \frac{1}{(2\pi)^{p/2} |\boldsymbol{\Sigma}|^{1/2}} e^{- \frac{1}{2} (x - \mu_k)^T \boldsymbol{\Sigma}^{-1} (x - \mu_k)}.
 $$
 To classify $X=x$, we need to see which of $p_k(x)$ is small. Taking logs, and discarding terms that do not depend on $k$, we just need to assign $x$ to the class with the largest **discriminant score**
 $$
@@ -569,9 +586,19 @@ lda_cfm = pd.crosstab(
   )
 lda_cfm
 ```
-Overall training accuracy of LDA is
+
+Overall training accuracy of LDA (using 0.5 as threshold) is
 ```{python}
 (lda_cfm.loc['Yes', 'Yes'] + lda_cfm.loc['No', 'No']) / lda_cfm.loc['All', 'All']
+```
+
+The area-under-ROC curve (AUC) of LDA is
+```{python}
+lda_auc = roc_auc_score(
+  y,
+  lda_fit.predict_proba(X)[:, 1]
+)
+lda_auc
 ```
 
 #### R
@@ -650,9 +677,18 @@ qda_cfm = pd.crosstab(
 qda_cfm
 ```
 
-Overall training accuracy of QDA is
+Overall training accuracy of QDA (using 0.5 as threshold) is
 ```{python}
 (qda_cfm.loc['Yes', 'Yes'] + qda_cfm.loc['No', 'No']) / qda_cfm.loc['All', 'All']
+```
+
+The area-under-ROC curve (AUC) of QDA is
+```{python}
+qda_auc = roc_auc_score(
+  y,
+  qda_fit.predict_proba(X)[:, 1]
+)
+qda_auc
 ```
 
 #### R
@@ -719,11 +755,20 @@ nb_cfm = pd.crosstab(
   )
 nb_cfm
 ```
-Overall training accuracy of Naive Bayes classifier is
+
+Overall training accuracy of Naive Bayes classifier (using 0.5 as threshold) is
 ```{python}
 (nb_cfm.loc['Yes', 'Yes'] + nb_cfm.loc['No', 'No']) / nb_cfm.loc['All', 'All']
 ```
 
+The area-under-ROC curve (AUC) of NB is
+```{python}
+nb_auc = roc_auc_score(
+  y,
+  nb_fit.predict_proba(X)[:, 1]
+)
+nb_auc
+```
 
 #### R
 
@@ -774,7 +819,6 @@ pipe_knn = Pipeline(steps = [
   ("model", KNeighborsClassifier(n_neighbors = 5))
 ])
 
-
 # Fit KNN with K = 5
 knn_fit = pipe_knn.fit(X, y)
 
@@ -792,9 +836,18 @@ knn_cfm = pd.crosstab(
 knn_cfm
 ```
 
-Overall training accuracy of KNN classifier with $K=5$ is
+Overall training accuracy of KNN classifier with $K=5$ (using 0.5 as threshold) is
 ```{python}
 (knn_cfm.loc['Yes', 'Yes'] + knn_cfm.loc['No', 'No']) / knn_cfm.loc['All', 'All']
+```
+
+The area-under-ROC curve (AUC) of KNN ($K=5$) is
+```{python}
+knn_auc = roc_auc_score(
+  y,
+  knn_fit.predict_proba(X)[:, 1]
+)
+knn_auc
 ```
 
 #### R
@@ -852,7 +905,8 @@ sm_df = pd.DataFrame(
   data = {
   'acc': [(cfm.loc['Yes', 'Yes'] + cfm.loc['No', 'No']) / cfm.loc['All', 'All'] for cfm in cfms],
   'fpr': [(cfm.loc['Yes', 'No'] / cfm.loc['All', 'No']) for cfm in cfms],
-  'fnr': [(cfm.loc['No', 'Yes'] / cfm.loc['All', 'Yes']) for cfm in cfms]
+  'fnr': [(cfm.loc['No', 'Yes'] / cfm.loc['All', 'Yes']) for cfm in cfms],
+  'auc': np.append([roc_auc_score(y, c.predict_proba(X)[:, 1]) for c in classifiers], roc_auc_score(y, np.repeat(0, 10000)))
   },
   index = ['logit', 'LDA', 'QDA', 'NB', 'KNN', 'Null']
   )
@@ -878,10 +932,17 @@ from sklearn.metrics import RocCurveDisplay
 
 # plt.rcParams.update({'font.size': 12})
 for idx, m in enumerate(classifiers):
-  plt.figure()
-  roc_display = RocCurveDisplay.from_estimator(m, X, y, name = sm_df.iloc[idx].name)
+  plt.figure();
+  RocCurveDisplay.from_estimator(m, X, y, name = sm_df.iloc[idx].name);
   plt.show()
+  
+# ROC curve of the null classifier (always No or always Yes)  
+plt.figure()
+RocCurveDisplay.from_predictions(y, np.repeat(0, 10000), pos_label = 'Yes', name = 'Null Classifier');
+plt.show()
 ```
+
+- See [sklearn.metrics](https://scikit-learn.org/stable/modules/model_evaluation.html) for other popularly used metrics for classification tasks.
 
 ## Comparison between classifiers
 
