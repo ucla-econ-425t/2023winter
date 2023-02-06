@@ -21,7 +21,7 @@ knitr:
     cache: false
 ---
 
-## Least squares is MLE
+## Least squares is MLE (10pts)
 
 Show that in the case of linear model with Gaussian errors, maximum likelihood and least squares are the same thing, and $C_p$ and AIC are equivalent.
 
