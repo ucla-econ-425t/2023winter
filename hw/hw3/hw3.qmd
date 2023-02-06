@@ -31,4 +31,4 @@ knitr:
 
 ## Bonus question: ISL Exercise 4.8.13 Part (j) (30pts)
 
-## Bonus question: ISL Exercise 4.8.4 Part (j) (30pts)
+## Bonus question: ISL Exercise 4.8.4 (30pts)
