@@ -506,7 +506,7 @@ In Python, we can fit multinomial logit model by [`statsmodels.discrete.discrete
 
 - [Thomas Bayes](https://en.wikipedia.org/wiki/Thomas_Bayes) was a famous mathematician whose name represents a big subfield of statistical and probabilistic modeling. Here we focus on a simple result, known as **Bayes theorem**:
 \begin{eqnarray*}
-& & \operatorname{Pr}(Y = k \mid X = x) \\
+p_k(x) &=& \operatorname{Pr}(Y = k \mid X = x) \\
 &=& \frac{\operatorname{Pr}(X = x, Y = k)}{\operatorname{Pr}(X = x)} \\
 &=& \frac{\operatorname{Pr}(X = x \mid Y = k) \cdot \operatorname{Pr}(Y = k)}{\operatorname{Pr}(X = x)} \\
 &=& \frac{\pi_k f_k(x)}{\sum_{\ell=1}^K \pi_\ell f_\ell(x)},
@@ -523,7 +523,7 @@ where
     
 ### Linear discriminant analysis (LDA)
     
-- Assume $X \in \mathbb{R}^p$ in the $k$-th class is distributed as as $N(\mu_k, \boldsymbol{\Sigma})$ with density
+- Assume $X \in \mathbb{R}^p$ in the $k$-th class is distributed as as multivariate normal $N(\mu_k, \boldsymbol{\Sigma})$ with density
 $$
 f_k(x) = \frac{1}{(2\pi)^{p/2} |\boldsymbol{\Sigma}|^{1/2}} e^{- \frac{1}{2} (x - \mu_k)^T \boldsymbol{\Sigma}^{-1} (x - \mu_k)}.
 $$

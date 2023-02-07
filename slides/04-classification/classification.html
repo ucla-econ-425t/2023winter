@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Dr.&nbsp;Hua Zhou @ UCLA">
-<meta name="dcterms.date" content="2023-02-02">
+<meta name="dcterms.date" content="2023-02-07">
 
 <title>Classification (ISL 4)</title>
 <style>
@@ -152,7 +152,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">February 2, 2023</p>
+      <p class="date">February 7, 2023</p>
     </div>
   </div>
   
@@ -636,10 +636,10 @@ All                      9667  333  10000</code></pre>
   <th>Method:</th>                 <td>MLE</td>       <th>  Df Model:          </th>   <td>     3</td>  
 </tr>
 <tr>
-  <th>Date:</th>            <td>Thu, 02 Feb 2023</td> <th>  Pseudo R-squ.:     </th>   <td>0.4619</td>  
+  <th>Date:</th>            <td>Tue, 07 Feb 2023</td> <th>  Pseudo R-squ.:     </th>   <td>0.4619</td>  
 </tr>
 <tr>
-  <th>Time:</th>                <td>14:18:11</td>     <th>  Log-Likelihood:    </th>  <td> -785.77</td> 
+  <th>Time:</th>                <td>10:44:24</td>     <th>  Log-Likelihood:    </th>  <td> -785.77</td> 
 </tr>
 <tr>
   <th>converged:</th>             <td>True</td>       <th>  LL-Null:           </th>  <td> -1460.3</td> 
@@ -879,7 +879,7 @@ Number of Fisher Scoring iterations: 8</code></pre>
 <li><p>When we use normal (Gaussian) distributions for each class, this leads to linear or quadratic discriminant analysis.</p></li>
 <li><p>However, this approach is quite general, and other distributions can be used as well. We will focus on normal distributions.</p></li>
 <li><p><a href="https://en.wikipedia.org/wiki/Thomas_Bayes">Thomas Bayes</a> was a famous mathematician whose name represents a big subfield of statistical and probabilistic modeling. Here we focus on a simple result, known as <strong>Bayes theorem</strong>: <span class="math display">\[\begin{eqnarray*}
-&amp; &amp; \operatorname{Pr}(Y = k \mid X = x) \\
+p_k(x) &amp;=&amp; \operatorname{Pr}(Y = k \mid X = x) \\
 &amp;=&amp; \frac{\operatorname{Pr}(X = x, Y = k)}{\operatorname{Pr}(X = x)} \\
 &amp;=&amp; \frac{\operatorname{Pr}(X = x \mid Y = k) \cdot \operatorname{Pr}(Y = k)}{\operatorname{Pr}(X = x)} \\
 &amp;=&amp; \frac{\pi_k f_k(x)}{\sum_{\ell=1}^K \pi_\ell f_\ell(x)},
@@ -898,7 +898,7 @@ Number of Fisher Scoring iterations: 8</code></pre>
 <section id="linear-discriminant-analysis-lda" class="level3" data-number="6.1">
 <h3 data-number="6.1" class="anchored" data-anchor-id="linear-discriminant-analysis-lda"><span class="header-section-number">6.1</span> Linear discriminant analysis (LDA)</h3>
 <ul>
-<li><p>Assume <span class="math inline">\(X \in \mathbb{R}^p\)</span> in the <span class="math inline">\(k\)</span>-th class is distributed as as <span class="math inline">\(N(\mu_k, \boldsymbol{\Sigma})\)</span> with density <span class="math display">\[
+<li><p>Assume <span class="math inline">\(X \in \mathbb{R}^p\)</span> in the <span class="math inline">\(k\)</span>-th class is distributed as as multivariate normal <span class="math inline">\(N(\mu_k, \boldsymbol{\Sigma})\)</span> with density <span class="math display">\[
 f_k(x) = \frac{1}{(2\pi)^{p/2} |\boldsymbol{\Sigma}|^{1/2}} e^{- \frac{1}{2} (x - \mu_k)^T \boldsymbol{\Sigma}^{-1} (x - \mu_k)}.
 \]</span> To classify <span class="math inline">\(X=x\)</span>, we need to see which of <span class="math inline">\(p_k(x)\)</span> is small. Taking logs, and discarding terms that do not depend on <span class="math inline">\(k\)</span>, we just need to assign <span class="math inline">\(x\)</span> to the class with the largest <strong>discriminant score</strong> <span class="math display">\[
 \delta_k(x) = x^T \boldsymbol{\Sigma}^{-1} \mu_k - \frac{1}{2} \mu_k^T \boldsymbol{\Sigma}^{-1} \mu_k + \log \pi_k,
@@ -915,7 +915,7 @@ f_k(x) = \frac{1}{(2\pi)^{p/2} |\boldsymbol{\Sigma}|^{1/2}} e^{- \frac{1}{2} (x 
 <div id="fig-tradeoff-truth" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p align="center">
-<embed src="ISL_fig_4_6.pdf" width="500" height="350">
+<embed src="ISL_fig_4_6.pdf" width="700" height="350">
 </p>
 <p></p><figcaption class="figure-caption">Figure&nbsp;3: Here <span class="math inline">\(\pi_1 = \pi_2 = \pi_3 = 1/3\)</span>. The dashed lines are known as the Bayes decision boundaries. Were they known, they would yield the fewest misclassification errors, among all possible classifiers. The black line is the LDA decision boundary.</figcaption><p></p>
 </figure>
@@ -1035,7 +1035,7 @@ studentYes -1.746631e-01</code></pre>
 <div id="fig-lda-vs-qda" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p align="center">
-<embed src="ISL_fig_4_9.pdf" width="600" height="350">
+<embed src="ISL_fig_4_9.pdf" width="700" height="350">
 </p>
 <p></p><figcaption class="figure-caption">Figure&nbsp;4: The Bayes (purple dashed), LDA (black dotted), and QDA (green solid) decision boundaries for a two-class problem. Left: <span class="math inline">\(\boldsymbol{\Sigma}_1 = \boldsymbol{\Sigma}_2\)</span>. Right: <span class="math inline">\(\boldsymbol{\Sigma}_1 \ne \boldsymbol{\Sigma}_2\)</span>.</figcaption><p></p>
 </figure>
@@ -1420,15 +1420,15 @@ KNN    0.9750  0.001965  0.693694  0.980630</code></pre>
 <span id="cb80-10"><a href="#cb80-10" aria-hidden="true" tabindex="-1"></a><span class="co"># ROC curve of the null classifier (always No or always Yes)  </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;Figure size 1400x1000 with 0 Axes&gt;
-&lt;sklearn.metrics._plot.roc_curve.RocCurveDisplay object at 0x128ff5120&gt;
+&lt;sklearn.metrics._plot.roc_curve.RocCurveDisplay object at 0x129301120&gt;
 &lt;Figure size 1400x1000 with 0 Axes&gt;
-&lt;sklearn.metrics._plot.roc_curve.RocCurveDisplay object at 0x128ff5120&gt;
+&lt;sklearn.metrics._plot.roc_curve.RocCurveDisplay object at 0x129301120&gt;
 &lt;Figure size 1400x1000 with 0 Axes&gt;
-&lt;sklearn.metrics._plot.roc_curve.RocCurveDisplay object at 0x128ff5120&gt;
+&lt;sklearn.metrics._plot.roc_curve.RocCurveDisplay object at 0x129301120&gt;
 &lt;Figure size 1400x1000 with 0 Axes&gt;
-&lt;sklearn.metrics._plot.roc_curve.RocCurveDisplay object at 0x128ff5120&gt;
+&lt;sklearn.metrics._plot.roc_curve.RocCurveDisplay object at 0x129301120&gt;
 &lt;Figure size 1400x1000 with 0 Axes&gt;
-&lt;sklearn.metrics._plot.roc_curve.RocCurveDisplay object at 0x128ff5120&gt;</code></pre>
+&lt;sklearn.metrics._plot.roc_curve.RocCurveDisplay object at 0x129301120&gt;</code></pre>
 </div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
