@@ -1,0 +1,68 @@
+---
+title: "Tree-Based Methods (ISL 8)"
+subtitle: "Econ 425T"
+author: "Dr. Hua Zhou @ UCLA"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+format:
+  html:
+    theme: cosmo
+    number-sections: true
+    toc: true
+    toc-depth: 4
+    toc-location: left
+    code-fold: false
+engine: knitr
+knitr:
+  opts_chunk: 
+    fig.align: 'center'
+    # fig.width: 6
+    # fig.height: 4
+    message: FALSE
+    cache: false
+---
+
+Credit: This note heavily uses material from the books [_An Introduction to Statistical Learning: with Applications in R_](https://www.statlearning.com/) (ISL2) and [_Elements of Statistical Learning: Data Mining, Inference, and Prediction_](https://hastie.su.domains/ElemStatLearn/) (ESL2).
+
+Display system information for reproducibility.
+
+::: {.panel-tabset}
+
+## Python
+
+```{python}
+import IPython
+print(IPython.sys_info())
+```
+
+## R
+
+```{r}
+sessionInfo()
+```
+
+:::
+
+## Overview
+
+- In this lecture, we describe **tree-based** methods for regression and classification.
+
+- These involve **stratifying** or **segmenting** the predictor space into a number of simple regions.
+
+- Since the set of splitting rules used to segment the predictor space can be summarized in a tree, these types of approaches are known as **decision-tree** methods.
+
+## Pros and cons
+
+- Tree-based methods are simple and useful for interpretation.
+
+- However they typically are not competitive with the best supervised learning approaches in terms of prediction accuracy.
+
+- Hence we also discuss **bagging**, **random forests**, and **boosting**. These methods grow multiple trees which are then combined to yield a single consensus prediction.
+
+- Combining a large number of trees can often result in dramatic improvements in prediction accuracy, at the expense of some loss of interpretation.
+
+## The basics of decision trees
+
+- Decision trees can be applied to both regression and classification problems.
+
+- We first consider regression problems, and then move on to classification.
+

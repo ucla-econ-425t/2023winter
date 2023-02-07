@@ -131,6 +131,8 @@ ggpairs(
 
 ## Initial split into test and non-test sets
 
+It is a good idea to keep the proportions of `default = 'Yes'` to be roughly same between test and non-test data.
+
 ::: {.panel-tabset}
 
 #### Python
@@ -142,6 +144,7 @@ Default_other, Default_test = train_test_split(
   Default, 
   train_size = 0.75,
   random_state = 425, # seed
+  stratify = Default.default
   )
 Default_test.shape
 Default_other.shape
@@ -192,7 +195,7 @@ from sklearn.pipeline import Pipeline
 
 # Transformer for numeric variables
 numeric_tf = Pipeline(steps = [
-  ("scalar", StandardScaler()),
+  # ("scalar", StandardScaler()),
   ("bspline", SplineTransformer(degree = 3, extrapolation = 'linear'))
 ])
 # Transformer for categorical variables
@@ -300,7 +303,7 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis, QuadraticD
 from sklearn.naive_bayes import GaussianNB
 
 # Tune hyper-parameter(s)
-nknots_grid = np.array(range(2, 5))
+nknots_grid = np.array(range(2, 6))
 classifers = [
   LogisticRegression(),
   LinearDiscriminantAnalysis(),
@@ -335,7 +338,8 @@ param_grid
 
 #### Python
 
-Set up CV partitions and CV criterion.
+Set up CV partitions and CV criterion. Again it's a good idea to keep the case proportions roughly same between splits. According to the `GridSearchCV` [documentation](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html), `StratifiedKFold` is used automatically.
+
 ```{python}
 from sklearn.model_selection import GridSearchCV
 
@@ -357,29 +361,31 @@ Fit CV. This is typically the most time-consuming step.
 search.fit(X_other, y_other)
 ```
 
-Visualize CV results (TODO).
+Visualize CV results.
 ```{python}
-#| eval: false
+#| eval: true
 #| code-fold: true
 cv_res = pd.DataFrame({
-  "alpha": alphas,
-  "rmse": -search.cv_results_["mean_test_score"]
+  "nknots": np.array(search.cv_results_["param_col_tf__num__bspline__n_knots"]),
+  "classifier": np.array(search.cv_results_["param_model"]),
+  "aucroc": search.cv_results_["mean_test_score"]
   })
 
 plt.figure()
 sns.relplot(
+  kind = "line",
   data = cv_res,
-  x = "alpha",
-  y = "rmse"
+  x = "nknots",
+  y = "aucroc",
+  hue = "classifier"
   ).set(
-    xlabel = "alpha",
-    ylabel = "CV RMSE",
-    xscale = "log"
+    xlabel = "Number of Knots",
+    ylabel = "CV AUC"
 );
 plt.show()
 ```
 
-Best CV RMSE:
+Best CV AUC-ROC:
 ```{python}
 search.best_score_
 ```
