@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Dr.&nbsp;Hua Zhou @ UCLA">
-<meta name="dcterms.date" content="2023-02-08">
+<meta name="dcterms.date" content="2023-02-09">
 
 <title>Tree-Based Methods (ISL 8)</title>
 <style>
@@ -111,16 +111,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview"><span class="toc-section-number">1</span>  Overview</a></li>
-  <li><a href="#pros-and-cons" id="toc-pros-and-cons" class="nav-link" data-scroll-target="#pros-and-cons"><span class="toc-section-number">2</span>  Pros and cons</a></li>
-  <li><a href="#the-basics-of-decision-trees" id="toc-the-basics-of-decision-trees" class="nav-link" data-scroll-target="#the-basics-of-decision-trees"><span class="toc-section-number">3</span>  The basics of decision trees</a></li>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview"><span class="toc-section-number">1</span>  Overview</a>
+  <ul>
+  <li><a href="#pros-and-cons-of-decision-tree" id="toc-pros-and-cons-of-decision-tree" class="nav-link" data-scroll-target="#pros-and-cons-of-decision-tree"><span class="toc-section-number">1.1</span>  Pros and cons of decision tree</a></li>
+  </ul></li>
+  <li><a href="#the-basics-of-decision-trees" id="toc-the-basics-of-decision-trees" class="nav-link" data-scroll-target="#the-basics-of-decision-trees"><span class="toc-section-number">2</span>  The basics of decision trees</a></li>
+  <li><a href="#baseball-player-salary-data-hitter." id="toc-baseball-player-salary-data-hitter." class="nav-link" data-scroll-target="#baseball-player-salary-data-hitter."><span class="toc-section-number">3</span>  Baseball player salary data <code>Hitter</code>.</a></li>
   <li><a href="#tree-building-process" id="toc-tree-building-process" class="nav-link" data-scroll-target="#tree-building-process"><span class="toc-section-number">4</span>  Tree-building process</a></li>
   <li><a href="#predictions" id="toc-predictions" class="nav-link" data-scroll-target="#predictions"><span class="toc-section-number">5</span>  Predictions</a></li>
   <li><a href="#prunning" id="toc-prunning" class="nav-link" data-scroll-target="#prunning"><span class="toc-section-number">6</span>  Prunning</a></li>
   <li><a href="#summary-tree-algorithm" id="toc-summary-tree-algorithm" class="nav-link" data-scroll-target="#summary-tree-algorithm"><span class="toc-section-number">7</span>  Summary: tree algorithm</a></li>
-  <li><a href="#baseball-example-todo" id="toc-baseball-example-todo" class="nav-link" data-scroll-target="#baseball-example-todo"><span class="toc-section-number">8</span>  Baseball example (TODO)</a></li>
+  <li><a href="#baseball-example-regression-tree" id="toc-baseball-example-regression-tree" class="nav-link" data-scroll-target="#baseball-example-regression-tree"><span class="toc-section-number">8</span>  Baseball example (regression tree)</a></li>
   <li><a href="#classification-trees" id="toc-classification-trees" class="nav-link" data-scroll-target="#classification-trees"><span class="toc-section-number">9</span>  Classification trees</a></li>
-  <li><a href="#example-heart-data-todo" id="toc-example-heart-data-todo" class="nav-link" data-scroll-target="#example-heart-data-todo"><span class="toc-section-number">10</span>  Example: heart data (TODO)</a></li>
+  <li><a href="#heart-data-example-classification-tree" id="toc-heart-data-example-classification-tree" class="nav-link" data-scroll-target="#heart-data-example-classification-tree"><span class="toc-section-number">10</span>  <code>Heart</code> data example (classification tree)</a></li>
   <li><a href="#tree-versus-linear-models" id="toc-tree-versus-linear-models" class="nav-link" data-scroll-target="#tree-versus-linear-models"><span class="toc-section-number">11</span>  Tree versus linear models</a></li>
   <li><a href="#pros-and-cons-of-decision-trees" id="toc-pros-and-cons-of-decision-trees" class="nav-link" data-scroll-target="#pros-and-cons-of-decision-trees"><span class="toc-section-number">12</span>  Pros and cons of decision trees</a></li>
   <li><a href="#bagging" id="toc-bagging" class="nav-link" data-scroll-target="#bagging"><span class="toc-section-number">13</span>  Bagging</a></li>
@@ -158,7 +161,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">February 8, 2023</p>
+      <p class="date">February 9, 2023</p>
     </div>
   </div>
   
@@ -231,9 +234,8 @@ loaded via a namespace (and not attached):
 <li><p>These involve <strong>stratifying</strong> or <strong>segmenting</strong> the predictor space into a number of simple regions.</p></li>
 <li><p>Since the set of splitting rules used to segment the predictor space can be summarized in a tree, these types of approaches are known as <strong>decision-tree</strong> methods.</p></li>
 </ul>
-</section>
-<section id="pros-and-cons" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="pros-and-cons"><span class="header-section-number">2</span> Pros and cons</h2>
+<section id="pros-and-cons-of-decision-tree" class="level3" data-number="1.1">
+<h3 data-number="1.1" class="anchored" data-anchor-id="pros-and-cons-of-decision-tree"><span class="header-section-number">1.1</span> Pros and cons of decision tree</h3>
 <ul>
 <li><p>Tree-based methods are simple and useful for interpretation.</p></li>
 <li><p>However they typically are not competitive with the best supervised learning approaches in terms of prediction accuracy.</p></li>
@@ -241,13 +243,16 @@ loaded via a namespace (and not attached):
 <li><p>Combining a large number of trees can often result in dramatic improvements in prediction accuracy, at the expense of some loss of interpretation.</p></li>
 </ul>
 </section>
-<section id="the-basics-of-decision-trees" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="the-basics-of-decision-trees"><span class="header-section-number">3</span> The basics of decision trees</h2>
+</section>
+<section id="the-basics-of-decision-trees" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="the-basics-of-decision-trees"><span class="header-section-number">2</span> The basics of decision trees</h2>
 <ul>
 <li><p>Decision trees can be applied to both regression and classification problems.</p></li>
 <li><p>We first consider regression problems, and then move on to classification.</p></li>
-<li><p>Baseball salary date <code>Hitter</code>.</p></li>
 </ul>
+</section>
+<section id="baseball-player-salary-data-hitter." class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="baseball-player-salary-data-hitter."><span class="header-section-number">3</span> Baseball player salary data <code>Hitter</code>.</h2>
 <div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Python</a></li></ul>
 <div class="tab-content">
@@ -384,7 +389,7 @@ R_3 &amp;=&amp; \{ X \mid \text{Years} \ge 4.5, \text{Hits} \ge 117.5\}
 <li><p>In keeping with the <strong>tree</strong> analogy, the regions <span class="math inline">\(R_1\)</span>, <span class="math inline">\(R_2\)</span>, and <span class="math inline">\(R_3\)</span> are known as <strong>terminal nodes</strong>.</p></li>
 <li><p>Decision trees are typically drawn <strong>upside down</strong>, in the sense that the leaves are at the bottom of the tree.</p></li>
 <li><p>The points along the tree where the predictor space is split are referred to as <strong>internal nodes</strong>.</p></li>
-<li><p>In the hitters tree, the two internal nodes are indicated by the <code>Years&lt;4.5</code> and <code>Hits&lt;117.5</code>.</p></li>
+<li><p>In the <code>Hitters</code> tree, the two internal nodes are indicated by the <code>Years&lt;4.5</code> and <code>Hits&lt;117.5</code>.</p></li>
 </ul></li>
 <li><p>Interpretation of decision tree results:</p>
 <ul>
@@ -398,16 +403,18 @@ R_3 &amp;=&amp; \{ X \mid \text{Years} \ge 4.5, \text{Hits} \ge 117.5\}
 <section id="tree-building-process" class="level2" data-number="4">
 <h2 data-number="4" class="anchored" data-anchor-id="tree-building-process"><span class="header-section-number">4</span> Tree-building process</h2>
 <ul>
-<li><p>We divide the predictor space into J distinct and non-overlapping regions, <span class="math inline">\(R_1, R_2, \ldots, R_J\)</span>.</p></li>
+<li><p>We divide the predictor space into J distinct and non-overlapping regions: <span class="math inline">\(R_1, R_2, \ldots, R_J\)</span>.</p></li>
 <li><p>For every observation that falls into the region <span class="math inline">\(R_j\)</span>, we make the same prediction, which is simply the mean of the response values for the training observations in <span class="math inline">\(R_j\)</span>.</p></li>
 <li><p>In theory, the regions could have any shape. However, we choose to divide the predictor space into high-dimensional rectangles, or <strong>boxes</strong>, for simplicity and for ease of interpretation of the resulting predictive model.</p></li>
 <li><p>The goal is to find boxes <span class="math inline">\(R_1, \ldots, R_J\)</span> that minimize the RSS, given by <span class="math display">\[
 \sum_{j=1}^J \sum_{i \in R_j} (y_i - \hat y_{R_j})^2,
 \]</span> where <span class="math inline">\(\hat y_{R_j}\)</span> is the mean response for the training observations within the <span class="math inline">\(j\)</span>th box.</p></li>
 <li><p>Unfortunately, it is computationally infeasible to consider every possible partition of the feature space into <span class="math inline">\(J\)</span> boxes.</p></li>
-<li><p>For this reason, we take a <strong>top-down</strong>, <strong>greedy</strong> approach that is known as recursive binary splitting.</p></li>
+<li><p>For this reason, we take a <strong>top-down</strong>, <strong>greedy</strong> approach that is known as recursive binary splitting.</p>
+<ul>
 <li><p>The approach is <strong>top-down</strong> because it begins at the top of the tree and then successively splits the predictor space; each split is indicated via two new branches further down on the tree.</p></li>
 <li><p>It is <strong>greedy</strong> because at each step of the tree-building process, the <strong>best</strong> split is made at that particular step, rather than looking ahead and picking a split that will lead to a better tree in some future step.</p></li>
+</ul></li>
 <li><p>We first select the predictor <span class="math inline">\(X_j\)</span> and the cutpoint <span class="math inline">\(s\)</span> such that splitting the predictor space into the regions <span class="math inline">\(\{X \mid X_j &lt; s\}\)</span> and <span class="math inline">\(\{X \mid X_j \ge s\}\)</span> leads to the greatest possible reduction in RSS.</p></li>
 <li><p>Next, we repeat the process, looking for the best predictor and best cutpoint in order to split the data further so as to minimize the RSS within each of the resulting regions.</p></li>
 <li><p>However, this time, instead of splitting the entire predictor space, we split one of the two previously identified regions. We now have three regions.</p></li>
@@ -433,8 +440,7 @@ R_3 &amp;=&amp; \{ X \mid \text{Years} \ge 4.5, \text{Hits} \ge 117.5\}
 <ul>
 <li><p>The process described above may produce good predictions on the training set, but is likely to <strong>overfit</strong> the data, leading to poor test set performance.</p></li>
 <li><p>A smaller tree with fewer splits (that is, fewer regions <span class="math inline">\(R_1, \ldots, R_J\)</span>) might lead to lower variance and better interpretation at the cost of a little bias.</p></li>
-<li><p>One possible alternative to the process described above is to grow the tree only so long as the decrease in the RSS due to each split exceeds some (high) threshold.</p></li>
-<li><p>This strategy will result in smaller trees, but is too <strong>short-sighted</strong>: a seemingly worthless split early on in the tree might be followed by a very good split.</p></li>
+<li><p>One possible alternative to the process described above is to grow the tree only so long as the decrease in the RSS due to each split exceeds some (high) threshold. This strategy will result in smaller trees, but is too <strong>short-sighted</strong>: a seemingly worthless split early on in the tree might be followed by a very good split.</p></li>
 <li><p>A better strategy is to grow a very large tree <span class="math inline">\(T_0\)</span>, and then prune it back in order to obtain a <strong>subtree</strong>.</p></li>
 <li><p><strong>Cost complexity pruning</strong>, aka <strong>weakest link pruning</strong>, is used to do this.</p></li>
 <li><p>we consider a sequence of trees indexed by a nonnegative tuning parameter <span class="math inline">\(\alpha\)</span>. For each value of <span class="math inline">\(\alpha\)</span> there corresponds a subtree <span class="math inline">\(T \subset T_0\)</span> such that <span class="math display">\[
@@ -457,8 +463,9 @@ R_3 &amp;=&amp; \{ X \mid \text{Years} \ge 4.5, \text{Hits} \ge 117.5\}
 <li><p>Return the subtree from Step 2 that corresponds to the chosen value of <span class="math inline">\(\alpha\)</span>.</p></li>
 </ol>
 </section>
-<section id="baseball-example-todo" class="level2" data-number="8">
-<h2 data-number="8" class="anchored" data-anchor-id="baseball-example-todo"><span class="header-section-number">8</span> Baseball example (TODO)</h2>
+<section id="baseball-example-regression-tree" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="baseball-example-regression-tree"><span class="header-section-number">8</span> Baseball example (regression tree)</h2>
+<p><a href="https://ucla-econ-425t.github.io/2023winter/slides/08-tree/workflow_regtree.html">Workflow: pruning a regression tree</a>.</p>
 </section>
 <section id="classification-trees" class="level2" data-number="9">
 <h2 data-number="9" class="anchored" data-anchor-id="classification-trees"><span class="header-section-number">9</span> Classification trees</h2>
@@ -466,22 +473,21 @@ R_3 &amp;=&amp; \{ X \mid \text{Years} \ge 4.5, \text{Hits} \ge 117.5\}
 <li><p>Very similar to a regression tree, except that it is used to predict a qualitative response rather than a quantitative one.</p></li>
 <li><p>For a classification tree, we predict that each observation belongs to the <strong>most commonly occurring class</strong> of training observations in the region to which it belongs.</p></li>
 <li><p>Just as in the regression setting, we use recursive binary splitting to grow a classification tree.</p></li>
-<li><p>In the classification setting, RSS cannot be used as a criterion for making the binary splits.</p></li>
-<li><p>A natural alternative to RSS is the <strong>classification error rate</strong>. This is simply the fraction of the training observations in that region that do not belong to the most common class: <span class="math display">\[
+<li><p>In the classification setting, RSS cannot be used as a criterion for making the binary splits. A natural alternative to RSS is the <strong>classification error rate</strong>. This is simply the fraction of the training observations in that region that do not belong to the most common class: <span class="math display">\[
 E = 1 - \max_k (\hat p_{mk}).
 \]</span> Here <span class="math inline">\(\hat p_{mk}\)</span> represents the proportion of training observations in the <span class="math inline">\(m\)</span>th region that are from the <span class="math inline">\(k\)</span>th class.</p></li>
 <li><p>However classification error is not sufficiently sensitive for tree-growing, and in practice two other measures are preferable.</p></li>
 <li><p>The <strong>Gini index</strong> is defined by <span class="math display">\[
 G = \sum_{k=1}^K \hat p_{mk}(1 - \hat p_{mk}),
-\]</span> a measure of total variance across the <span class="math inline">\(K\)</span> classes. The Gini index takes on a small value if all of the <span class="math inline">\(\hat p_{mk}\)</span>’s are close to zero or one.</p></li>
-<li><p>For this reason the Gini index is referred to as a measure of node <strong>purity</strong>. A small value indicates that a node contains predominantly observations from a single class.</p></li>
+\]</span> a measure of total variance across the <span class="math inline">\(K\)</span> classes. The Gini index takes on a small value if all of the <span class="math inline">\(\hat p_{mk}\)</span>’s are close to zero or one. For this reason the Gini index is referred to as a measure of node <strong>purity</strong>. A small value indicates that a node contains predominantly observations from a single class.</p></li>
 <li><p>An alternative to the Gini index is <strong>cross-entropy</strong>, given by <span class="math display">\[
 D = - \sum_{k=1}^K \hat p_{mk} \log \hat p_{mk}.
 \]</span> It turns out that the Gini index and the cross-entropy are very similar numerically.</p></li>
 </ul>
 </section>
-<section id="example-heart-data-todo" class="level2" data-number="10">
-<h2 data-number="10" class="anchored" data-anchor-id="example-heart-data-todo"><span class="header-section-number">10</span> Example: heart data (TODO)</h2>
+<section id="heart-data-example-classification-tree" class="level2" data-number="10">
+<h2 data-number="10" class="anchored" data-anchor-id="heart-data-example-classification-tree"><span class="header-section-number">10</span> <code>Heart</code> data example (classification tree)</h2>
+<p><a href="https://ucla-econ-425t.github.io/2023winter/slides/08-tree/workflow_classtree.html">Workflow: pruning a classification tree</a>.</p>
 </section>
 <section id="tree-versus-linear-models" class="level2" data-number="11">
 <h2 data-number="11" class="anchored" data-anchor-id="tree-versus-linear-models"><span class="header-section-number">11</span> Tree versus linear models</h2>

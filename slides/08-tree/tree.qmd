@@ -50,7 +50,7 @@ sessionInfo()
 
 - Since the set of splitting rules used to segment the predictor space can be summarized in a tree, these types of approaches are known as **decision-tree** methods.
 
-## Pros and cons
+### Pros and cons of decision tree
 
 - Tree-based methods are simple and useful for interpretation.
 
@@ -66,7 +66,7 @@ sessionInfo()
 
 - We first consider regression problems, and then move on to classification.
 
-- Baseball salary date `Hitter`.
+## Baseball player salary data `Hitter`.
 
 ::: {.panel-tabset}
 
@@ -133,12 +133,11 @@ R_3 &=& \{ X \mid \text{Years} \ge 4.5, \text{Hits} \ge 117.5\}
 
     - In keeping with the **tree** analogy, the regions $R_1$, $R_2$, and $R_3$ are known as **terminal nodes**. 
     
-    - Decision trees are typically drawn **upside down**, in the
-sense that the leaves are at the bottom of the tree.
+    - Decision trees are typically drawn **upside down**, in the sense that the leaves are at the bottom of the tree.
 
     - The points along the tree where the predictor space is split are referred to as **internal nodes**.
     
-    - In the hitters tree, the two internal nodes are indicated by the `Years<4.5` and `Hits<117.5`.
+    - In the `Hitters` tree, the two internal nodes are indicated by the `Years<4.5` and `Hits<117.5`.
     
 - Interpretation of decision tree results:
 
@@ -152,29 +151,25 @@ sense that the leaves are at the bottom of the tree.
     
 ## Tree-building process
 
-- We divide the predictor space into J distinct and
-non-overlapping regions, $R_1, R_2, \ldots, R_J$.
+- We divide the predictor space into J distinct and non-overlapping regions: $R_1, R_2, \ldots, R_J$.
 
-- For every observation that falls into the region $R_j$, we make the same prediction, which is simply the mean of the
-response values for the training observations in $R_j$.
+- For every observation that falls into the region $R_j$, we make the same prediction, which is simply the mean of the response values for the training observations in $R_j$.
 
 - In theory, the regions could have any shape. However, we choose to divide the predictor space into high-dimensional rectangles, or **boxes**, for simplicity and for ease of interpretation of the resulting predictive model.
 
-- The goal is to find boxes $R_1, \ldots, R_J$ that minimize the
-RSS, given by
+- The goal is to find boxes $R_1, \ldots, R_J$ that minimize the RSS, given by
 $$
 \sum_{j=1}^J \sum_{i \in R_j} (y_i - \hat y_{R_j})^2,
 $$
 where $\hat y_{R_j}$ is the mean response for the training observations within the $j$th box.
 
-- Unfortunately, it is computationally infeasible to consider
-every possible partition of the feature space into $J$ boxes.
+- Unfortunately, it is computationally infeasible to consider every possible partition of the feature space into $J$ boxes.
 
 - For this reason, we take a **top-down**, **greedy** approach that is known as recursive binary splitting.
 
-- The approach is **top-down** because it begins at the top of the tree and then successively splits the predictor space; each split is indicated via two new branches further down on the tree.
+    - The approach is **top-down** because it begins at the top of the tree and then successively splits the predictor space; each split is indicated via two new branches further down on the tree.
 
-- It is **greedy** because at each step of the tree-building
+    - It is **greedy** because at each step of the tree-building
 process, the **best** split is made at that particular step, rather than looking ahead and picking a split that will lead to a better tree in some future step.
 
 - We first select the predictor $X_j$ and the cutpoint $s$ such
@@ -214,10 +209,7 @@ could not result from recursive binary splitting. Top right: The output of recur
 
 - A smaller tree with fewer splits (that is, fewer regions $R_1, \ldots, R_J$) might lead to lower variance and better interpretation at the cost of a little bias.
 
-- One possible alternative to the process described above is to grow the tree only so long as the decrease in the RSS due to each split exceeds some (high) threshold.
-
-- This strategy will result in smaller trees, but is too **short-sighted**: a seemingly worthless split early on in the
-tree might be followed by a very good split.
+- One possible alternative to the process described above is to grow the tree only so long as the decrease in the RSS due to each split exceeds some (high) threshold. This strategy will result in smaller trees, but is too **short-sighted**: a seemingly worthless split early on in the tree might be followed by a very good split.
 
 - A better strategy is to grow a very large tree $T_0$, and then prune it back in order to obtain a **subtree**.
 
@@ -233,8 +225,7 @@ is as small as possible. Here $|T|$ indicates the number of terminal nodes of th
 
 - We select an optimal value $\hat \alpha$ using cross-validation.
 
-- We then return to the full data set and obtain the subtree
-corresponding to $\hat \alpha$.
+- We then return to the full data set and obtain the subtree corresponding to $\hat \alpha$.
 
 ## Summary: tree algorithm
 
@@ -253,7 +244,9 @@ $k = 1,\ldots,K$:
     
 4. Return the subtree from Step 2 that corresponds to the chosen value of $\alpha$.
 
-## Baseball example (TODO)
+## Baseball example (regression tree)
+
+[Workflow: pruning a regression tree](https://ucla-econ-425t.github.io/2023winter/slides/08-tree/workflow_regtree.html).
 
 ## Classification trees
 
@@ -263,9 +256,7 @@ $k = 1,\ldots,K$:
 
 - Just as in the regression setting, we use recursive binary splitting to grow a classification tree.
 
-- In the classification setting, RSS cannot be used as a criterion for making the binary splits.
-
-- A natural alternative to RSS is the **classification error rate**. This is simply the fraction of the training observations in that region that do not belong to the most common class:
+- In the classification setting, RSS cannot be used as a criterion for making the binary splits. A natural alternative to RSS is the **classification error rate**. This is simply the fraction of the training observations in that region that do not belong to the most common class:
 $$
 E = 1 - \max_k (\hat p_{mk}).
 $$
@@ -278,11 +269,7 @@ tree-growing, and in practice two other measures are preferable.
 $$
 G = \sum_{k=1}^K \hat p_{mk}(1 - \hat p_{mk}),
 $$
-a measure of total variance across the $K$ classes. The Gini index takes on a small value if all of the $\hat p_{mk}$'s are close to zero or one.
-
-- For this reason the Gini index is referred to as a measure of
-node **purity**. A small value indicates that a node contains
-predominantly observations from a single class.
+a measure of total variance across the $K$ classes. The Gini index takes on a small value if all of the $\hat p_{mk}$'s are close to zero or one. For this reason the Gini index is referred to as a measure of node **purity**. A small value indicates that a node contains predominantly observations from a single class.
 
 - An alternative to the Gini index is **cross-entropy**, given by
 $$
@@ -290,7 +277,9 @@ D = - \sum_{k=1}^K \hat p_{mk} \log \hat p_{mk}.
 $$
 It turns out that the Gini index and the cross-entropy are very similar numerically.
 
-## Example: heart data (TODO)
+## `Heart` data example (classification tree)
+
+[Workflow: pruning a classification tree](https://ucla-econ-425t.github.io/2023winter/slides/08-tree/workflow_classtree.html).
 
 ## Tree versus linear models
 
