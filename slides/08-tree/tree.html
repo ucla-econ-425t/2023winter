@@ -127,7 +127,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#tree-versus-linear-models" id="toc-tree-versus-linear-models" class="nav-link" data-scroll-target="#tree-versus-linear-models"><span class="toc-section-number">11</span>  Tree versus linear models</a></li>
   <li><a href="#pros-and-cons-of-decision-trees" id="toc-pros-and-cons-of-decision-trees" class="nav-link" data-scroll-target="#pros-and-cons-of-decision-trees"><span class="toc-section-number">12</span>  Pros and cons of decision trees</a></li>
   <li><a href="#bagging" id="toc-bagging" class="nav-link" data-scroll-target="#bagging"><span class="toc-section-number">13</span>  Bagging</a></li>
-  <li><a href="#out-of-bag-error-estimation" id="toc-out-of-bag-error-estimation" class="nav-link" data-scroll-target="#out-of-bag-error-estimation"><span class="toc-section-number">14</span>  Out-of-Bag Error Estimation</a></li>
+  <li><a href="#out-of-bag-oob-error-estimation" id="toc-out-of-bag-oob-error-estimation" class="nav-link" data-scroll-target="#out-of-bag-oob-error-estimation"><span class="toc-section-number">14</span>  Out-of-Bag (OOB) error estimation</a></li>
   <li><a href="#random-forests" id="toc-random-forests" class="nav-link" data-scroll-target="#random-forests"><span class="toc-section-number">15</span>  Random forests</a></li>
   <li><a href="#boosting" id="toc-boosting" class="nav-link" data-scroll-target="#boosting"><span class="toc-section-number">16</span>  Boosting</a></li>
   <li><a href="#boosting-for-classification" id="toc-boosting-for-classification" class="nav-link" data-scroll-target="#boosting-for-classification"><span class="toc-section-number">17</span>  Boosting for classification</a></li>
@@ -505,25 +505,24 @@ D = - \sum_{k=1}^K \hat p_{mk} \log \hat p_{mk}.
 <p>Advantages:</p>
 <ol type="1">
 <li><p>Trees are very easy to explain to people. In fact, they are even easier to explain than linear regression!</p></li>
-<li><p>Some people believe that decision trees more closely mirror human decision-making than do the regression and classification approaches seen in previous chapters.</p></li>
+<li><p>Some people believe that decision trees more closely mirror human decision-making than do the regression and classification approaches we learnt in this course.</p></li>
 <li><p>Trees can be displayed graphically, and are easily interpreted even by a non-expert (especially if they are small).</p></li>
-<li><p>Trees can easily handle qualitative predictors without the need to create dummy variables.</p></li>
+<li><p>Trees can easily handle qualitative predictors without the need to create dummy variables. scikit-learn and xgboost don’t allow categorical predictors yet<strong>???</strong></p></li>
 </ol>
 <p>Disadvantages:</p>
 <ol type="1">
-<li><p>Unfortunately, trees generally do not have the same level of predictive accuracy as some of the other regression and classification approaches seen in this book.</p></li>
+<li><p>Unfortunately, trees generally do not have the same level of predictive accuracy as some of the other regression and classification approaches.</p></li>
 <li><p>Additionally, trees can be very non-robust. In other words, a small change in the data can cause a large change in the final estimated tree.</p></li>
 </ol>
-<p>Bagging, random forests, and boosting solve these issues.</p>
+<p>Ensemble methods such as bagging, random forests, and boosting solve these issues.</p>
 </section>
 <section id="bagging" class="level2" data-number="13">
 <h2 data-number="13" class="anchored" data-anchor-id="bagging"><span class="header-section-number">13</span> Bagging</h2>
 <ul>
 <li><p><strong>Bootstrap aggregation</strong>, or <strong>bagging</strong>, is a general-purpose procedure for reducing the variance of a statistical learning method. It is particularly useful and frequently used in the context of decision trees.</p></li>
-<li><p>Recall that given a set of <span class="math inline">\(n\)</span> independent observations <span class="math inline">\(Z_1, \ldots, Z_n\)</span>, each with variance <span class="math inline">\(\sigma^2\)</span>, the variance of the mean <span class="math inline">\(\bar Z\)</span> of the observations is given by <span class="math inline">\(\sigma^2 / n\)</span>.</p></li>
-<li><p>In other words, averaging a set of observations reduces variance. Of course, this is not practical because we generally do not have access to multiple training sets.</p></li>
+<li><p>Recall that given a set of <span class="math inline">\(n\)</span> independent observations <span class="math inline">\(Z_1, \ldots, Z_n\)</span>, each with variance <span class="math inline">\(\sigma^2\)</span>, the variance of the mean <span class="math inline">\(\bar Z\)</span> of the observations is given by <span class="math inline">\(\sigma^2 / n\)</span>. In other words, averaging a set of observations reduces variance. Of course, this is not practical because we generally do not have access to multiple training sets.</p></li>
 <li><p>Instead, we can bootstrap, by taking repeated samples from the (single) training data set.</p></li>
-<li><p>In this approach we generate B different bootstrapped training data sets. We then train our method on the <span class="math inline">\(b\)</span>th bootstrapped training set in order to get <span class="math inline">\(\hat f^{*b}(x)\)</span>, the prediction at a point <span class="math inline">\(x\)</span>. We then average all the predictions to obtain <span class="math display">\[
+<li><p>In this approach we generate <span class="math inline">\(B\)</span> different bootstrapped training data sets. We then train our method on the <span class="math inline">\(b\)</span>th bootstrapped training set in order to get <span class="math inline">\(\hat f^{*b}(x)\)</span>, the prediction at a point <span class="math inline">\(x\)</span>. We then average all the predictions to obtain <span class="math display">\[
 \hat f_{\text{bag}}(x) = \frac{1}{B} \sum_{b=1}^B \hat f^{*b}(x).
 \]</span> This is called <strong>bagging</strong>.</p></li>
 <li><p>The above prescription applied to regression trees.</p></li>
@@ -538,11 +537,11 @@ D = - \sum_{k=1}^K \hat p_{mk} \log \hat p_{mk}.
 </figure>
 </div>
 </section>
-<section id="out-of-bag-error-estimation" class="level2" data-number="14">
-<h2 data-number="14" class="anchored" data-anchor-id="out-of-bag-error-estimation"><span class="header-section-number">14</span> Out-of-Bag Error Estimation</h2>
+<section id="out-of-bag-oob-error-estimation" class="level2" data-number="14">
+<h2 data-number="14" class="anchored" data-anchor-id="out-of-bag-oob-error-estimation"><span class="header-section-number">14</span> Out-of-Bag (OOB) error estimation</h2>
 <ul>
-<li><p>It turns out that there is a very straightforward way to estimate the test error of a bagged model.</p></li>
-<li><p>Recall that the key to bagging is that trees are repeatedly fit to bootstrapped subsets of the observations. One can show that on average, each bagged tree makes use of around two-thirds of the observations.</p></li>
+<li><p>There is a very straightforward way to estimate the test error of a bagged model.</p></li>
+<li><p>Recall that the key to bagging is that trees are repeatedly fit to bootstrapped subsets of the observations. Each bagged tree makes use of around two-thirds of the observations (HW2).</p></li>
 <li><p>The remaining one-third of the observations not used to fit a given bagged tree are referred to as the <strong>out-of-bag</strong> (OOB) observations.</p></li>
 <li><p>We can predict the response for the <span class="math inline">\(i\)</span>th observation using each of the trees in which that observation was OOB. This will yield around <span class="math inline">\(B/3\)</span> predictions for the <span class="math inline">\(i\)</span>th observation, which we average.</p></li>
 <li><p>This estimate is essentially the LOO cross-validation error for bagging, if <span class="math inline">\(B\)</span> is large.</p></li>
@@ -551,10 +550,10 @@ D = - \sum_{k=1}^K \hat p_{mk} \log \hat p_{mk}.
 <section id="random-forests" class="level2" data-number="15">
 <h2 data-number="15" class="anchored" data-anchor-id="random-forests"><span class="header-section-number">15</span> Random forests</h2>
 <ul>
-<li><p><strong>Random forests</strong> provide an improvement over bagged trees by way of a small tweak that <strong>decorrelates</strong> the trees. This reduces the variance when we average the trees.</p></li>
+<li><p><strong>Random forests</strong> provide an improvement over bagged trees by a small tweak that <strong>decorrelates</strong> the trees. This reduces the variance when we average the trees.</p></li>
 <li><p>As in bagging, we build a number of decision trees on bootstrapped training samples.</p></li>
 <li><p>But when building these decision trees, each time a split in a tree is considered, a <strong>random selection of <span class="math inline">\(m\)</span> predictors</strong> is chosen as split candidates from the full set of <span class="math inline">\(p\)</span> predictors. The split is allowed to use only one of those <span class="math inline">\(m\)</span> predictors.</p></li>
-<li><p>A fresh selection of <span class="math inline">\(m\)</span> predictors is taken at each split, and typically we choose <span class="math inline">\(m \approx \sqrt{p}\)</span>. That is, the number of predictors considered at each split is approximately equal to the square root of the total number of predictors (4 out of the 13 for the Heart data).</p></li>
+<li><p>A fresh selection of <span class="math inline">\(m\)</span> predictors is taken at each split, and typically we choose <span class="math inline">\(m \approx \sqrt{p}\)</span>. That is, the number of predictors considered at each split is approximately equal to the square root of the total number of predictors (4 out of the 13 for the <code>Heart</code> data).</p></li>
 <li><p>Gene expression data.</p></li>
 </ul>
 <div id="fig-random-forest-gene-expression" class="quarto-figure quarto-figure-center anchored">
@@ -591,7 +590,7 @@ r_i \leftarrow r_i - \lambda \hat f^b(x_i).
 <li><p>Unlike fitting a single large decision tree to the data, which amounts to fitting the data hard and potentially overfitting, the boosting approach instead <strong>learns slowly</strong>.</p></li>
 <li><p>Given the current model, we fit a decision tree to the residuals from the model. We then add this new decision tree into the fitted function in order to update the residuals.</p></li>
 <li><p>Each of these trees can be rather small, with just a few terminal nodes, determined by the parameter <span class="math inline">\(d\)</span> in the algorithm.</p></li>
-<li><p>By fitting small trees to the residuals, we slowly improve <span class="math inline">\(\hat f\)</span> in areas where it does not perform well. The shrinkage parameter <span class="math inline">\(\lambda\)</span> slows the process down even further, allowing more and different shaped trees to attack the residuals.</p></li>
+<li><p>By fitting <strong>small trees</strong> to the residuals, we slowly improve <span class="math inline">\(\hat f\)</span> in areas where it does not perform well. The shrinkage parameter <span class="math inline">\(\lambda\)</span> slows the process down even further, allowing more and different shaped trees to attack the residuals.</p></li>
 </ul>
 </section>
 <section id="boosting-for-classification" class="level2" data-number="17">
@@ -611,8 +610,8 @@ r_i \leftarrow r_i - \lambda \hat f^b(x_i).
 <h2 data-number="18" class="anchored" data-anchor-id="tuning-parameters-for-boosting"><span class="header-section-number">18</span> Tuning parameters for boosting</h2>
 <ol type="1">
 <li><p>The <strong>number of trees</strong> <span class="math inline">\(B\)</span>. Unlike bagging and random forests, boosting can overfit if <span class="math inline">\(B\)</span> is too large, although this overfitting tends to occur slowly if at all. We use cross-validation to select <span class="math inline">\(B\)</span>.</p></li>
-<li><p>The <strong>shrinkage parameter</strong> <span class="math inline">\(\lambda\)</span>, a small positive number. This controls the rate at which boosting learns. Typical values are 0.01 or 0.001, and the right choice can depend on the problem. Very small <span class="math inline">\(\lambda\)</span> can require using a very large value of <span class="math inline">\(B\)</span> in order to achieve good performance.</p></li>
-<li><p>The <strong>number of splits</strong> <span class="math inline">\(d\)</span> in each tree, which controls the complexity of the boosted ensemble. Often <span class="math inline">\(d = 1\)</span> works well, in which case each tree is a stump, consisting of a single split and resulting in an additive model. More generally <span class="math inline">\(d\)</span> is the interaction depth, and controls the interaction order of the boosted model, since <span class="math inline">\(d\)</span> splits can involve at most <span class="math inline">\(d\)</span> variables.</p></li>
+<li><p>The <strong>shrinkage parameter</strong> or <strong>learning rate</strong> <span class="math inline">\(\lambda\)</span>, a small positive number. This controls the rate at which boosting learns. Typical values are 0.01 or 0.001, and the right choice can depend on the problem. Very small <span class="math inline">\(\lambda\)</span> can require using a very large value of <span class="math inline">\(B\)</span> in order to achieve good performance.</p></li>
+<li><p>The <strong>number of splits</strong> <span class="math inline">\(d\)</span> in each tree, which controls the complexity of the boosted ensemble. Often <span class="math inline">\(d = 1\)</span> or 2 works well, in which case each tree is a stump, consisting of a single split and resulting in an additive model. More generally <span class="math inline">\(d\)</span> is the interaction depth, and controls the interaction order of the boosted model, since <span class="math inline">\(d\)</span> splits can involve at most <span class="math inline">\(d\)</span> variables.</p></li>
 </ol>
 </section>
 <section id="variable-importance-vi-measure" class="level2" data-number="19">

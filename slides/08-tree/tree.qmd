@@ -300,35 +300,30 @@ Advantages:
 
 1. Trees are very easy to explain to people. In fact, they are even easier to explain than linear regression!
 
-2. Some people believe that decision trees more closely mirror human decision-making than do the regression and classification approaches seen in previous chapters.
+2. Some people believe that decision trees more closely mirror human decision-making than do the regression and classification approaches we learnt in this course.
 
 3. Trees can be displayed graphically, and are easily interpreted even by a non-expert (especially if they are small).
 
-4. Trees can easily handle qualitative predictors without the need to create dummy variables.
+4. Trees can easily handle qualitative predictors without the need to create dummy variables. scikit-learn and xgboost don't allow categorical predictors yet**???**
 
 Disadvantages:
 
-1. Unfortunately, trees generally do not have the same level of predictive accuracy as some of the other regression and
-classification approaches seen in this book.
+1. Unfortunately, trees generally do not have the same level of predictive accuracy as some of the other regression and classification approaches.
 
 2. Additionally, trees can be very non-robust. In other words, a small change in the data can cause a large change in the final estimated tree.
 
-Bagging, random forests, and boosting solve these issues.
+Ensemble methods such as bagging, random forests, and boosting solve these issues.
 
 ## Bagging
 
 - **Bootstrap aggregation**, or **bagging**, is a general-purpose procedure for reducing the variance of a statistical learning method. It is particularly useful and frequently used in the context of decision trees.
 
 - Recall that given a set of $n$ independent observations
-$Z_1, \ldots, Z_n$, each with variance $\sigma^2$, the variance of the mean $\bar Z$ of the observations is given by $\sigma^2 / n$.
-
-- In other words, averaging a set of observations reduces variance. Of course, this is not practical because we generally do not have access to multiple training sets.
+$Z_1, \ldots, Z_n$, each with variance $\sigma^2$, the variance of the mean $\bar Z$ of the observations is given by $\sigma^2 / n$. In other words, averaging a set of observations reduces variance. Of course, this is not practical because we generally do not have access to multiple training sets.
 
 - Instead, we can bootstrap, by taking repeated samples from the (single) training data set.
 
-- In this approach we generate B different bootstrapped
-training data sets. We then train our method on the $b$th
-bootstrapped training set in order to get $\hat f^{*b}(x)$, the prediction at a point $x$. We then average all the predictions to obtain
+- In this approach we generate $B$ different bootstrapped training data sets. We then train our method on the $b$th bootstrapped training set in order to get $\hat f^{*b}(x)$, the prediction at a point $x$. We then average all the predictions to obtain
 $$
 \hat f_{\text{bag}}(x) = \frac{1}{B} \sum_{b=1}^B \hat f^{*b}(x).
 $$
@@ -348,11 +343,11 @@ The test error (black and orange) is shown as a function of $B$, the number of b
 
 :::
 
-## Out-of-Bag Error Estimation
+## Out-of-Bag (OOB) error estimation
 
-- It turns out that there is a very straightforward way to estimate the test error of a bagged model.
+- There is a very straightforward way to estimate the test error of a bagged model.
 
-- Recall that the key to bagging is that trees are repeatedly fit to bootstrapped subsets of the observations. One can show that on average, each bagged tree makes use of around two-thirds of the observations.
+- Recall that the key to bagging is that trees are repeatedly fit to bootstrapped subsets of the observations. Each bagged tree makes use of around two-thirds of the observations (HW2).
 
 - The remaining one-third of the observations not used to fit a given bagged tree are referred to as the **out-of-bag** (OOB) observations.
 
@@ -362,13 +357,13 @@ The test error (black and orange) is shown as a function of $B$, the number of b
 
 ## Random forests
 
-- **Random forests** provide an improvement over bagged trees by way of a small tweak that **decorrelates** the trees. This reduces the variance when we average the trees.
+- **Random forests** provide an improvement over bagged trees by a small tweak that **decorrelates** the trees. This reduces the variance when we average the trees.
 
 - As in bagging, we build a number of decision trees on bootstrapped training samples.
 
 - But when building these decision trees, each time a split in a tree is considered, a **random selection of $m$ predictors** is chosen as split candidates from the full set of $p$ predictors. The split is allowed to use only one of those $m$ predictors.
 
-- A fresh selection of $m$ predictors is taken at each split, and typically we choose $m \approx \sqrt{p}$. That is, the number of predictors considered at each split is approximately equal to the square root of the total number of predictors (4 out of the 13 for the Heart data).
+- A fresh selection of $m$ predictors is taken at each split, and typically we choose $m \approx \sqrt{p}$. That is, the number of predictors considered at each split is approximately equal to the square root of the total number of predictors (4 out of the 13 for the `Heart` data).
 
 - Gene expression data.
 
@@ -378,8 +373,7 @@ The test error (black and orange) is shown as a function of $B$, the number of b
 ![](ISL_fig_8_10.pdf){width=500px height=600px}
 </p>
 
-Results from random forests for the fifteen-class gene
-expression data set with $p=500$ predictors. The test error is displayed as a function of the number of trees. Each colored line corresponds to a different value of $m$, the number of predictors available for splitting at each interior tree node. Random forests ($m < p$) lead to a slight improvement over bagging ($m = p$). A single classification tree has an error rate of 45.7\%.
+Results from random forests for the fifteen-class gene expression data set with $p=500$ predictors. The test error is displayed as a function of the number of trees. Each colored line corresponds to a different value of $m$, the number of predictors available for splitting at each interior tree node. Random forests ($m < p$) lead to a slight improvement over bagging ($m = p$). A single classification tree has an error rate of 45.7\%.
 
 :::
 
@@ -422,7 +416,7 @@ tree into the fitted function in order to update the residuals.
 
 - Each of these trees can be rather small, with just a few terminal nodes, determined by the parameter $d$ in the algorithm.
 
-- By fitting small trees to the residuals, we slowly improve $\hat f$ in areas where it does not perform well. The shrinkage parameter $\lambda$ slows the process down even further, allowing more and different shaped trees to attack the residuals.
+- By fitting **small trees** to the residuals, we slowly improve $\hat f$ in areas where it does not perform well. The shrinkage parameter $\lambda$ slows the process down even further, allowing more and different shaped trees to attack the residuals.
 
 ## Boosting for classification
 
@@ -436,10 +430,7 @@ Gene expression example (continued).
 ![](ISL_fig_8_11.pdf){width=500px height=600px}
 </p>
 
-Results from performing boosting and random forests on
-the fifteen-class gene expression data set in order to predict **cancer** versus **normal**. The test error is displayed as a function of the number of trees. For the two boosted models, $\lambda=0.01$. Depth-1 trees slightly outperform depth-2 trees, and both outperform the
-random forest, although the standard errors are around
-0.02, making none of these differences significant. The test error rate for a single tree is 24\%.
+Results from performing boosting and random forests on the fifteen-class gene expression data set in order to predict **cancer** versus **normal**. The test error is displayed as a function of the number of trees. For the two boosted models, $\lambda=0.01$. Depth-1 trees slightly outperform depth-2 trees, and both outperform the random forest, although the standard errors are around 0.02, making none of these differences significant. The test error rate for a single tree is 24\%.
 
 :::
 
@@ -448,9 +439,9 @@ random forest, although the standard errors are around
 1. The **number of trees** $B$. Unlike bagging and random forests, boosting can overfit if $B$ is too large, although this overfitting tends to occur slowly if at all. We use
 cross-validation to select $B$.
 
-2. The **shrinkage parameter** $\lambda$, a small positive number. This controls the rate at which boosting learns. Typical values are 0.01 or 0.001, and the right choice can depend on the problem. Very small $\lambda$ can require using a very large value of $B$ in order to achieve good performance.
+2. The **shrinkage parameter** or **learning rate** $\lambda$, a small positive number. This controls the rate at which boosting learns. Typical values are 0.01 or 0.001, and the right choice can depend on the problem. Very small $\lambda$ can require using a very large value of $B$ in order to achieve good performance.
 
-3. The **number of splits** $d$ in each tree, which controls the complexity of the boosted ensemble. Often $d = 1$ works well, in which case each tree is a stump, consisting of a single split and resulting in an additive model. More generally $d$ is the interaction depth, and controls the interaction order of the boosted model, since $d$ splits can involve at most $d$ variables.
+3. The **number of splits** $d$ in each tree, which controls the complexity of the boosted ensemble. Often $d = 1$ or 2 works well, in which case each tree is a stump, consisting of a single split and resulting in an additive model. More generally $d$ is the interaction depth, and controls the interaction order of the boosted model, since $d$ splits can involve at most $d$ variables.
 
 ## Variable importance (VI) measure
 
