@@ -51,7 +51,7 @@ We illustrate the typical machine learning workflow for regression trees using t
 
 5. Final prediction on the test data.
 
-## Hitters data
+## Heart data
 
 The goal is to predict the binary outcome `AHD` (`Yes` or `No`) of patients.
 
