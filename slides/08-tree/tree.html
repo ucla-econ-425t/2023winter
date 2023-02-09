@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Dr.&nbsp;Hua Zhou @ UCLA">
+<meta name="dcterms.date" content="2023-02-08">
+
+<title>Tree-Based Methods (ISL 8)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="tree_files/libs/clipboard/clipboard.min.js"></script>
+<script src="tree_files/libs/quarto-html/quarto.js"></script>
+<script src="tree_files/libs/quarto-html/popper.min.js"></script>
+<script src="tree_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="tree_files/libs/quarto-html/anchor.min.js"></script>
+<link href="tree_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="tree_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="tree_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="tree_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="tree_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview"><span class="toc-section-number">1</span>  Overview</a></li>
+  <li><a href="#pros-and-cons" id="toc-pros-and-cons" class="nav-link" data-scroll-target="#pros-and-cons"><span class="toc-section-number">2</span>  Pros and cons</a></li>
+  <li><a href="#the-basics-of-decision-trees" id="toc-the-basics-of-decision-trees" class="nav-link" data-scroll-target="#the-basics-of-decision-trees"><span class="toc-section-number">3</span>  The basics of decision trees</a></li>
+  <li><a href="#tree-building-process" id="toc-tree-building-process" class="nav-link" data-scroll-target="#tree-building-process"><span class="toc-section-number">4</span>  Tree-building process</a></li>
+  <li><a href="#predictions" id="toc-predictions" class="nav-link" data-scroll-target="#predictions"><span class="toc-section-number">5</span>  Predictions</a></li>
+  <li><a href="#prunning" id="toc-prunning" class="nav-link" data-scroll-target="#prunning"><span class="toc-section-number">6</span>  Prunning</a></li>
+  <li><a href="#summary-tree-algorithm" id="toc-summary-tree-algorithm" class="nav-link" data-scroll-target="#summary-tree-algorithm"><span class="toc-section-number">7</span>  Summary: tree algorithm</a></li>
+  <li><a href="#baseball-example-todo" id="toc-baseball-example-todo" class="nav-link" data-scroll-target="#baseball-example-todo"><span class="toc-section-number">8</span>  Baseball example (TODO)</a></li>
+  <li><a href="#classification-trees" id="toc-classification-trees" class="nav-link" data-scroll-target="#classification-trees"><span class="toc-section-number">9</span>  Classification trees</a></li>
+  <li><a href="#example-heart-data-todo" id="toc-example-heart-data-todo" class="nav-link" data-scroll-target="#example-heart-data-todo"><span class="toc-section-number">10</span>  Example: heart data (TODO)</a></li>
+  <li><a href="#tree-versus-linear-models" id="toc-tree-versus-linear-models" class="nav-link" data-scroll-target="#tree-versus-linear-models"><span class="toc-section-number">11</span>  Tree versus linear models</a></li>
+  <li><a href="#pros-and-cons-of-decision-trees" id="toc-pros-and-cons-of-decision-trees" class="nav-link" data-scroll-target="#pros-and-cons-of-decision-trees"><span class="toc-section-number">12</span>  Pros and cons of decision trees</a></li>
+  <li><a href="#bagging" id="toc-bagging" class="nav-link" data-scroll-target="#bagging"><span class="toc-section-number">13</span>  Bagging</a></li>
+  <li><a href="#out-of-bag-error-estimation" id="toc-out-of-bag-error-estimation" class="nav-link" data-scroll-target="#out-of-bag-error-estimation"><span class="toc-section-number">14</span>  Out-of-Bag Error Estimation</a></li>
+  <li><a href="#random-forests" id="toc-random-forests" class="nav-link" data-scroll-target="#random-forests"><span class="toc-section-number">15</span>  Random forests</a></li>
+  <li><a href="#boosting" id="toc-boosting" class="nav-link" data-scroll-target="#boosting"><span class="toc-section-number">16</span>  Boosting</a></li>
+  <li><a href="#boosting-for-classification" id="toc-boosting-for-classification" class="nav-link" data-scroll-target="#boosting-for-classification"><span class="toc-section-number">17</span>  Boosting for classification</a></li>
+  <li><a href="#tuning-parameters-for-boosting" id="toc-tuning-parameters-for-boosting" class="nav-link" data-scroll-target="#tuning-parameters-for-boosting"><span class="toc-section-number">18</span>  Tuning parameters for boosting</a></li>
+  <li><a href="#variable-importance-vi-measure" id="toc-variable-importance-vi-measure" class="nav-link" data-scroll-target="#variable-importance-vi-measure"><span class="toc-section-number">19</span>  Variable importance (VI) measure</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="toc-section-number">20</span>  Summary</a></li>
+  </ul>
+</nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Tree-Based Methods (ISL 8)</h1>
+<p class="subtitle lead">Econ 425T</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Dr.&nbsp;Hua Zhou @ UCLA </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 8, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<p>Credit: This note heavily uses material from the books <a href="https://www.statlearning.com/"><em>An Introduction to Statistical Learning: with Applications in R</em></a> (ISL2) and <a href="https://hastie.su.domains/ElemStatLearn/"><em>Elements of Statistical Learning: Data Mining, Inference, and Prediction</em></a> (ESL2).</p>
+<p>Display system information for reproducibility.</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> IPython</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(IPython.sys_info())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{'commit_hash': 'add5877a4',
+ 'commit_source': 'installation',
+ 'default_encoding': 'utf-8',
+ 'ipython_path': '/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/IPython',
+ 'ipython_version': '8.8.0',
+ 'os_name': 'posix',
+ 'platform': 'macOS-10.16-x86_64-i386-64bit',
+ 'sys_executable': '/Library/Frameworks/Python.framework/Versions/3.10/bin/python3',
+ 'sys_platform': 'darwin',
+ 'sys_version': '3.10.9 (v3.10.9:1dd9be6584, Dec  6 2022, 14:37:36) [Clang '
+                '13.0.0 (clang-1300.0.29.30)]'}</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>R version 4.2.2 (2022-10-31)
+Platform: x86_64-apple-darwin17.0 (64-bit)
+Running under: macOS Big Sur ... 10.16
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.9        here_1.0.1        lattice_0.20-45   png_0.1-8        
+ [5] rprojroot_2.0.3   digest_0.6.30     grid_4.2.2        lifecycle_1.0.3  
+ [9] jsonlite_1.8.4    magrittr_2.0.3    evaluate_0.18     rlang_1.0.6      
+[13] stringi_1.7.8     cli_3.4.1         rstudioapi_0.14   Matrix_1.5-1     
+[17] reticulate_1.26   vctrs_0.5.1       rmarkdown_2.18    tools_4.2.2      
+[21] stringr_1.5.0     glue_1.6.2        htmlwidgets_1.6.0 xfun_0.35        
+[25] yaml_2.3.6        fastmap_1.1.0     compiler_4.2.2    htmltools_0.5.4  
+[29] knitr_1.41       </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<section id="overview" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="overview"><span class="header-section-number">1</span> Overview</h2>
+<ul>
+<li><p>In this lecture, we describe <strong>tree-based</strong> methods for regression and classification.</p></li>
+<li><p>These involve <strong>stratifying</strong> or <strong>segmenting</strong> the predictor space into a number of simple regions.</p></li>
+<li><p>Since the set of splitting rules used to segment the predictor space can be summarized in a tree, these types of approaches are known as <strong>decision-tree</strong> methods.</p></li>
+</ul>
+</section>
+<section id="pros-and-cons" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="pros-and-cons"><span class="header-section-number">2</span> Pros and cons</h2>
+<ul>
+<li><p>Tree-based methods are simple and useful for interpretation.</p></li>
+<li><p>However they typically are not competitive with the best supervised learning approaches in terms of prediction accuracy.</p></li>
+<li><p>Hence we also discuss <strong>bagging</strong>, <strong>random forests</strong>, and <strong>boosting</strong>. These methods grow multiple trees which are then combined to yield a single consensus prediction.</p></li>
+<li><p>Combining a large number of trees can often result in dramatic improvements in prediction accuracy, at the expense of some loss of interpretation.</p></li>
+</ul>
+</section>
+<section id="the-basics-of-decision-trees" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="the-basics-of-decision-trees"><span class="header-section-number">3</span> The basics of decision trees</h2>
+<ul>
+<li><p>Decision trees can be applied to both regression and classification problems.</p></li>
+<li><p>We first consider regression problems, and then move on to classification.</p></li>
+<li><p>Baseball salary date <code>Hitter</code>.</p></li>
+</ul>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Python</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<p>Load <code>Hitters</code> data:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the pandas library</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Load numpy for array manipulation</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Load seaborn plotting library</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Set font sizes in plots</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>sns.<span class="bu">set</span>(font_scale <span class="op">=</span> <span class="dv">2</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Display all columns</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">'display.max_columns'</span>, <span class="va">None</span>)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>Hitters <span class="op">=</span> pd.read_csv(<span class="st">"../data/Hitters.csv"</span>)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>Hitters</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     AtBat  Hits  HmRun  Runs  RBI  Walks  Years  CAtBat  CHits  CHmRun  \
+0      293    66      1    30   29     14      1     293     66       1   
+1      315    81      7    24   38     39     14    3449    835      69   
+2      479   130     18    66   72     76      3    1624    457      63   
+3      496   141     20    65   78     37     11    5628   1575     225   
+4      321    87     10    39   42     30      2     396    101      12   
+..     ...   ...    ...   ...  ...    ...    ...     ...    ...     ...   
+317    497   127      7    65   48     37      5    2703    806      32   
+318    492   136      5    76   50     94     12    5511   1511      39   
+319    475   126      3    61   43     52      6    1700    433       7   
+320    573   144      9    85   60     78      8    3198    857      97   
+321    631   170      9    77   44     31     11    4908   1457      30   
+
+     CRuns  CRBI  CWalks League Division  PutOuts  Assists  Errors  Salary  \
+0       30    29      14      A        E      446       33      20     NaN   
+1      321   414     375      N        W      632       43      10   475.0   
+2      224   266     263      A        W      880       82      14   480.0   
+3      828   838     354      N        E      200       11       3   500.0   
+4       48    46      33      N        E      805       40       4    91.5   
+..     ...   ...     ...    ...      ...      ...      ...     ...     ...   
+317    379   311     138      N        E      325        9       3   700.0   
+318    897   451     875      A        E      313      381      20   875.0   
+319    217    93     146      A        W       37      113       7   385.0   
+320    470   420     332      A        E     1314      131      12   960.0   
+321    775   357     249      A        W      408        4       3  1000.0   
+
+    NewLeague  
+0           A  
+1           N  
+2           A  
+3           N  
+4           N  
+..        ...  
+317         N  
+318         A  
+319         A  
+320         A  
+321         A  
+
+[322 rows x 20 columns]</code></pre>
+</div>
+</div>
+<p>Visualize:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>sns.relplot(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  data <span class="op">=</span> Hitters,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  x <span class="op">=</span> <span class="st">'Years'</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  y <span class="op">=</span> <span class="st">'Hits'</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  hue <span class="op">=</span> <span class="st">'Salary'</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="tree_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="650"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Who are those two outliers?</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>Hitters[Hitters[<span class="st">'Hits'</span>] <span class="op">&lt;</span> <span class="dv">10</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     AtBat  Hits  HmRun  Runs  RBI  Walks  Years  CAtBat  CHits  CHmRun  \
+52      19     7      0     1    2      1      4      41     13       1   
+64      24     3      0     1    0      2      3     159     28       0   
+217     20     1      0     0    0      0      2      41      9       2   
+250     33     6      0     2    4      7      1      33      6       0   
+283     16     2      0     1    0      0      2      28      4       0   
+295     19     4      1     2    3      1      1      19      4       1   
+
+     CRuns  CRBI  CWalks League Division  PutOuts  Assists  Errors    Salary  \
+52       3     4       4      A        E        0        0       0       NaN   
+64      20    12       9      A        W       80        4       0       NaN   
+217      6     7       4      N        E       78      220       6  2127.333   
+250      2     4       7      A        W      205        5       4       NaN   
+283      1     0       0      A        E      247        4       8       NaN   
+295      2     3       1      N        W      692       70       8   920.000   
+
+    NewLeague  
+52          A  
+64          A  
+217         N  
+250         A  
+283         A  
+295         A  </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<ul>
+<li>A simple decision tree for this data:</li>
+</ul>
+<p align="center">
+<embed src="ISL_fig_8_1.pdf" width="500" height="700">
+</p>
+<ul>
+<li>Overall, the tree stratifies or segments the players into three regions of predictor space: <span class="math display">\[\begin{eqnarray*}
+R_1 &amp;=&amp; \{ X \mid \text{Years} &lt; 4.5\} \\
+R_2 &amp;=&amp; \{ X \mid \text{Years} \ge 4.5, \text{Hits} &lt; 117.5\} \\
+R_3 &amp;=&amp; \{ X \mid \text{Years} \ge 4.5, \text{Hits} \ge 117.5\}
+\end{eqnarray*}\]</span></li>
+</ul>
+<p align="center">
+<embed src="ISL_fig_8_2.pdf" width="500" height="500">
+</p>
+<ul>
+<li><p>Terminology:</p>
+<ul>
+<li><p>In keeping with the <strong>tree</strong> analogy, the regions <span class="math inline">\(R_1\)</span>, <span class="math inline">\(R_2\)</span>, and <span class="math inline">\(R_3\)</span> are known as <strong>terminal nodes</strong>.</p></li>
+<li><p>Decision trees are typically drawn <strong>upside down</strong>, in the sense that the leaves are at the bottom of the tree.</p></li>
+<li><p>The points along the tree where the predictor space is split are referred to as <strong>internal nodes</strong>.</p></li>
+<li><p>In the hitters tree, the two internal nodes are indicated by the <code>Years&lt;4.5</code> and <code>Hits&lt;117.5</code>.</p></li>
+</ul></li>
+<li><p>Interpretation of decision tree results:</p>
+<ul>
+<li><p><code>Years</code> is the most important factor in determining <code>Salary</code>, and players with less experience earn lower salaries than more experienced players.</p></li>
+<li><p>Given that a player is less experienced, the number of <code>Hits</code> that he made in the previous year seems to play little role in his <code>Salary</code>.</p></li>
+<li><p>But among players who have been in the major leagues for five or more years, the number of <code>Hits</code> made in the previous year does affect <code>Salary</code>, and players who made more <code>Hits</code> last year tend to have higher salaries.</p></li>
+<li><p>Surely an over-simplification, but compared to a regression model, it is easy to display, interpret and explain.</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="tree-building-process" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="tree-building-process"><span class="header-section-number">4</span> Tree-building process</h2>
+<ul>
+<li><p>We divide the predictor space into J distinct and non-overlapping regions, <span class="math inline">\(R_1, R_2, \ldots, R_J\)</span>.</p></li>
+<li><p>For every observation that falls into the region <span class="math inline">\(R_j\)</span>, we make the same prediction, which is simply the mean of the response values for the training observations in <span class="math inline">\(R_j\)</span>.</p></li>
+<li><p>In theory, the regions could have any shape. However, we choose to divide the predictor space into high-dimensional rectangles, or <strong>boxes</strong>, for simplicity and for ease of interpretation of the resulting predictive model.</p></li>
+<li><p>The goal is to find boxes <span class="math inline">\(R_1, \ldots, R_J\)</span> that minimize the RSS, given by <span class="math display">\[
+\sum_{j=1}^J \sum_{i \in R_j} (y_i - \hat y_{R_j})^2,
+\]</span> where <span class="math inline">\(\hat y_{R_j}\)</span> is the mean response for the training observations within the <span class="math inline">\(j\)</span>th box.</p></li>
+<li><p>Unfortunately, it is computationally infeasible to consider every possible partition of the feature space into <span class="math inline">\(J\)</span> boxes.</p></li>
+<li><p>For this reason, we take a <strong>top-down</strong>, <strong>greedy</strong> approach that is known as recursive binary splitting.</p></li>
+<li><p>The approach is <strong>top-down</strong> because it begins at the top of the tree and then successively splits the predictor space; each split is indicated via two new branches further down on the tree.</p></li>
+<li><p>It is <strong>greedy</strong> because at each step of the tree-building process, the <strong>best</strong> split is made at that particular step, rather than looking ahead and picking a split that will lead to a better tree in some future step.</p></li>
+<li><p>We first select the predictor <span class="math inline">\(X_j\)</span> and the cutpoint <span class="math inline">\(s\)</span> such that splitting the predictor space into the regions <span class="math inline">\(\{X \mid X_j &lt; s\}\)</span> and <span class="math inline">\(\{X \mid X_j \ge s\}\)</span> leads to the greatest possible reduction in RSS.</p></li>
+<li><p>Next, we repeat the process, looking for the best predictor and best cutpoint in order to split the data further so as to minimize the RSS within each of the resulting regions.</p></li>
+<li><p>However, this time, instead of splitting the entire predictor space, we split one of the two previously identified regions. We now have three regions.</p></li>
+<li><p>Again, we look to split one of these three regions further, so as to minimize the RSS. The process continues until a stopping criterion is reached; for instance, we may continue until no region contains more than five observations.</p></li>
+</ul>
+</section>
+<section id="predictions" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="predictions"><span class="header-section-number">5</span> Predictions</h2>
+<ul>
+<li>We predict the response for a given test observation using the mean of the training observations in the region to which that test observation belongs.</li>
+</ul>
+<div id="fig-decision-tree" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<embed src="ISL_fig_8_3.pdf" width="500" height="600">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;1: Top left: A partition of two-dimensional feature space that could not result from recursive binary splitting. Top right: The output of recursive binary splitting on a two-dimensional example. Bottom left: A tree corresponding to the partition in the top right panel. Bottom right: A perspective plot of the prediction surface corresponding to that tree.</figcaption><p></p>
+</figure>
+</div>
+</section>
+<section id="prunning" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="prunning"><span class="header-section-number">6</span> Prunning</h2>
+<ul>
+<li><p>The process described above may produce good predictions on the training set, but is likely to <strong>overfit</strong> the data, leading to poor test set performance.</p></li>
+<li><p>A smaller tree with fewer splits (that is, fewer regions <span class="math inline">\(R_1, \ldots, R_J\)</span>) might lead to lower variance and better interpretation at the cost of a little bias.</p></li>
+<li><p>One possible alternative to the process described above is to grow the tree only so long as the decrease in the RSS due to each split exceeds some (high) threshold.</p></li>
+<li><p>This strategy will result in smaller trees, but is too <strong>short-sighted</strong>: a seemingly worthless split early on in the tree might be followed by a very good split.</p></li>
+<li><p>A better strategy is to grow a very large tree <span class="math inline">\(T_0\)</span>, and then prune it back in order to obtain a <strong>subtree</strong>.</p></li>
+<li><p><strong>Cost complexity pruning</strong>, aka <strong>weakest link pruning</strong>, is used to do this.</p></li>
+<li><p>we consider a sequence of trees indexed by a nonnegative tuning parameter <span class="math inline">\(\alpha\)</span>. For each value of <span class="math inline">\(\alpha\)</span> there corresponds a subtree <span class="math inline">\(T \subset T_0\)</span> such that <span class="math display">\[
+\sum_{m=1}^{|T|} \sum_{i: x_i \in R_m} (y_i - \hat y_{R_m})^2 + \alpha |T|
+\]</span> is as small as possible. Here <span class="math inline">\(|T|\)</span> indicates the number of terminal nodes of the tree <span class="math inline">\(T\)</span>, <span class="math inline">\(R_m\)</span> is the rectangle (i.e.&nbsp;the subset of predictor space) corresponding to the <span class="math inline">\(m\)</span>th terminal node, and <span class="math inline">\(\hat y_{R_m}\)</span> is the mean of the training observations in <span class="math inline">\(R_m\)</span>.</p></li>
+<li><p>The tuning parameter <span class="math inline">\(\alpha\)</span> controls a trade-off between the subtree’s complexity and its fit to the training data.</p></li>
+<li><p>We select an optimal value <span class="math inline">\(\hat \alpha\)</span> using cross-validation.</p></li>
+<li><p>We then return to the full data set and obtain the subtree corresponding to <span class="math inline">\(\hat \alpha\)</span>.</p></li>
+</ul>
+</section>
+<section id="summary-tree-algorithm" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="summary-tree-algorithm"><span class="header-section-number">7</span> Summary: tree algorithm</h2>
+<ol type="1">
+<li><p>Use recursive binary splitting to grow a large tree on the training data, stopping only when each terminal node has fewer than some minimum number of observations.</p></li>
+<li><p>Apply cost complexity pruning to the large tree in order to obtain a sequence of best subtrees, as a function of <span class="math inline">\(\alpha\)</span>.</p></li>
+<li><p>Use <span class="math inline">\(K\)</span>-fold cross-validation to choose <span class="math inline">\(\alpha\)</span>. For each <span class="math inline">\(k = 1,\ldots,K\)</span>:</p>
+<p>3.1 Repeat Steps 1 and 2 on the <span class="math inline">\((K-1)/K\)</span> the fraction of the training data, excluding the <span class="math inline">\(k\)</span>th fold.</p>
+<p>3.2 Evaluate the mean squared prediction error on the data in the left-out <span class="math inline">\(k\)</span>th fold, as a function of <span class="math inline">\(\alpha\)</span>.</p>
+<p>Average the results, and pick <span class="math inline">\(\alpha\)</span> to minimize the average error.</p></li>
+<li><p>Return the subtree from Step 2 that corresponds to the chosen value of <span class="math inline">\(\alpha\)</span>.</p></li>
+</ol>
+</section>
+<section id="baseball-example-todo" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="baseball-example-todo"><span class="header-section-number">8</span> Baseball example (TODO)</h2>
+</section>
+<section id="classification-trees" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="classification-trees"><span class="header-section-number">9</span> Classification trees</h2>
+<ul>
+<li><p>Very similar to a regression tree, except that it is used to predict a qualitative response rather than a quantitative one.</p></li>
+<li><p>For a classification tree, we predict that each observation belongs to the <strong>most commonly occurring class</strong> of training observations in the region to which it belongs.</p></li>
+<li><p>Just as in the regression setting, we use recursive binary splitting to grow a classification tree.</p></li>
+<li><p>In the classification setting, RSS cannot be used as a criterion for making the binary splits.</p></li>
+<li><p>A natural alternative to RSS is the <strong>classification error rate</strong>. This is simply the fraction of the training observations in that region that do not belong to the most common class: <span class="math display">\[
+E = 1 - \max_k (\hat p_{mk}).
+\]</span> Here <span class="math inline">\(\hat p_{mk}\)</span> represents the proportion of training observations in the <span class="math inline">\(m\)</span>th region that are from the <span class="math inline">\(k\)</span>th class.</p></li>
+<li><p>However classification error is not sufficiently sensitive for tree-growing, and in practice two other measures are preferable.</p></li>
+<li><p>The <strong>Gini index</strong> is defined by <span class="math display">\[
+G = \sum_{k=1}^K \hat p_{mk}(1 - \hat p_{mk}),
+\]</span> a measure of total variance across the <span class="math inline">\(K\)</span> classes. The Gini index takes on a small value if all of the <span class="math inline">\(\hat p_{mk}\)</span>’s are close to zero or one.</p></li>
+<li><p>For this reason the Gini index is referred to as a measure of node <strong>purity</strong>. A small value indicates that a node contains predominantly observations from a single class.</p></li>
+<li><p>An alternative to the Gini index is <strong>cross-entropy</strong>, given by <span class="math display">\[
+D = - \sum_{k=1}^K \hat p_{mk} \log \hat p_{mk}.
+\]</span> It turns out that the Gini index and the cross-entropy are very similar numerically.</p></li>
+</ul>
+</section>
+<section id="example-heart-data-todo" class="level2" data-number="10">
+<h2 data-number="10" class="anchored" data-anchor-id="example-heart-data-todo"><span class="header-section-number">10</span> Example: heart data (TODO)</h2>
+</section>
+<section id="tree-versus-linear-models" class="level2" data-number="11">
+<h2 data-number="11" class="anchored" data-anchor-id="tree-versus-linear-models"><span class="header-section-number">11</span> Tree versus linear models</h2>
+<div id="fig-decision-tree" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<embed src="ISL_fig_8_7.pdf" width="500" height="600">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;2: Top Row: True linear boundary; Bottom row: true non-linear boundary. Left column: linear model; Right column: tree-based model</figcaption><p></p>
+</figure>
+</div>
+</section>
+<section id="pros-and-cons-of-decision-trees" class="level2" data-number="12">
+<h2 data-number="12" class="anchored" data-anchor-id="pros-and-cons-of-decision-trees"><span class="header-section-number">12</span> Pros and cons of decision trees</h2>
+<p>Advantages:</p>
+<ol type="1">
+<li><p>Trees are very easy to explain to people. In fact, they are even easier to explain than linear regression!</p></li>
+<li><p>Some people believe that decision trees more closely mirror human decision-making than do the regression and classification approaches seen in previous chapters.</p></li>
+<li><p>Trees can be displayed graphically, and are easily interpreted even by a non-expert (especially if they are small).</p></li>
+<li><p>Trees can easily handle qualitative predictors without the need to create dummy variables.</p></li>
+</ol>
+<p>Disadvantages:</p>
+<ol type="1">
+<li><p>Unfortunately, trees generally do not have the same level of predictive accuracy as some of the other regression and classification approaches seen in this book.</p></li>
+<li><p>Additionally, trees can be very non-robust. In other words, a small change in the data can cause a large change in the final estimated tree.</p></li>
+</ol>
+<p>Bagging, random forests, and boosting solve these issues.</p>
+</section>
+<section id="bagging" class="level2" data-number="13">
+<h2 data-number="13" class="anchored" data-anchor-id="bagging"><span class="header-section-number">13</span> Bagging</h2>
+<ul>
+<li><p><strong>Bootstrap aggregation</strong>, or <strong>bagging</strong>, is a general-purpose procedure for reducing the variance of a statistical learning method. It is particularly useful and frequently used in the context of decision trees.</p></li>
+<li><p>Recall that given a set of <span class="math inline">\(n\)</span> independent observations <span class="math inline">\(Z_1, \ldots, Z_n\)</span>, each with variance <span class="math inline">\(\sigma^2\)</span>, the variance of the mean <span class="math inline">\(\bar Z\)</span> of the observations is given by <span class="math inline">\(\sigma^2 / n\)</span>.</p></li>
+<li><p>In other words, averaging a set of observations reduces variance. Of course, this is not practical because we generally do not have access to multiple training sets.</p></li>
+<li><p>Instead, we can bootstrap, by taking repeated samples from the (single) training data set.</p></li>
+<li><p>In this approach we generate B different bootstrapped training data sets. We then train our method on the <span class="math inline">\(b\)</span>th bootstrapped training set in order to get <span class="math inline">\(\hat f^{*b}(x)\)</span>, the prediction at a point <span class="math inline">\(x\)</span>. We then average all the predictions to obtain <span class="math display">\[
+\hat f_{\text{bag}}(x) = \frac{1}{B} \sum_{b=1}^B \hat f^{*b}(x).
+\]</span> This is called <strong>bagging</strong>.</p></li>
+<li><p>The above prescription applied to regression trees.</p></li>
+<li><p>For classification trees: for each test observation, we record the class predicted by each of the <span class="math inline">\(B\)</span> trees, and take a majority vote: the overall prediction is the most commonly occurring class among the <span class="math inline">\(B\)</span> predictions.</p></li>
+</ul>
+<div id="fig-bagging-heart-data" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<embed src="ISL_fig_8_8.pdf" width="500" height="600">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3: The test error (black and orange) is shown as a function of <span class="math inline">\(B\)</span>, the number of bootstrapped training sets used. Random forests were applied with <span class="math inline">\(m = \sqrt{p}\)</span>. The dashed line indicates the test error resulting from a single classification tree. The green and blue traces show the OOB error, which in this case is considerably lower.</figcaption><p></p>
+</figure>
+</div>
+</section>
+<section id="out-of-bag-error-estimation" class="level2" data-number="14">
+<h2 data-number="14" class="anchored" data-anchor-id="out-of-bag-error-estimation"><span class="header-section-number">14</span> Out-of-Bag Error Estimation</h2>
+<ul>
+<li><p>It turns out that there is a very straightforward way to estimate the test error of a bagged model.</p></li>
+<li><p>Recall that the key to bagging is that trees are repeatedly fit to bootstrapped subsets of the observations. One can show that on average, each bagged tree makes use of around two-thirds of the observations.</p></li>
+<li><p>The remaining one-third of the observations not used to fit a given bagged tree are referred to as the <strong>out-of-bag</strong> (OOB) observations.</p></li>
+<li><p>We can predict the response for the <span class="math inline">\(i\)</span>th observation using each of the trees in which that observation was OOB. This will yield around <span class="math inline">\(B/3\)</span> predictions for the <span class="math inline">\(i\)</span>th observation, which we average.</p></li>
+<li><p>This estimate is essentially the LOO cross-validation error for bagging, if <span class="math inline">\(B\)</span> is large.</p></li>
+</ul>
+</section>
+<section id="random-forests" class="level2" data-number="15">
+<h2 data-number="15" class="anchored" data-anchor-id="random-forests"><span class="header-section-number">15</span> Random forests</h2>
+<ul>
+<li><p><strong>Random forests</strong> provide an improvement over bagged trees by way of a small tweak that <strong>decorrelates</strong> the trees. This reduces the variance when we average the trees.</p></li>
+<li><p>As in bagging, we build a number of decision trees on bootstrapped training samples.</p></li>
+<li><p>But when building these decision trees, each time a split in a tree is considered, a <strong>random selection of <span class="math inline">\(m\)</span> predictors</strong> is chosen as split candidates from the full set of <span class="math inline">\(p\)</span> predictors. The split is allowed to use only one of those <span class="math inline">\(m\)</span> predictors.</p></li>
+<li><p>A fresh selection of <span class="math inline">\(m\)</span> predictors is taken at each split, and typically we choose <span class="math inline">\(m \approx \sqrt{p}\)</span>. That is, the number of predictors considered at each split is approximately equal to the square root of the total number of predictors (4 out of the 13 for the Heart data).</p></li>
+<li><p>Gene expression data.</p></li>
+</ul>
+<div id="fig-random-forest-gene-expression" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<embed src="ISL_fig_8_10.pdf" width="500" height="600">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;4: Results from random forests for the fifteen-class gene expression data set with <span class="math inline">\(p=500\)</span> predictors. The test error is displayed as a function of the number of trees. Each colored line corresponds to a different value of <span class="math inline">\(m\)</span>, the number of predictors available for splitting at each interior tree node. Random forests (<span class="math inline">\(m &lt; p\)</span>) lead to a slight improvement over bagging (<span class="math inline">\(m = p\)</span>). A single classification tree has an error rate of 45.7%.</figcaption><p></p>
+</figure>
+</div>
+</section>
+<section id="boosting" class="level2" data-number="16">
+<h2 data-number="16" class="anchored" data-anchor-id="boosting"><span class="header-section-number">16</span> Boosting</h2>
+<ul>
+<li><p>Like bagging, boosting is a general approach that can be applied to many statistical learning methods for regression or classification. We only discuss boosting for decision trees.</p></li>
+<li><p>Recall that bagging involves creating multiple copies of the original training data set using the bootstrap, fitting a separate decision tree to each copy, and then combining all of the trees in order to create a single predictive model.</p></li>
+<li><p>Notably, each tree is built on a bootstrap data set, independent of the other trees.</p></li>
+<li><p>Boosting works in a similar way, except that the trees are grown <strong>sequentially</strong>: each tree is grown using information from previously grown trees.</p></li>
+<li><p>Boosting algorithm for regression trees</p>
+<ol type="1">
+<li>Set <span class="math inline">\(\hat f(x) = 0\)</span> and <span class="math inline">\(r_i = y_i\)</span> for all <span class="math inline">\(i\)</span> in the training set.<br>
+</li>
+<li>For <span class="math inline">\(b=1,2,\ldots,B\)</span>, repeat:<br>
+2.1 Fit a tree <span class="math inline">\(\hat f^b\)</span> with <span class="math inline">\(d\)</span> splits (<span class="math inline">\(d+1\)</span> terminal nodes) to the training data <span class="math inline">\((X, r)\)</span>.<br>
+2.2 Update <span class="math inline">\(\hat f\)</span> by adding in a shrunken version of the new tree: <span class="math display">\[
+\hat f(x) \leftarrow \hat f(x) + \lambda \hat f^b(x).
+\]</span> 2.3 Update the residuals, <span class="math display">\[
+r_i \leftarrow r_i - \lambda \hat f^b(x_i).
+\]</span></li>
+<li>Output the boosted model, <span class="math display">\[
+  \hat f(x) = \sum_{b=1}^B \lambda \hat f^b(x).
+  \]</span></li>
+</ol></li>
+<li><p>Unlike fitting a single large decision tree to the data, which amounts to fitting the data hard and potentially overfitting, the boosting approach instead <strong>learns slowly</strong>.</p></li>
+<li><p>Given the current model, we fit a decision tree to the residuals from the model. We then add this new decision tree into the fitted function in order to update the residuals.</p></li>
+<li><p>Each of these trees can be rather small, with just a few terminal nodes, determined by the parameter <span class="math inline">\(d\)</span> in the algorithm.</p></li>
+<li><p>By fitting small trees to the residuals, we slowly improve <span class="math inline">\(\hat f\)</span> in areas where it does not perform well. The shrinkage parameter <span class="math inline">\(\lambda\)</span> slows the process down even further, allowing more and different shaped trees to attack the residuals.</p></li>
+</ul>
+</section>
+<section id="boosting-for-classification" class="level2" data-number="17">
+<h2 data-number="17" class="anchored" data-anchor-id="boosting-for-classification"><span class="header-section-number">17</span> Boosting for classification</h2>
+<p>See ESL Chapter 10.</p>
+<p>Gene expression example (continued).</p>
+<div id="fig-boosting-gene-expression" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<embed src="ISL_fig_8_11.pdf" width="500" height="600">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;5: Results from performing boosting and random forests on the fifteen-class gene expression data set in order to predict <strong>cancer</strong> versus <strong>normal</strong>. The test error is displayed as a function of the number of trees. For the two boosted models, <span class="math inline">\(\lambda=0.01\)</span>. Depth-1 trees slightly outperform depth-2 trees, and both outperform the random forest, although the standard errors are around 0.02, making none of these differences significant. The test error rate for a single tree is 24%.</figcaption><p></p>
+</figure>
+</div>
+</section>
+<section id="tuning-parameters-for-boosting" class="level2" data-number="18">
+<h2 data-number="18" class="anchored" data-anchor-id="tuning-parameters-for-boosting"><span class="header-section-number">18</span> Tuning parameters for boosting</h2>
+<ol type="1">
+<li><p>The <strong>number of trees</strong> <span class="math inline">\(B\)</span>. Unlike bagging and random forests, boosting can overfit if <span class="math inline">\(B\)</span> is too large, although this overfitting tends to occur slowly if at all. We use cross-validation to select <span class="math inline">\(B\)</span>.</p></li>
+<li><p>The <strong>shrinkage parameter</strong> <span class="math inline">\(\lambda\)</span>, a small positive number. This controls the rate at which boosting learns. Typical values are 0.01 or 0.001, and the right choice can depend on the problem. Very small <span class="math inline">\(\lambda\)</span> can require using a very large value of <span class="math inline">\(B\)</span> in order to achieve good performance.</p></li>
+<li><p>The <strong>number of splits</strong> <span class="math inline">\(d\)</span> in each tree, which controls the complexity of the boosted ensemble. Often <span class="math inline">\(d = 1\)</span> works well, in which case each tree is a stump, consisting of a single split and resulting in an additive model. More generally <span class="math inline">\(d\)</span> is the interaction depth, and controls the interaction order of the boosted model, since <span class="math inline">\(d\)</span> splits can involve at most <span class="math inline">\(d\)</span> variables.</p></li>
+</ol>
+</section>
+<section id="variable-importance-vi-measure" class="level2" data-number="19">
+<h2 data-number="19" class="anchored" data-anchor-id="variable-importance-vi-measure"><span class="header-section-number">19</span> Variable importance (VI) measure</h2>
+<ul>
+<li><p>For bagged/RF regression trees, we record the total amount that the RSS is decreased due to splits over a given predictor, averaged over all <span class="math inline">\(B\)</span> trees. A large value indicates an important predictor.</p></li>
+<li><p>Similarly, for bagged/RF classification trees, we add up the total amount that the Gini index is decreased by splits over a given predictor, averaged over all <span class="math inline">\(B\)</span> trees.</p></li>
+</ul>
+<div id="fig-boosting-gene-expression" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<embed src="ISL_fig_8_9.pdf" width="500" height="600">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;6: Variable importance plot for the <code>Heart</code> data.</figcaption><p></p>
+</figure>
+</div>
+</section>
+<section id="summary" class="level2" data-number="20">
+<h2 data-number="20" class="anchored" data-anchor-id="summary"><span class="header-section-number">20</span> Summary</h2>
+<ul>
+<li><p>Decision trees are simple and interpretable models for regression and classification.</p></li>
+<li><p>However they are often not competitive with other methods in terms of prediction accuracy.</p></li>
+<li><p>Bagging, random forests and boosting are good methods for improving the prediction accuracy of trees. They work by growing many trees on the training data and then combining the predictions of the resulting ensemble of trees.</p></li>
+<li><p>The latter two methods, random forests and boosting, are among the <strong>state-of-the-art</strong> methods for supervised learning. However their results can be difficult to interpret.</p></li>
+</ul>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
