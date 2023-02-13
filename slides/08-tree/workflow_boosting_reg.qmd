@@ -1,5 +1,5 @@
 ---
-title: "Machine Learning Workflow: Regression Trees"
+title: "Machine Learning Workflow: Boosting for Prediction"
 subtitle: "Econ 425T"
 author: "Dr. Hua Zhou @ UCLA"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
@@ -39,7 +39,7 @@ print(IPython.sys_info())
 ![](https://www.tidymodels.org/start/resampling/img/resampling.svg)
 
 
-We illustrate the typical machine learning workflow for regression trees using the `Hitters` data set from R `ISLR2` package. 
+We illustrate the typical machine learning workflow for random forests using the `Hitters` data set from R `ISLR2` package. 
 
 1. Initial splitting to test and non-test sets.
 
@@ -154,9 +154,17 @@ Not much preprocessing is needed here since all predictors are quantitative.
 #### Python
 
 ```{python}
-from sklearn.tree import DecisionTreeRegressor, plot_tree
+from sklearn.ensemble import AdaBoostRegressor
 
-regtree_mod = DecisionTreeRegressor(random_state = 425)
+bst_mod =  AdaBoostRegressor(
+  # Default base estimator is DecisionTreeRegressor with max_depth = 3
+  # estimator = None,
+  # Number of trees (to be tuned)
+  n_estimators = 50, 
+  # Learning rate (to be tuned)
+  learning_rate = 1.0,
+  random_state = 425
+  )
 ```
 
 #### R
@@ -175,7 +183,7 @@ Here we bundle the preprocessing step (Python) or recipe (R) and model.
 from sklearn.pipeline import Pipeline
 
 pipe = Pipeline(steps = [
-  ("model", regtree_mod)
+  ("model", bst_mod)
   ])
 pipe
 ```
@@ -186,7 +194,7 @@ pipe
 
 ## Tuning grid
 
-`ccp_alpha` is the Minimal Cost-Complexity Pruning parameter. Greater values of `ccp_alpha` increase the number of nodes pruned.
+Here we tune the number of trees `n_estimators` and the learning rate `learning_rate`.
 
 ::: {.panel-tabset}
 
@@ -194,9 +202,11 @@ pipe
 
 ```{python}
 # Tune hyper-parameter(s)
-ccp_alpha_grid = np.linspace(start = 0.0, stop = 0.1, num = 100)
+B_grid = [50, 100, 150, 200, 250, 300]
+lambda_grid = [0.5, 1.0, 1.5, 2.0]
 tuned_parameters = {
-  "model__ccp_alpha": ccp_alpha_grid
+  "model__n_estimators": B_grid,
+  "model__learning_rate": lambda_grid
   }
 tuned_parameters  
 ```
@@ -239,18 +249,20 @@ Visualize CV results.
 #| eval: true
 #| code-fold: true
 cv_res = pd.DataFrame({
-  "ccp_alpha": np.array(search.cv_results_["param_model__ccp_alpha"]),
-  "rmse": -search.cv_results_["mean_test_score"]
+  "B": np.array(search.cv_results_["param_model__n_estimators"]),
+  "rmse": -search.cv_results_["mean_test_score"],
+  "lambda": search.cv_results_["param_model__learning_rate"]
   })
 
 plt.figure()
 sns.relplot(
   # kind = "line",
   data = cv_res,
-  x = "ccp_alpha",
-  y = "rmse"
+  x = "B",
+  y = "rmse",
+  hue = "lambda",
   ).set(
-    xlabel = "CCP Alpha",
+    xlabel = "B",
     ylabel = "CV RMSE"
 );
 plt.show()
@@ -278,15 +290,6 @@ Since we called `GridSearchCV` with `refit = True`, the best model fit on the wh
 search.best_estimator_
 ```
 
-Visualize the best regression tree.
-```{python}
-plt.figure()
-plot_tree(
-  search.best_estimator_['model'],
-  feature_names = features
-  );
-plt.show()
-```
 
 The final prediction RMSE on the test set is
 ```{python}

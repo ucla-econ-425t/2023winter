@@ -300,11 +300,11 @@ Advantages:
 
 1. Trees are very easy to explain to people. In fact, they are even easier to explain than linear regression!
 
-2. Some people believe that decision trees more closely mirror human decision-making than do the regression and classification approaches we learnt in this course.
+2. Some people believe that decision trees more closely mirror human decision-making than other regression and classification approaches we learnt in this course.
 
 3. Trees can be displayed graphically, and are easily interpreted even by a non-expert (especially if they are small).
 
-4. Trees can easily handle qualitative predictors without the need to create dummy variables. scikit-learn and xgboost don't allow categorical predictors yet**???**
+4. Trees can easily handle qualitative predictors without the need to create dummy variables, although scikit-learn and xgboost don't allow categorical predictors yet**???**
 
 Disadvantages:
 
@@ -312,14 +312,13 @@ Disadvantages:
 
 2. Additionally, trees can be very non-robust. In other words, a small change in the data can cause a large change in the final estimated tree.
 
-Ensemble methods such as bagging, random forests, and boosting solve these issues.
+**Ensemble methods** such as bagging, random forests, and boosting solve these issues.
 
 ## Bagging
 
 - **Bootstrap aggregation**, or **bagging**, is a general-purpose procedure for reducing the variance of a statistical learning method. It is particularly useful and frequently used in the context of decision trees.
 
-- Recall that given a set of $n$ independent observations
-$Z_1, \ldots, Z_n$, each with variance $\sigma^2$, the variance of the mean $\bar Z$ of the observations is given by $\sigma^2 / n$. In other words, averaging a set of observations reduces variance. Of course, this is not practical because we generally do not have access to multiple training sets.
+- Recall that given a set of $n$ independent observations $Z_1, \ldots, Z_n$, each with variance $\sigma^2$, the variance of the mean $\bar Z$ of the observations is given by $\sigma^2 / n$. In other words, averaging a set of observations reduces variance. Of course, this is not practical because we generally do not have access to multiple training sets.
 
 - Instead, we can bootstrap, by taking repeated samples from the (single) training data set.
 
@@ -328,6 +327,8 @@ $$
 \hat f_{\text{bag}}(x) = \frac{1}{B} \sum_{b=1}^B \hat f^{*b}(x).
 $$
 This is called **bagging**.
+
+- These trees are grown deep, and are not pruned.
 
 - The above prescription applied to regression trees.
 
