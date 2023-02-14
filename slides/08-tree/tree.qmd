@@ -243,7 +243,7 @@ $k = 1,\ldots,K$:
     
 4. Return the subtree from Step 2 that corresponds to the chosen value of $\alpha$.
 
-## Baseball example (regression tree)
+## `Baseball` example (regression tree)
 
 [Workflow: pruning a regression tree](https://ucla-econ-425t.github.io/2023winter/slides/08-tree/workflow_regtree.html).
 
@@ -336,7 +336,7 @@ This is called **bagging**.
 ::: {#fig-bagging-heart-data}
 
 <p align="center">
-![](ISL_fig_8_8.pdf){width=500px height=600px}
+![](ISL_fig_8_8.pdf){width=500px height=500px}
 </p>
 
 The test error (black and orange) is shown as a function of $B$, the number of bootstrapped training sets used. Random forests were applied with $m = \sqrt{p}$. The dashed line indicates the test error resulting from a single classification tree. The green and blue traces show the OOB error, which in this case is considerably lower.
@@ -357,31 +357,31 @@ The test error (black and orange) is shown as a function of $B$, the number of b
 
 ## Random forests
 
-- **Random forests** provide an improvement over bagged trees by a small tweak that **decorrelates** the trees. This reduces the variance when we average the trees.
+- **Random forests** provide an improvement over bagging by a small tweak that **decorrelates** the trees. This reduces the variance when we average the trees.
 
 - As in bagging, we build a number of decision trees on bootstrapped training samples.
 
 - But when building these decision trees, each time a split in a tree is considered, a **random selection of $m$ predictors** is chosen as split candidates from the full set of $p$ predictors. The split is allowed to use only one of those $m$ predictors.
 
-- A fresh selection of $m$ predictors is taken at each split, and typically we choose $m \approx \sqrt{p}$. That is, the number of predictors considered at each split is approximately equal to the square root of the total number of predictors (4 out of the 13 for the `Heart` data).
+- A fresh selection of $m$ predictors is taken at each split, and typically we choose $m \approx \sqrt{p}$ (4 out of the 13 for the `Heart` data).
 
 - Gene expression data.
 
 ::: {#fig-random-forest-gene-expression}
 
 <p align="center">
-![](ISL_fig_8_10.pdf){width=500px height=600px}
+![](ISL_fig_8_10.pdf){width=500px height=500px}
 </p>
 
 Results from random forests for the fifteen-class gene expression data set with $p=500$ predictors. The test error is displayed as a function of the number of trees. Each colored line corresponds to a different value of $m$, the number of predictors available for splitting at each interior tree node. Random forests ($m < p$) lead to a slight improvement over bagging ($m = p$). A single classification tree has an error rate of 45.7\%.
 
 :::
 
-## Baseball example (random forest for prediction)
+## `Baseball` example (random forest for prediction)
 
-[Workflow: random forest for regression](https://ucla-econ-425t.github.io/2023winter/slides/08-tree/workflow_rf_regtree.html).
+[Workflow: random forest for regression](https://ucla-econ-425t.github.io/2023winter/slides/08-tree/workflow_rf_reg.html).
 
-## Heart example (random forest for classification)
+## `Heart` example (random forest for classification)
 
 [Workflow: random forest for classification](https://ucla-econ-425t.github.io/2023winter/slides/08-tree/workflow_rf_class.html).
 
@@ -435,7 +435,7 @@ Gene expression example (continued).
 ::: {#fig-boosting-gene-expression}
 
 <p align="center">
-![](ISL_fig_8_11.pdf){width=500px height=600px}
+![](ISL_fig_8_11.pdf){width=500px height=500px}
 </p>
 
 Results from performing boosting and random forests on the fifteen-class gene expression data set in order to predict **cancer** versus **normal**. The test error is displayed as a function of the number of trees. For the two boosted models, $\lambda=0.01$. Depth-1 trees slightly outperform depth-2 trees, and both outperform the random forest, although the standard errors are around 0.02, making none of these differences significant. The test error rate for a single tree is 24\%.
@@ -469,7 +469,7 @@ Variable importance plot for the `Heart` data.
 
 ## Baseball example (boosting for regression)
 
-[Workflow: boosting for regression](https://ucla-econ-425t.github.io/2023winter/slides/08-tree/workflow_boosting_regtree.html).
+[Workflow: boosting for regression](https://ucla-econ-425t.github.io/2023winter/slides/08-tree/workflow_boosting_reg.html).
 
 ## Heart example (boosting for classification)
 

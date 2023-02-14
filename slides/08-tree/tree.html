@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Dr.&nbsp;Hua Zhou @ UCLA">
-<meta name="dcterms.date" content="2023-02-13">
+<meta name="dcterms.date" content="2023-02-14">
 
 <title>Tree-Based Methods (ISL 8)</title>
 <style>
@@ -121,7 +121,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#predictions" id="toc-predictions" class="nav-link" data-scroll-target="#predictions"><span class="toc-section-number">5</span>  Predictions</a></li>
   <li><a href="#prunning" id="toc-prunning" class="nav-link" data-scroll-target="#prunning"><span class="toc-section-number">6</span>  Prunning</a></li>
   <li><a href="#summary-tree-algorithm" id="toc-summary-tree-algorithm" class="nav-link" data-scroll-target="#summary-tree-algorithm"><span class="toc-section-number">7</span>  Summary: tree algorithm</a></li>
-  <li><a href="#baseball-example-regression-tree" id="toc-baseball-example-regression-tree" class="nav-link" data-scroll-target="#baseball-example-regression-tree"><span class="toc-section-number">8</span>  Baseball example (regression tree)</a></li>
+  <li><a href="#baseball-example-regression-tree" id="toc-baseball-example-regression-tree" class="nav-link" data-scroll-target="#baseball-example-regression-tree"><span class="toc-section-number">8</span>  <code>Baseball</code> example (regression tree)</a></li>
   <li><a href="#classification-trees" id="toc-classification-trees" class="nav-link" data-scroll-target="#classification-trees"><span class="toc-section-number">9</span>  Classification trees</a></li>
   <li><a href="#heart-data-example-classification-tree" id="toc-heart-data-example-classification-tree" class="nav-link" data-scroll-target="#heart-data-example-classification-tree"><span class="toc-section-number">10</span>  <code>Heart</code> data example (classification tree)</a></li>
   <li><a href="#tree-versus-linear-models" id="toc-tree-versus-linear-models" class="nav-link" data-scroll-target="#tree-versus-linear-models"><span class="toc-section-number">11</span>  Tree versus linear models</a></li>
@@ -129,8 +129,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#bagging" id="toc-bagging" class="nav-link" data-scroll-target="#bagging"><span class="toc-section-number">13</span>  Bagging</a></li>
   <li><a href="#out-of-bag-oob-error-estimation" id="toc-out-of-bag-oob-error-estimation" class="nav-link" data-scroll-target="#out-of-bag-oob-error-estimation"><span class="toc-section-number">14</span>  Out-of-Bag (OOB) error estimation</a></li>
   <li><a href="#random-forests" id="toc-random-forests" class="nav-link" data-scroll-target="#random-forests"><span class="toc-section-number">15</span>  Random forests</a></li>
-  <li><a href="#baseball-example-random-forest-for-prediction" id="toc-baseball-example-random-forest-for-prediction" class="nav-link" data-scroll-target="#baseball-example-random-forest-for-prediction"><span class="toc-section-number">16</span>  Baseball example (random forest for prediction)</a></li>
-  <li><a href="#heart-example-random-forest-for-classification" id="toc-heart-example-random-forest-for-classification" class="nav-link" data-scroll-target="#heart-example-random-forest-for-classification"><span class="toc-section-number">17</span>  Heart example (random forest for classification)</a></li>
+  <li><a href="#baseball-example-random-forest-for-prediction" id="toc-baseball-example-random-forest-for-prediction" class="nav-link" data-scroll-target="#baseball-example-random-forest-for-prediction"><span class="toc-section-number">16</span>  <code>Baseball</code> example (random forest for prediction)</a></li>
+  <li><a href="#heart-example-random-forest-for-classification" id="toc-heart-example-random-forest-for-classification" class="nav-link" data-scroll-target="#heart-example-random-forest-for-classification"><span class="toc-section-number">17</span>  <code>Heart</code> example (random forest for classification)</a></li>
   <li><a href="#boosting" id="toc-boosting" class="nav-link" data-scroll-target="#boosting"><span class="toc-section-number">18</span>  Boosting</a></li>
   <li><a href="#boosting-for-classification" id="toc-boosting-for-classification" class="nav-link" data-scroll-target="#boosting-for-classification"><span class="toc-section-number">19</span>  Boosting for classification</a></li>
   <li><a href="#tuning-parameters-for-boosting" id="toc-tuning-parameters-for-boosting" class="nav-link" data-scroll-target="#tuning-parameters-for-boosting"><span class="toc-section-number">20</span>  Tuning parameters for boosting</a></li>
@@ -165,7 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">February 13, 2023</p>
+      <p class="date">February 14, 2023</p>
     </div>
   </div>
   
@@ -466,7 +466,7 @@ R_3 &amp;=&amp; \{ X \mid \text{Years} \ge 4.5, \text{Hits} \ge 117.5\}
 </ol>
 </section>
 <section id="baseball-example-regression-tree" class="level2" data-number="8">
-<h2 data-number="8" class="anchored" data-anchor-id="baseball-example-regression-tree"><span class="header-section-number">8</span> Baseball example (regression tree)</h2>
+<h2 data-number="8" class="anchored" data-anchor-id="baseball-example-regression-tree"><span class="header-section-number">8</span> <code>Baseball</code> example (regression tree)</h2>
 <p><a href="https://ucla-econ-425t.github.io/2023winter/slides/08-tree/workflow_regtree.html">Workflow: pruning a regression tree</a>.</p>
 </section>
 <section id="classification-trees" class="level2" data-number="9">
@@ -534,7 +534,7 @@ D = - \sum_{k=1}^K \hat p_{mk} \log \hat p_{mk}.
 <div id="fig-bagging-heart-data" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p align="center">
-<embed src="ISL_fig_8_8.pdf" width="500" height="600">
+<embed src="ISL_fig_8_8.pdf" width="500" height="500">
 </p>
 <p></p><figcaption class="figure-caption">Figure&nbsp;3: The test error (black and orange) is shown as a function of <span class="math inline">\(B\)</span>, the number of bootstrapped training sets used. Random forests were applied with <span class="math inline">\(m = \sqrt{p}\)</span>. The dashed line indicates the test error resulting from a single classification tree. The green and blue traces show the OOB error, which in this case is considerably lower.</figcaption><p></p>
 </figure>
@@ -553,27 +553,27 @@ D = - \sum_{k=1}^K \hat p_{mk} \log \hat p_{mk}.
 <section id="random-forests" class="level2" data-number="15">
 <h2 data-number="15" class="anchored" data-anchor-id="random-forests"><span class="header-section-number">15</span> Random forests</h2>
 <ul>
-<li><p><strong>Random forests</strong> provide an improvement over bagged trees by a small tweak that <strong>decorrelates</strong> the trees. This reduces the variance when we average the trees.</p></li>
+<li><p><strong>Random forests</strong> provide an improvement over bagging by a small tweak that <strong>decorrelates</strong> the trees. This reduces the variance when we average the trees.</p></li>
 <li><p>As in bagging, we build a number of decision trees on bootstrapped training samples.</p></li>
 <li><p>But when building these decision trees, each time a split in a tree is considered, a <strong>random selection of <span class="math inline">\(m\)</span> predictors</strong> is chosen as split candidates from the full set of <span class="math inline">\(p\)</span> predictors. The split is allowed to use only one of those <span class="math inline">\(m\)</span> predictors.</p></li>
-<li><p>A fresh selection of <span class="math inline">\(m\)</span> predictors is taken at each split, and typically we choose <span class="math inline">\(m \approx \sqrt{p}\)</span>. That is, the number of predictors considered at each split is approximately equal to the square root of the total number of predictors (4 out of the 13 for the <code>Heart</code> data).</p></li>
+<li><p>A fresh selection of <span class="math inline">\(m\)</span> predictors is taken at each split, and typically we choose <span class="math inline">\(m \approx \sqrt{p}\)</span> (4 out of the 13 for the <code>Heart</code> data).</p></li>
 <li><p>Gene expression data.</p></li>
 </ul>
 <div id="fig-random-forest-gene-expression" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p align="center">
-<embed src="ISL_fig_8_10.pdf" width="500" height="600">
+<embed src="ISL_fig_8_10.pdf" width="500" height="500">
 </p>
 <p></p><figcaption class="figure-caption">Figure&nbsp;4: Results from random forests for the fifteen-class gene expression data set with <span class="math inline">\(p=500\)</span> predictors. The test error is displayed as a function of the number of trees. Each colored line corresponds to a different value of <span class="math inline">\(m\)</span>, the number of predictors available for splitting at each interior tree node. Random forests (<span class="math inline">\(m &lt; p\)</span>) lead to a slight improvement over bagging (<span class="math inline">\(m = p\)</span>). A single classification tree has an error rate of 45.7%.</figcaption><p></p>
 </figure>
 </div>
 </section>
 <section id="baseball-example-random-forest-for-prediction" class="level2" data-number="16">
-<h2 data-number="16" class="anchored" data-anchor-id="baseball-example-random-forest-for-prediction"><span class="header-section-number">16</span> Baseball example (random forest for prediction)</h2>
-<p><a href="https://ucla-econ-425t.github.io/2023winter/slides/08-tree/workflow_rf_regtree.html">Workflow: random forest for regression</a>.</p>
+<h2 data-number="16" class="anchored" data-anchor-id="baseball-example-random-forest-for-prediction"><span class="header-section-number">16</span> <code>Baseball</code> example (random forest for prediction)</h2>
+<p><a href="https://ucla-econ-425t.github.io/2023winter/slides/08-tree/workflow_rf_reg.html">Workflow: random forest for regression</a>.</p>
 </section>
 <section id="heart-example-random-forest-for-classification" class="level2" data-number="17">
-<h2 data-number="17" class="anchored" data-anchor-id="heart-example-random-forest-for-classification"><span class="header-section-number">17</span> Heart example (random forest for classification)</h2>
+<h2 data-number="17" class="anchored" data-anchor-id="heart-example-random-forest-for-classification"><span class="header-section-number">17</span> <code>Heart</code> example (random forest for classification)</h2>
 <p><a href="https://ucla-econ-425t.github.io/2023winter/slides/08-tree/workflow_rf_class.html">Workflow: random forest for classification</a>.</p>
 </section>
 <section id="boosting" class="level2" data-number="18">
@@ -611,7 +611,7 @@ r_i \leftarrow r_i - \lambda \hat f^b(x_i).
 <div id="fig-boosting-gene-expression" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p align="center">
-<embed src="ISL_fig_8_11.pdf" width="500" height="600">
+<embed src="ISL_fig_8_11.pdf" width="500" height="500">
 </p>
 <p></p><figcaption class="figure-caption">Figure&nbsp;5: Results from performing boosting and random forests on the fifteen-class gene expression data set in order to predict <strong>cancer</strong> versus <strong>normal</strong>. The test error is displayed as a function of the number of trees. For the two boosted models, <span class="math inline">\(\lambda=0.01\)</span>. Depth-1 trees slightly outperform depth-2 trees, and both outperform the random forest, although the standard errors are around 0.02, making none of these differences significant. The test error rate for a single tree is 24%.</figcaption><p></p>
 </figure>
@@ -642,7 +642,7 @@ r_i \leftarrow r_i - \lambda \hat f^b(x_i).
 </section>
 <section id="baseball-example-boosting-for-regression" class="level2" data-number="22">
 <h2 data-number="22" class="anchored" data-anchor-id="baseball-example-boosting-for-regression"><span class="header-section-number">22</span> Baseball example (boosting for regression)</h2>
-<p><a href="https://ucla-econ-425t.github.io/2023winter/slides/08-tree/workflow_boosting_regtree.html">Workflow: boosting for regression</a>.</p>
+<p><a href="https://ucla-econ-425t.github.io/2023winter/slides/08-tree/workflow_boosting_reg.html">Workflow: boosting for regression</a>.</p>
 </section>
 <section id="heart-example-boosting-for-classification" class="level2" data-number="23">
 <h2 data-number="23" class="anchored" data-anchor-id="heart-example-boosting-for-classification"><span class="header-section-number">23</span> Heart example (boosting for classification)</h2>
