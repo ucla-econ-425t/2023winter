@@ -1,0 +1,232 @@
+---
+title: "Support Vector Machines (ISL 9)"
+subtitle: "Econ 425T"
+author: "Dr. Hua Zhou @ UCLA"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+format:
+  html:
+    theme: cosmo
+    number-sections: true
+    toc: true
+    toc-depth: 4
+    toc-location: left
+    code-fold: false
+engine: knitr
+knitr:
+  opts_chunk: 
+    fig.align: 'center'
+    # fig.width: 6
+    # fig.height: 4
+    message: FALSE
+    cache: false
+---
+
+Credit: This note heavily uses material from the books [_An Introduction to Statistical Learning: with Applications in R_](https://www.statlearning.com/) (ISL2) and [_Elements of Statistical Learning: Data Mining, Inference, and Prediction_](https://hastie.su.domains/ElemStatLearn/) (ESL2).
+
+Display system information for reproducibility.
+
+::: {.panel-tabset}
+
+## Python
+
+```{python}
+import IPython
+print(IPython.sys_info())
+```
+
+## R
+
+```{r}
+sessionInfo()
+```
+
+:::
+
+## Overview
+
+- Support vector machines (SVMs) approach the two-class classification problem in a direct way:
+
+> We try and find a plane that separates the classes in feature space.
+
+- If we cannot, we get creative in two ways:
+
+    1. We soften what we mean by "separates", and 
+    2. We enrich and enlarge the feature space so that separation is possible.
+    
+## Hyperplane
+
+- A hyperplane in $p$ dimensions is a flat affine subspace of dimension $p-1$.
+
+- In general the equation for a hyperplane has the form
+$$
+\beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p = 0.
+$$
+
+- In $p=2$ dimensions, a hyperplane is a line.
+
+- If $\beta_0 = 0$, the hyperplane goes through the origin, otherwise not.
+
+- The vector $\beta = (\beta_1, \ldots, \beta_p)$ is called the normal vector. It points in a direction orthogonal to the surface of  hyperplane. 
+
+- If $f(X) = \beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p$, then $f(X) > 0$ for points on one side of the hyperplane, and $f(X) < 0$ for points on the other. 
+
+- If we code the colored points as $Y_i = +1$ for blue, say and $Y_i = -1$ for mauve, then if $Y_i \cdot f(X_i) > 0$ for all $i$, $f(X) = 0$ defines a **separating hyperplane**.
+
+::: {#fig-separating-hyperplane}
+
+<p align="center">
+![](ISL_fig_9_2.pdf){width=600px height=375px}
+</p>
+
+???
+
+:::
+
+## Maximal margin classifier
+
+- Among all separating hyperplanes, find the one that makes the biggest gap or margin between the two classes.
+
+<p align="center">
+![](ISL_fig_9_3.pdf){width=500px height=500px}
+</p>
+
+- Constrained optimization:
+\begin{eqnarray*}
+\max\limits_{\beta_0,\beta_1,\ldots,\beta_p} & & \quad M \\
+\text{subject to} & & \sum_{j=1}^p \beta_j^2 = 1 \\
+& & y_i (\beta_0 + \beta_1 x_{i1} + \cdots + \beta_p x_{ip}) \ge M \text{ for all } i.
+\end{eqnarray*}
+This is a convex quadratic program, which can be solved efficiently.
+
+## Support vector classifier
+
+- Non-separable data. Sometimes the data are not separable by a linear boundary. This if often the case, unless $N < p$.
+
+<p align="center">
+![](ISL_fig_9_4.pdf){width=500px height=500px}
+</p>
+
+- Noisy data. Sometimes the data are separable, but noisy. This can lead to a poor solution for the maximal-margin classifier.
+
+<p align="center">
+![](ISL_fig_9_5.pdf){width=800px height=400px}
+</p>
+
+- The **support vector classifier** maximizes a **soft** margin.
+\begin{eqnarray*}
+\max\limits_{\beta_0,\beta_1,\ldots,\beta_p, \epsilon_1, \ldots, \epsilon_n} & & \quad M \\
+\text{subject to} & & \sum_{j=1}^p \beta_j^2 = 1 \\
+& & y_i (\beta_0 + \beta_1 x_{i1} + \cdots + \beta_p x_{ip}) \ge M (1-\epsilon_i) \\
+& & \epsilon_i \ge 0, \sum_{i=1}^n \epsilon_i \le C.
+\end{eqnarray*}
+
+<p align="center">
+![](ISL_fig_9_6.pdf){width=800px height=400px}
+</p>
+
+- Here $C$ is a regularization parameter. 
+
+<p align="center">
+![](ISL_fig_9_7.pdf){width=800px height=800px}
+</p>
+
+## Nonlinearity
+
+- Sometime a linear boundary simply won't work, no matter what value of $C$.  
+
+<p align="center">
+![](ISL_fig_9_8.pdf){width=400px height=400px}
+</p>
+
+- Enlarge the space of features by including transformations: $X_1^2, X_1^3, X_1 X_2, X_1 X_2^2, \ldots$ Hence go from a $p$-dimensional space to a $M > p$ dimensional space.
+$$
+\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_1^2 + \beta_4 X_2^2 + \beta_5 X_1 X_2 + \beta_6 X_1^3 + \beta_7 X_2^3 + \beta_8 X_1 X_2^2 + \beta_9 X_1^2 X_2 = 0.
+$$
+<p align="center">
+![](ISL_fig_9_9.pdf){width=800px height=400px}
+</p>
+
+## Kernels
+
+- Polynomials (especially high-dimensional ones) get wild rather fast.
+
+- There is a more elegant and controlled way to introduce nonlinearities in support-vector classifiers through the use of **kernels**.
+
+- **Inner product** between two vectors:
+$$
+\langle x_i, x_{i'} \rangle = \sum_{j=1}^p x_{ij} x_{i'j}.
+$$
+
+- The linear support vector classifier can be represented as
+$$
+f(x) = \beta_0 + \sum_{i=1}^n \alpha_i \langle x, x_i \rangle.
+$$
+To estimate the parameters $\alpha_1,\ldots,\alpha_n$ and $\beta_0$, all we need are the $\binom{n}{2}$ inner products $\langle x, x_i \rangle$ between all pairs of training observations.
+
+- It turns out that most of the $\hat \alpha_i$ can be zero:
+$$
+f(x) = \beta_0 + \sum_{i \in \mathcal{S}} \hat{\alpha}_i \langle x, x_i \rangle.
+$$
+$\mathcal{S}$ is the **support set** of indices $i$ such that $\hat{\alpha}_i > 0$.
+
+- If we can compute inner products between observations, we can fit a SV classifier. Can be quite abstract!
+
+- Some special kernel functions can do this for us. E.g.
+$$
+K(x_i, x_{i'}) = \left(1 + \sum_{j=1}^p x_{ij} x_{i'j} \right)^d
+$$
+computes the inner products needed for $d$-dimensional polynomials.
+
+- The solution has the form 
+$$
+f(x) = \beta_0 + \sum_{i \in \mathcal{S}} \hat{\alpha}_i K(x, x_i).
+$$
+- Radial kernel:
+$$
+K(x_i, x_{i'}) = exp\left( - \gamma \sum_{j=1}^p (x_{ij} - x_{i'j})^2 \right).
+$$
+The solution has the form
+$$
+f(x) = \beta_0 + \sum_{i \in \mathcal{S}} \hat{\alpha}_i K(x, x_i).
+$$
+Implicit feature space is very high dimensional. Controls variance by squashing down most dimensions severely.
+
+<p align="center">
+![](ISL_fig_9_9.pdf){width=800px height=400px}
+</p>
+
+## Heart data example (TODO)
+
+## SVM for more than 2 classes
+
+- What do we do if we have $K > 2$ classes?
+
+- **OVA** One versus All. Fit $K$ different 2-class SVM classifiers $hat f_k(x)$, $k=1,\ldots,K$; each class versus the rest. Classify $x^*$ to the class for which $\hat f_x(x^*)$ is largest.
+
+- **OVO** One versus One. Fit all $\binom{K}{2}$ pairwise classifiers $\hat f_{k\ell}(x)$. Classify $x^*$ to the class that wins the most pairwise competitions.
+
+- Which to choose? If $K$ is not too large, use OVO.
+
+## SVM vs logistic regression.
+
+- With $f(X) = \beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p$, the support vector classifier optimization can be recast as
+$$
+\min\limits_{\beta_0,\beta_1,\ldots,\beta_p} \left\{ \sum_{i=1}^n \max[0, 1 - y_i f(x_i)] + \lambda \sum_{j=1}^p \beta_j^2 \right\}.
+$$
+**Hinge loss** + **ridge penalty**
+
+- The hinge loss is very similar to the negative log-likelihood of the logistic regression.
+
+<p align="center">
+![](ISL_fig_9_12.pdf){width=400px height=400px}
+</p>
+
+- Which one to use?
+
+    - When classes are (nearly) separable, SVM does better than LR. So does LDA.
+    
+    - When not, LR (with ridge penalty) and SVM very similar.
+    
+    - If you wish to estimate probabilities, LR is the choice.
+    
+    - For nonlinear boundaries, kernel SVMs are popular. Can use kernels with LR and LDA as well, but computations are more expensive.
