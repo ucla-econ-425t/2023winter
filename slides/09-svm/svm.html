@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Dr.&nbsp;Hua Zhou @ UCLA">
-<meta name="dcterms.date" content="2023-02-13">
+<meta name="dcterms.date" content="2023-02-14">
 
 <title>Support Vector Machines (ISL 9)</title>
 <style>
@@ -115,7 +115,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#hyperplane" id="toc-hyperplane" class="nav-link" data-scroll-target="#hyperplane"><span class="toc-section-number">2</span>  Hyperplane</a></li>
   <li><a href="#maximal-margin-classifier" id="toc-maximal-margin-classifier" class="nav-link" data-scroll-target="#maximal-margin-classifier"><span class="toc-section-number">3</span>  Maximal margin classifier</a></li>
   <li><a href="#support-vector-classifier" id="toc-support-vector-classifier" class="nav-link" data-scroll-target="#support-vector-classifier"><span class="toc-section-number">4</span>  Support vector classifier</a></li>
-  <li><a href="#nonlinearity" id="toc-nonlinearity" class="nav-link" data-scroll-target="#nonlinearity"><span class="toc-section-number">5</span>  Nonlinearity</a></li>
+  <li><a href="#nonlinearity-support-vector-machines-svm" id="toc-nonlinearity-support-vector-machines-svm" class="nav-link" data-scroll-target="#nonlinearity-support-vector-machines-svm"><span class="toc-section-number">5</span>  Nonlinearity: support vector machines (SVM)</a></li>
   <li><a href="#kernels" id="toc-kernels" class="nav-link" data-scroll-target="#kernels"><span class="toc-section-number">6</span>  Kernels</a></li>
   <li><a href="#heart-data-example-todo" id="toc-heart-data-example-todo" class="nav-link" data-scroll-target="#heart-data-example-todo"><span class="toc-section-number">7</span>  Heart data example (TODO)</a></li>
   <li><a href="#svm-for-more-than-2-classes" id="toc-svm-for-more-than-2-classes" class="nav-link" data-scroll-target="#svm-for-more-than-2-classes"><span class="toc-section-number">8</span>  SVM for more than 2 classes</a></li>
@@ -147,7 +147,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">February 13, 2023</p>
+      <p class="date">February 14, 2023</p>
     </div>
   </div>
   
@@ -235,17 +235,27 @@ loaded via a namespace (and not attached):
 \beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p = 0.
 \]</span></p></li>
 <li><p>In <span class="math inline">\(p=2\)</span> dimensions, a hyperplane is a line.</p></li>
+</ul>
+<div id="fig-hyperplane-2d" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<img src="hyperplane_2d.png" width="400" height="400" class="figure-img">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;1: Hyperplane in 2 dimensions.</figcaption><p></p>
+</figure>
+</div>
+<ul>
 <li><p>If <span class="math inline">\(\beta_0 = 0\)</span>, the hyperplane goes through the origin, otherwise not.</p></li>
 <li><p>The vector <span class="math inline">\(\beta = (\beta_1, \ldots, \beta_p)\)</span> is called the normal vector. It points in a direction orthogonal to the surface of hyperplane.</p></li>
 <li><p>If <span class="math inline">\(f(X) = \beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p\)</span>, then <span class="math inline">\(f(X) &gt; 0\)</span> for points on one side of the hyperplane, and <span class="math inline">\(f(X) &lt; 0\)</span> for points on the other.</p></li>
-<li><p>If we code the colored points as <span class="math inline">\(Y_i = +1\)</span> for blue, say and <span class="math inline">\(Y_i = -1\)</span> for mauve, then if <span class="math inline">\(Y_i \cdot f(X_i) &gt; 0\)</span> for all <span class="math inline">\(i\)</span>, <span class="math inline">\(f(X) = 0\)</span> defines a <strong>separating hyperplane</strong>.</p></li>
+<li><p>If we code the colored points as <span class="math inline">\(y_i = +1\)</span> for blue, say and <span class="math inline">\(y_i = -1\)</span> for mauve, then if <span class="math inline">\(y_i \cdot f(X_i) &gt; 0\)</span> for all <span class="math inline">\(i\)</span>, <span class="math inline">\(f(X) = 0\)</span> defines a <strong>separating hyperplane</strong>.</p></li>
 </ul>
 <div id="fig-separating-hyperplane" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p align="center">
 <embed src="ISL_fig_9_2.pdf" width="600" height="375">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;1: ???</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;2: Left: There are two classes of observations, shown in blue and in purple, each of which has measurements on two variables. Three separating hyperplanes, out of many possible, are shown in black. Right: A separating hyperplane is shown in black. The blue and purple grid indicates the decision rule made by a classifier based on this separating hyperplane: a test observation that falls in the blue portion of the grid will be assigned to the blue class, and a test observation that falls into the purple portion of the grid will be assigned to the purple class.</figcaption><p></p>
 </figure>
 </div>
 </section>
@@ -254,15 +264,21 @@ loaded via a namespace (and not attached):
 <ul>
 <li>Among all separating hyperplanes, find the one that makes the biggest gap or margin between the two classes.</li>
 </ul>
+<div id="fig-max-margin-classifier" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
 <p align="center">
-<embed src="ISL_fig_9_3.pdf" width="500" height="500">
+<embed src="ISL_fig_9_3.pdf" width="400" height="450">
 </p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3: The maximal margin hyperplane is shown as a solid line. The margin is the distance from the solid line to either of the dashed lines. The two blue points and the purple point that lie on the dashed lines are the <strong>support vectors</strong>, and the distance from those points to the hyperplane is indicated by arrows. The purple and blue grid indicates the decision rule made by a classifier based on this separating hyperplane.</figcaption><p></p>
+</figure>
+</div>
 <ul>
-<li>Constrained optimization: <span class="math display">\[\begin{eqnarray*}
-\max\limits_{\beta_0,\beta_1,\ldots,\beta_p} &amp; &amp; \quad M \\
+<li><p>Constrained optimization: <span class="math display">\[\begin{eqnarray*}
+\max\limits_{\beta_0,\beta_1,\ldots,\beta_p, M} &amp; &amp; \quad M \\
 \text{subject to} &amp; &amp; \sum_{j=1}^p \beta_j^2 = 1 \\
 &amp; &amp; y_i (\beta_0 + \beta_1 x_{i1} + \cdots + \beta_p x_{ip}) \ge M \text{ for all } i.
-\end{eqnarray*}\]</span> This is a convex quadratic program, which can be solved efficiently.</li>
+\end{eqnarray*}\]</span> This is a convex quadratic program, which can be solved efficiently.</p>
+<p>The constraints ensure that each observation is on the correct side of the hyperplane and at least a distance <span class="math inline">\(M\)</span> from the hyperplane.</p></li>
 </ul>
 </section>
 <section id="support-vector-classifier" class="level2" data-number="4">
@@ -270,47 +286,76 @@ loaded via a namespace (and not attached):
 <ul>
 <li>Non-separable data. Sometimes the data are not separable by a linear boundary. This if often the case, unless <span class="math inline">\(N &lt; p\)</span>.</li>
 </ul>
+<div id="fig-noisy-data" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
 <p align="center">
-<embed src="ISL_fig_9_4.pdf" width="500" height="500">
+<embed src="ISL_fig_9_4.pdf" width="400" height="450">
 </p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;4: The two classes are not separable by a hyperplane, and so the maximal margin classifier cannot be used.</figcaption><p></p>
+</figure>
+</div>
 <ul>
 <li>Noisy data. Sometimes the data are separable, but noisy. This can lead to a poor solution for the maximal-margin classifier.</li>
 </ul>
 <p align="center">
-<embed src="ISL_fig_9_5.pdf" width="800" height="400">
+<embed src="ISL_fig_9_5.pdf" width="600" height="350">
 </p>
 <ul>
-<li>The <strong>support vector classifier</strong> maximizes a <strong>soft</strong> margin. <span class="math display">\[\begin{eqnarray*}
+<li><p>The <strong>support vector classifier</strong> maximizes a <strong>soft</strong> margin. <span class="math display">\[\begin{eqnarray*}
 \max\limits_{\beta_0,\beta_1,\ldots,\beta_p, \epsilon_1, \ldots, \epsilon_n} &amp; &amp; \quad M \\
 \text{subject to} &amp; &amp; \sum_{j=1}^p \beta_j^2 = 1 \\
 &amp; &amp; y_i (\beta_0 + \beta_1 x_{i1} + \cdots + \beta_p x_{ip}) \ge M (1-\epsilon_i) \\
 &amp; &amp; \epsilon_i \ge 0, \sum_{i=1}^n \epsilon_i \le C.
-\end{eqnarray*}\]</span></li>
-</ul>
-<p align="center">
-<embed src="ISL_fig_9_6.pdf" width="800" height="400">
-</p>
+\end{eqnarray*}\]</span> <span class="math inline">\(M\)</span> is the width of the margin.</p></li>
+<li><p><span class="math inline">\(\epsilon_1, \ldots, \epsilon_n\)</span> are <strong>slack variables</strong> that allow individual observations to be on the wrong side of the margin or the hyperplane.</p>
 <ul>
-<li>Here <span class="math inline">\(C\)</span> is a regularization parameter.</li>
+<li>If <span class="math inline">\(\epsilon_i = 0\)</span>, then the <span class="math inline">\(i\)</span>-th observation is on the correct side of the margin.<br>
+</li>
+<li>If <span class="math inline">\(0 &lt; \epsilon_i \le 1\)</span>, then the <span class="math inline">\(i\)</span>-th observation is on the wrong side of the margin.<br>
+</li>
+<li>If <span class="math inline">\(\epsilon_i &gt; 1\)</span>, then the <span class="math inline">\(i\)</span>-th observation is on the wrong side of the hyperplane.</li>
+</ul></li>
 </ul>
+<div id="fig-soft-margin-classifier" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
 <p align="center">
-<embed src="ISL_fig_9_7.pdf" width="800" height="800">
+<embed src="ISL_fig_9_6.pdf" width="600" height="350">
 </p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;5: Left: A support vector classifier was fit to a small data set. The hyperplane is shown as a solid line and the margins are shown as dashed lines. Purple observations: Observations 3; 4; 5, and 6 are on the correct side of the margin, observation 2 is on the margin, and observation 1 is on the wrong side of the margin. Blue observations: Observations 7 and 10 are on the correct side of the margin, observation 9 is on the margin, and observation 8 is on the wrong side of the margin. No observations are on the wrong side of the hyperplane. Right: Same as left panel with two additional points, 11 and 12. These two observations are on the wrong side of the hyperplane and the wrong side of the margin.</figcaption><p></p>
+</figure>
+</div>
+<ul>
+<li><p><span class="math inline">\(C\)</span> is a regularization parameter that controls the amount that the margin can be violated by the <span class="math inline">\(n\)</span> observations.</p>
+<p><span class="math inline">\(C\)</span> controls the bias-varaince trade-off.</p></li>
+</ul>
+<div id="fig-C" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<embed src="ISL_fig_9_7.pdf" width="600" height="600">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;6: The largest value of <span class="math inline">\(C\)</span> was used in the top left panel, and smaller values were used in the top right, bottom left, and bottom right panels. When <span class="math inline">\(C\)</span> is large, then there is a high tolerance for observations being on the wrong side of the margin, and so the margin will be large. As <span class="math inline">\(C\)</span> decreases, the tolerance for observations being on the wrong side of the margin decreases, and the margin narrows.</figcaption><p></p>
+</figure>
+</div>
 </section>
-<section id="nonlinearity" class="level2" data-number="5">
-<h2 data-number="5" class="anchored" data-anchor-id="nonlinearity"><span class="header-section-number">5</span> Nonlinearity</h2>
+<section id="nonlinearity-support-vector-machines-svm" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="nonlinearity-support-vector-machines-svm"><span class="header-section-number">5</span> Nonlinearity: support vector machines (SVM)</h2>
 <ul>
 <li>Sometime a linear boundary simply won’t work, no matter what value of <span class="math inline">\(C\)</span>.</li>
 </ul>
+<div id="fig-nonlinear-data" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
 <p align="center">
-<embed src="ISL_fig_9_8.pdf" width="400" height="400">
+<embed src="ISL_fig_9_8.pdf" width="600" height="400">
 </p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;7: Left: The observations fall into two classes, with a non-linear boundary between them. Right: The support vector classifier seeks a linear boundary, and consequently performs very poorly.</figcaption><p></p>
+</figure>
+</div>
 <ul>
 <li>Enlarge the space of features by including transformations: <span class="math inline">\(X_1^2, X_1^3, X_1 X_2, X_1 X_2^2, \ldots\)</span> Hence go from a <span class="math inline">\(p\)</span>-dimensional space to a <span class="math inline">\(M &gt; p\)</span> dimensional space. <span class="math display">\[
 \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_1^2 + \beta_4 X_2^2 + \beta_5 X_1 X_2 + \beta_6 X_1^3 + \beta_7 X_2^3 + \beta_8 X_1 X_2^2 + \beta_9 X_1^2 X_2 = 0.
 \]</span>
 <p align="center">
-<embed src="ISL_fig_9_9.pdf" width="800" height="400">
+<embed src="ISL_fig_9_9.pdf" width="600" height="400">
 </p></li>
 </ul>
 </section>
@@ -325,11 +370,11 @@ loaded via a namespace (and not attached):
 <li><p>The linear support vector classifier can be represented as <span class="math display">\[
 f(x) = \beta_0 + \sum_{i=1}^n \alpha_i \langle x, x_i \rangle.
 \]</span> To estimate the parameters <span class="math inline">\(\alpha_1,\ldots,\alpha_n\)</span> and <span class="math inline">\(\beta_0\)</span>, all we need are the <span class="math inline">\(\binom{n}{2}\)</span> inner products <span class="math inline">\(\langle x, x_i \rangle\)</span> between all pairs of training observations.</p></li>
-<li><p>It turns out that most of the <span class="math inline">\(\hat \alpha_i\)</span> can be zero: <span class="math display">\[
+<li><p>It turns out that most of the <span class="math inline">\(\hat \alpha_i\)</span> (non-support vectors) can be zero: <span class="math display">\[
 f(x) = \beta_0 + \sum_{i \in \mathcal{S}} \hat{\alpha}_i \langle x, x_i \rangle.
 \]</span> <span class="math inline">\(\mathcal{S}\)</span> is the <strong>support set</strong> of indices <span class="math inline">\(i\)</span> such that <span class="math inline">\(\hat{\alpha}_i &gt; 0\)</span>.</p></li>
 <li><p>If we can compute inner products between observations, we can fit a SV classifier. Can be quite abstract!</p></li>
-<li><p>Some special kernel functions can do this for us. E.g. <span class="math display">\[
+<li><p>Some special kernel functions can do this for us. E.g. the <strong>polynomial kernel</strong> of degree <span class="math inline">\(d\)</span> <span class="math display">\[
 K(x_i, x_{i'}) = \left(1 + \sum_{j=1}^p x_{ij} x_{i'j} \right)^d
 \]</span> computes the inner products needed for <span class="math inline">\(d\)</span>-dimensional polynomials.</p></li>
 <li><p>The solution has the form <span class="math display">\[

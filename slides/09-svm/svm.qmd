@@ -64,13 +64,23 @@ $$
 
 - In $p=2$ dimensions, a hyperplane is a line.
 
+::: {#fig-hyperplane-2d}
+
+<p align="center">
+![](hyperplane_2d.png){width=400px height=400px}
+</p>
+
+Hyperplane in 2 dimensions.
+
+:::
+
 - If $\beta_0 = 0$, the hyperplane goes through the origin, otherwise not.
 
 - The vector $\beta = (\beta_1, \ldots, \beta_p)$ is called the normal vector. It points in a direction orthogonal to the surface of  hyperplane. 
 
 - If $f(X) = \beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p$, then $f(X) > 0$ for points on one side of the hyperplane, and $f(X) < 0$ for points on the other. 
 
-- If we code the colored points as $Y_i = +1$ for blue, say and $Y_i = -1$ for mauve, then if $Y_i \cdot f(X_i) > 0$ for all $i$, $f(X) = 0$ defines a **separating hyperplane**.
+- If we code the colored points as $y_i = +1$ for blue, say and $y_i = -1$ for mauve, then if $y_i \cdot f(X_i) > 0$ for all $i$, $f(X) = 0$ defines a **separating hyperplane**.
 
 ::: {#fig-separating-hyperplane}
 
@@ -78,7 +88,7 @@ $$
 ![](ISL_fig_9_2.pdf){width=600px height=375px}
 </p>
 
-???
+Left: There are two classes of observations, shown in blue and in purple, each of which has measurements on two variables. Three separating hyperplanes, out of many possible, are shown in black. Right: A separating hyperplane is shown in black. The blue and purple grid indicates the decision rule made by a classifier based on this separating hyperplane: a test observation that falls in the blue portion of the grid will be assigned to the blue class, and a test observation that falls into the purple portion of the grid will be assigned to the purple class.
 
 :::
 
@@ -86,30 +96,45 @@ $$
 
 - Among all separating hyperplanes, find the one that makes the biggest gap or margin between the two classes.
 
+::: {#fig-max-margin-classifier}
+
 <p align="center">
-![](ISL_fig_9_3.pdf){width=500px height=500px}
+![](ISL_fig_9_3.pdf){width=400px height=450px}
 </p>
+
+The maximal margin hyperplane is shown as a solid line. The margin is the distance from the solid line to either of the dashed lines. The two blue points and the purple point that lie on the dashed lines are the **support vectors**, and the distance from those points to the hyperplane is indicated by arrows. The purple and blue grid indicates the decision rule made by a classifier based on this separating hyperplane.
+
+:::
 
 - Constrained optimization:
 \begin{eqnarray*}
-\max\limits_{\beta_0,\beta_1,\ldots,\beta_p} & & \quad M \\
+\max\limits_{\beta_0,\beta_1,\ldots,\beta_p, M} & & \quad M \\
 \text{subject to} & & \sum_{j=1}^p \beta_j^2 = 1 \\
 & & y_i (\beta_0 + \beta_1 x_{i1} + \cdots + \beta_p x_{ip}) \ge M \text{ for all } i.
 \end{eqnarray*}
 This is a convex quadratic program, which can be solved efficiently.
 
+    The constraints ensure that each observation is on the correct side of the hyperplane and at least a distance $M$ from the hyperplane.
+
 ## Support vector classifier
 
 - Non-separable data. Sometimes the data are not separable by a linear boundary. This if often the case, unless $N < p$.
 
+::: {#fig-noisy-data}
+
 <p align="center">
-![](ISL_fig_9_4.pdf){width=500px height=500px}
+![](ISL_fig_9_4.pdf){width=400px height=450px}
 </p>
+
+The two classes are not separable by a hyperplane, and so the
+maximal margin classifier cannot be used.
+
+:::
 
 - Noisy data. Sometimes the data are separable, but noisy. This can lead to a poor solution for the maximal-margin classifier.
 
 <p align="center">
-![](ISL_fig_9_5.pdf){width=800px height=400px}
+![](ISL_fig_9_5.pdf){width=600px height=350px}
 </p>
 
 - The **support vector classifier** maximizes a **soft** margin.
@@ -119,31 +144,58 @@ This is a convex quadratic program, which can be solved efficiently.
 & & y_i (\beta_0 + \beta_1 x_{i1} + \cdots + \beta_p x_{ip}) \ge M (1-\epsilon_i) \\
 & & \epsilon_i \ge 0, \sum_{i=1}^n \epsilon_i \le C.
 \end{eqnarray*}
+$M$ is the width of the margin. 
+
+- $\epsilon_1, \ldots, \epsilon_n$ are **slack variables** that allow individual observations to be on the wrong side of the margin or the hyperplane.
+
+    - If $\epsilon_i = 0$, then the $i$-th observation is on the correct side of the margin.  
+    - If $0 < \epsilon_i \le 1$, then the $i$-th observation is on the wrong side of the margin.  
+    - If $\epsilon_i > 1$, then the $i$-th observation is on the wrong side of the hyperplane.  
+
+::: {#fig-soft-margin-classifier}
 
 <p align="center">
-![](ISL_fig_9_6.pdf){width=800px height=400px}
+![](ISL_fig_9_6.pdf){width=600px height=350px}
 </p>
 
-- Here $C$ is a regularization parameter. 
+Left: A support vector classifier was fit to a small data set. The hyperplane is shown as a solid line and the margins are shown as dashed lines. Purple observations: Observations 3; 4; 5, and 6 are on the correct side of the margin, observation 2 is on the margin, and observation 1 is on the wrong side of the margin. Blue observations: Observations 7 and 10 are on the correct side of the margin, observation 9 is on the margin, and observation 8 is on the wrong side of the margin. No observations are on the wrong side of the hyperplane. Right: Same as left panel with two additional points, 11 and 12. These two observations are on the wrong side of the hyperplane and the wrong side of the margin.
+
+:::
+
+- $C$ is a regularization parameter that controls the amount that the margin can be violated by the $n$ observations.
+
+    $C$ controls the bias-varaince trade-off.
+
+::: {#fig-C}
 
 <p align="center">
-![](ISL_fig_9_7.pdf){width=800px height=800px}
+![](ISL_fig_9_7.pdf){width=600px height=600px}
 </p>
 
-## Nonlinearity
+The largest value of $C$ was used in the top left panel, and smaller values were used in the top right, bottom left, and bottom right panels. When $C$ is large, then there is a high tolerance for observations being on the wrong side of the margin, and so the margin will be large. As $C$ decreases, the tolerance for observations being on the wrong side of the margin decreases, and the margin narrows.
+
+:::
+
+## Nonlinearity: support vector machines (SVM)
 
 - Sometime a linear boundary simply won't work, no matter what value of $C$.  
 
+::: {#fig-nonlinear-data}
+
 <p align="center">
-![](ISL_fig_9_8.pdf){width=400px height=400px}
+![](ISL_fig_9_8.pdf){width=600px height=400px}
 </p>
+
+Left: The observations fall into two classes, with a non-linear boundary between them. Right: The support vector classifier seeks a linear boundary, and consequently performs very poorly.
+
+:::
 
 - Enlarge the space of features by including transformations: $X_1^2, X_1^3, X_1 X_2, X_1 X_2^2, \ldots$ Hence go from a $p$-dimensional space to a $M > p$ dimensional space.
 $$
 \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_1^2 + \beta_4 X_2^2 + \beta_5 X_1 X_2 + \beta_6 X_1^3 + \beta_7 X_2^3 + \beta_8 X_1 X_2^2 + \beta_9 X_1^2 X_2 = 0.
 $$
 <p align="center">
-![](ISL_fig_9_9.pdf){width=800px height=400px}
+![](ISL_fig_9_9.pdf){width=600px height=400px}
 </p>
 
 ## Kernels
@@ -163,7 +215,7 @@ f(x) = \beta_0 + \sum_{i=1}^n \alpha_i \langle x, x_i \rangle.
 $$
 To estimate the parameters $\alpha_1,\ldots,\alpha_n$ and $\beta_0$, all we need are the $\binom{n}{2}$ inner products $\langle x, x_i \rangle$ between all pairs of training observations.
 
-- It turns out that most of the $\hat \alpha_i$ can be zero:
+- It turns out that most of the $\hat \alpha_i$ (non-support vectors) can be zero:
 $$
 f(x) = \beta_0 + \sum_{i \in \mathcal{S}} \hat{\alpha}_i \langle x, x_i \rangle.
 $$
@@ -171,7 +223,7 @@ $\mathcal{S}$ is the **support set** of indices $i$ such that $\hat{\alpha}_i > 
 
 - If we can compute inner products between observations, we can fit a SV classifier. Can be quite abstract!
 
-- Some special kernel functions can do this for us. E.g.
+- Some special kernel functions can do this for us. E.g. the **polynomial kernel** of degree $d$
 $$
 K(x_i, x_{i'}) = \left(1 + \sum_{j=1}^p x_{ij} x_{i'j} \right)^d
 $$
