@@ -155,10 +155,11 @@ Not much preprocessing is needed here since all predictors are quantitative.
 
 ```{python}
 from sklearn.ensemble import AdaBoostRegressor
+from sklearn.tree import DecisionTreeRegressor
 
 bst_mod =  AdaBoostRegressor(
   # Default base estimator is DecisionTreeRegressor with max_depth = 3
-  # estimator = None,
+  estimator = DecisionTreeRegressor(max_depth = 3),
   # Number of trees (to be tuned)
   n_estimators = 50, 
   # Learning rate (to be tuned)
@@ -202,9 +203,16 @@ Here we tune the number of trees `n_estimators` and the learning rate `learning_
 
 ```{python}
 # Tune hyper-parameter(s)
-B_grid = [50, 100, 150, 200, 250, 300]
-lambda_grid = [0.5, 1.0, 1.5, 2.0]
+d_grid = [
+  DecisionTreeRegressor(max_depth = 1),
+  DecisionTreeRegressor(max_depth = 2),
+  DecisionTreeRegressor(max_depth = 3),
+  DecisionTreeRegressor(max_depth = 4)
+  ]
+B_grid = [50, 100, 150, 200, 250, 300, 350, 400]
+lambda_grid = [0.2, 0.4, 0.6, 0.8, 1.0]
 tuned_parameters = {
+  "model__estimator": d_grid,
   "model__n_estimators": B_grid,
   "model__learning_rate": lambda_grid
   }
@@ -251,7 +259,8 @@ Visualize CV results.
 cv_res = pd.DataFrame({
   "B": np.array(search.cv_results_["param_model__n_estimators"]),
   "rmse": -search.cv_results_["mean_test_score"],
-  "lambda": search.cv_results_["param_model__learning_rate"]
+  "lambda": search.cv_results_["param_model__learning_rate"],
+  "depth": search.cv_results_["param_model__estimator"],
   })
 
 plt.figure()
@@ -261,6 +270,7 @@ sns.relplot(
   x = "B",
   y = "rmse",
   hue = "lambda",
+  style = "depth"
   ).set(
     xlabel = "B",
     ylabel = "CV RMSE"

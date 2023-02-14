@@ -178,8 +178,10 @@ col_tf = ColumnTransformer(transformers = [
 
 ```{python}
 from sklearn.ensemble import AdaBoostClassifier
+from sklearn.tree import DecisionTreeClassifier
 
 bst_mod = AdaBoostClassifier(
+  estimator = DecisionTreeClassifier(max_depth = 3),
   # Number of trees (to be tuned)
   n_estimators = 50, 
   # Learning rate (to be tuned)
@@ -221,9 +223,16 @@ Here we tune the number of trees `n_estimators` and the learning rate `learning_
 
 ```{python}
 # Tune hyper-parameter(s)
+d_grid = [
+  DecisionTreeClassifier(max_depth = 1),
+  DecisionTreeClassifier(max_depth = 2),
+  DecisionTreeClassifier(max_depth = 3),
+  DecisionTreeClassifier(max_depth = 4)
+  ]
 B_grid = np.linspace(10, 100, 10).astype(int)
-lambda_grid = [0.5, 1.0, 1.5, 2.0]
+lambda_grid = [0.2, 0.4, 0.6, 0.8, 1.0]
 tuned_parameters = {
+  "model__estimator": d_grid,
   "model__n_estimators": B_grid,
   "model__learning_rate": lambda_grid
   }
@@ -268,7 +277,8 @@ Visualize CV results.
 cv_res = pd.DataFrame({
   "B": np.array(search.cv_results_["param_model__n_estimators"]),
   "acc": search.cv_results_["mean_test_score"],
-  "lambda": search.cv_results_["param_model__learning_rate"]
+  "lambda": search.cv_results_["param_model__learning_rate"],
+  "depth": search.cv_results_["param_model__estimator"],
   })
 
 plt.figure()
@@ -277,7 +287,8 @@ sns.relplot(
   data = cv_res,
   x = "B",
   y = "acc",
-  hue = "lambda"
+  hue = "lambda",
+  style = "depth"
   ).set(
     xlabel = "B",
     ylabel = "CV Accuracy"
