@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Dr.&nbsp;Hua Zhou @ UCLA">
-<meta name="dcterms.date" content="2023-02-09">
+<meta name="dcterms.date" content="2023-02-13">
 
 <title>Tree-Based Methods (ISL 8)</title>
 <style>
@@ -129,11 +129,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#bagging" id="toc-bagging" class="nav-link" data-scroll-target="#bagging"><span class="toc-section-number">13</span>  Bagging</a></li>
   <li><a href="#out-of-bag-oob-error-estimation" id="toc-out-of-bag-oob-error-estimation" class="nav-link" data-scroll-target="#out-of-bag-oob-error-estimation"><span class="toc-section-number">14</span>  Out-of-Bag (OOB) error estimation</a></li>
   <li><a href="#random-forests" id="toc-random-forests" class="nav-link" data-scroll-target="#random-forests"><span class="toc-section-number">15</span>  Random forests</a></li>
-  <li><a href="#boosting" id="toc-boosting" class="nav-link" data-scroll-target="#boosting"><span class="toc-section-number">16</span>  Boosting</a></li>
-  <li><a href="#boosting-for-classification" id="toc-boosting-for-classification" class="nav-link" data-scroll-target="#boosting-for-classification"><span class="toc-section-number">17</span>  Boosting for classification</a></li>
-  <li><a href="#tuning-parameters-for-boosting" id="toc-tuning-parameters-for-boosting" class="nav-link" data-scroll-target="#tuning-parameters-for-boosting"><span class="toc-section-number">18</span>  Tuning parameters for boosting</a></li>
-  <li><a href="#variable-importance-vi-measure" id="toc-variable-importance-vi-measure" class="nav-link" data-scroll-target="#variable-importance-vi-measure"><span class="toc-section-number">19</span>  Variable importance (VI) measure</a></li>
-  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="toc-section-number">20</span>  Summary</a></li>
+  <li><a href="#baseball-example-random-forest-for-prediction" id="toc-baseball-example-random-forest-for-prediction" class="nav-link" data-scroll-target="#baseball-example-random-forest-for-prediction"><span class="toc-section-number">16</span>  Baseball example (random forest for prediction)</a></li>
+  <li><a href="#heart-example-random-forest-for-classification" id="toc-heart-example-random-forest-for-classification" class="nav-link" data-scroll-target="#heart-example-random-forest-for-classification"><span class="toc-section-number">17</span>  Heart example (random forest for classification)</a></li>
+  <li><a href="#boosting" id="toc-boosting" class="nav-link" data-scroll-target="#boosting"><span class="toc-section-number">18</span>  Boosting</a></li>
+  <li><a href="#boosting-for-classification" id="toc-boosting-for-classification" class="nav-link" data-scroll-target="#boosting-for-classification"><span class="toc-section-number">19</span>  Boosting for classification</a></li>
+  <li><a href="#tuning-parameters-for-boosting" id="toc-tuning-parameters-for-boosting" class="nav-link" data-scroll-target="#tuning-parameters-for-boosting"><span class="toc-section-number">20</span>  Tuning parameters for boosting</a></li>
+  <li><a href="#variable-importance-vi-measure" id="toc-variable-importance-vi-measure" class="nav-link" data-scroll-target="#variable-importance-vi-measure"><span class="toc-section-number">21</span>  Variable importance (VI) measure</a></li>
+  <li><a href="#baseball-example-boosting-for-regression" id="toc-baseball-example-boosting-for-regression" class="nav-link" data-scroll-target="#baseball-example-boosting-for-regression"><span class="toc-section-number">22</span>  Baseball example (boosting for regression)</a></li>
+  <li><a href="#heart-example-boosting-for-classification" id="toc-heart-example-boosting-for-classification" class="nav-link" data-scroll-target="#heart-example-boosting-for-classification"><span class="toc-section-number">23</span>  Heart example (boosting for classification)</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary"><span class="toc-section-number">24</span>  Summary</a></li>
   </ul>
 </nav>
 </div>
@@ -161,7 +165,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">February 9, 2023</p>
+      <p class="date">February 13, 2023</p>
     </div>
   </div>
   
@@ -214,14 +218,12 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.9        here_1.0.1        lattice_0.20-45   png_0.1-8        
- [5] rprojroot_2.0.3   digest_0.6.30     grid_4.2.2        lifecycle_1.0.3  
- [9] jsonlite_1.8.4    magrittr_2.0.3    evaluate_0.18     rlang_1.0.6      
-[13] stringi_1.7.8     cli_3.4.1         rstudioapi_0.14   Matrix_1.5-1     
-[17] reticulate_1.26   vctrs_0.5.1       rmarkdown_2.18    tools_4.2.2      
-[21] stringr_1.5.0     glue_1.6.2        htmlwidgets_1.6.0 xfun_0.35        
-[25] yaml_2.3.6        fastmap_1.1.0     compiler_4.2.2    htmltools_0.5.4  
-[29] knitr_1.41       </code></pre>
+ [1] Rcpp_1.0.10       here_1.0.1        lattice_0.20-45   png_0.1-8        
+ [5] rprojroot_2.0.3   digest_0.6.31     grid_4.2.2        jsonlite_1.8.4   
+ [9] evaluate_0.20     rlang_1.0.6       cli_3.6.0         rstudioapi_0.14  
+[13] Matrix_1.5-3      reticulate_1.28   rmarkdown_2.20    tools_4.2.2      
+[17] htmlwidgets_1.6.1 xfun_0.37         yaml_2.3.7        fastmap_1.1.0    
+[21] compiler_4.2.2    htmltools_0.5.4   knitr_1.42       </code></pre>
 </div>
 </div>
 </div>
@@ -505,16 +507,16 @@ D = - \sum_{k=1}^K \hat p_{mk} \log \hat p_{mk}.
 <p>Advantages:</p>
 <ol type="1">
 <li><p>Trees are very easy to explain to people. In fact, they are even easier to explain than linear regression!</p></li>
-<li><p>Some people believe that decision trees more closely mirror human decision-making than do the regression and classification approaches we learnt in this course.</p></li>
+<li><p>Some people believe that decision trees more closely mirror human decision-making than other regression and classification approaches we learnt in this course.</p></li>
 <li><p>Trees can be displayed graphically, and are easily interpreted even by a non-expert (especially if they are small).</p></li>
-<li><p>Trees can easily handle qualitative predictors without the need to create dummy variables. scikit-learn and xgboost don’t allow categorical predictors yet<strong>???</strong></p></li>
+<li><p>Trees can easily handle qualitative predictors without the need to create dummy variables, although scikit-learn and xgboost don’t allow categorical predictors yet<strong>???</strong></p></li>
 </ol>
 <p>Disadvantages:</p>
 <ol type="1">
 <li><p>Unfortunately, trees generally do not have the same level of predictive accuracy as some of the other regression and classification approaches.</p></li>
 <li><p>Additionally, trees can be very non-robust. In other words, a small change in the data can cause a large change in the final estimated tree.</p></li>
 </ol>
-<p>Ensemble methods such as bagging, random forests, and boosting solve these issues.</p>
+<p><strong>Ensemble methods</strong> such as bagging, random forests, and boosting solve these issues.</p>
 </section>
 <section id="bagging" class="level2" data-number="13">
 <h2 data-number="13" class="anchored" data-anchor-id="bagging"><span class="header-section-number">13</span> Bagging</h2>
@@ -525,6 +527,7 @@ D = - \sum_{k=1}^K \hat p_{mk} \log \hat p_{mk}.
 <li><p>In this approach we generate <span class="math inline">\(B\)</span> different bootstrapped training data sets. We then train our method on the <span class="math inline">\(b\)</span>th bootstrapped training set in order to get <span class="math inline">\(\hat f^{*b}(x)\)</span>, the prediction at a point <span class="math inline">\(x\)</span>. We then average all the predictions to obtain <span class="math display">\[
 \hat f_{\text{bag}}(x) = \frac{1}{B} \sum_{b=1}^B \hat f^{*b}(x).
 \]</span> This is called <strong>bagging</strong>.</p></li>
+<li><p>These trees are grown deep, and are not pruned.</p></li>
 <li><p>The above prescription applied to regression trees.</p></li>
 <li><p>For classification trees: for each test observation, we record the class predicted by each of the <span class="math inline">\(B\)</span> trees, and take a majority vote: the overall prediction is the most commonly occurring class among the <span class="math inline">\(B\)</span> predictions.</p></li>
 </ul>
@@ -565,8 +568,16 @@ D = - \sum_{k=1}^K \hat p_{mk} \log \hat p_{mk}.
 </figure>
 </div>
 </section>
-<section id="boosting" class="level2" data-number="16">
-<h2 data-number="16" class="anchored" data-anchor-id="boosting"><span class="header-section-number">16</span> Boosting</h2>
+<section id="baseball-example-random-forest-for-prediction" class="level2" data-number="16">
+<h2 data-number="16" class="anchored" data-anchor-id="baseball-example-random-forest-for-prediction"><span class="header-section-number">16</span> Baseball example (random forest for prediction)</h2>
+<p><a href="https://ucla-econ-425t.github.io/2023winter/slides/08-tree/workflow_rf_regtree.html">Workflow: random forest for regression</a>.</p>
+</section>
+<section id="heart-example-random-forest-for-classification" class="level2" data-number="17">
+<h2 data-number="17" class="anchored" data-anchor-id="heart-example-random-forest-for-classification"><span class="header-section-number">17</span> Heart example (random forest for classification)</h2>
+<p><a href="https://ucla-econ-425t.github.io/2023winter/slides/08-tree/workflow_rf_class.html">Workflow: random forest for classification</a>.</p>
+</section>
+<section id="boosting" class="level2" data-number="18">
+<h2 data-number="18" class="anchored" data-anchor-id="boosting"><span class="header-section-number">18</span> Boosting</h2>
 <ul>
 <li><p>Like bagging, boosting is a general approach that can be applied to many statistical learning methods for regression or classification. We only discuss boosting for decision trees.</p></li>
 <li><p>Recall that bagging involves creating multiple copies of the original training data set using the bootstrap, fitting a separate decision tree to each copy, and then combining all of the trees in order to create a single predictive model.</p></li>
@@ -593,8 +604,8 @@ r_i \leftarrow r_i - \lambda \hat f^b(x_i).
 <li><p>By fitting <strong>small trees</strong> to the residuals, we slowly improve <span class="math inline">\(\hat f\)</span> in areas where it does not perform well. The shrinkage parameter <span class="math inline">\(\lambda\)</span> slows the process down even further, allowing more and different shaped trees to attack the residuals.</p></li>
 </ul>
 </section>
-<section id="boosting-for-classification" class="level2" data-number="17">
-<h2 data-number="17" class="anchored" data-anchor-id="boosting-for-classification"><span class="header-section-number">17</span> Boosting for classification</h2>
+<section id="boosting-for-classification" class="level2" data-number="19">
+<h2 data-number="19" class="anchored" data-anchor-id="boosting-for-classification"><span class="header-section-number">19</span> Boosting for classification</h2>
 <p>See ESL Chapter 10.</p>
 <p>Gene expression example (continued).</p>
 <div id="fig-boosting-gene-expression" class="quarto-figure quarto-figure-center anchored">
@@ -606,16 +617,16 @@ r_i \leftarrow r_i - \lambda \hat f^b(x_i).
 </figure>
 </div>
 </section>
-<section id="tuning-parameters-for-boosting" class="level2" data-number="18">
-<h2 data-number="18" class="anchored" data-anchor-id="tuning-parameters-for-boosting"><span class="header-section-number">18</span> Tuning parameters for boosting</h2>
+<section id="tuning-parameters-for-boosting" class="level2" data-number="20">
+<h2 data-number="20" class="anchored" data-anchor-id="tuning-parameters-for-boosting"><span class="header-section-number">20</span> Tuning parameters for boosting</h2>
 <ol type="1">
 <li><p>The <strong>number of trees</strong> <span class="math inline">\(B\)</span>. Unlike bagging and random forests, boosting can overfit if <span class="math inline">\(B\)</span> is too large, although this overfitting tends to occur slowly if at all. We use cross-validation to select <span class="math inline">\(B\)</span>.</p></li>
 <li><p>The <strong>shrinkage parameter</strong> or <strong>learning rate</strong> <span class="math inline">\(\lambda\)</span>, a small positive number. This controls the rate at which boosting learns. Typical values are 0.01 or 0.001, and the right choice can depend on the problem. Very small <span class="math inline">\(\lambda\)</span> can require using a very large value of <span class="math inline">\(B\)</span> in order to achieve good performance.</p></li>
 <li><p>The <strong>number of splits</strong> <span class="math inline">\(d\)</span> in each tree, which controls the complexity of the boosted ensemble. Often <span class="math inline">\(d = 1\)</span> or 2 works well, in which case each tree is a stump, consisting of a single split and resulting in an additive model. More generally <span class="math inline">\(d\)</span> is the interaction depth, and controls the interaction order of the boosted model, since <span class="math inline">\(d\)</span> splits can involve at most <span class="math inline">\(d\)</span> variables.</p></li>
 </ol>
 </section>
-<section id="variable-importance-vi-measure" class="level2" data-number="19">
-<h2 data-number="19" class="anchored" data-anchor-id="variable-importance-vi-measure"><span class="header-section-number">19</span> Variable importance (VI) measure</h2>
+<section id="variable-importance-vi-measure" class="level2" data-number="21">
+<h2 data-number="21" class="anchored" data-anchor-id="variable-importance-vi-measure"><span class="header-section-number">21</span> Variable importance (VI) measure</h2>
 <ul>
 <li><p>For bagged/RF regression trees, we record the total amount that the RSS is decreased due to splits over a given predictor, averaged over all <span class="math inline">\(B\)</span> trees. A large value indicates an important predictor.</p></li>
 <li><p>Similarly, for bagged/RF classification trees, we add up the total amount that the Gini index is decreased by splits over a given predictor, averaged over all <span class="math inline">\(B\)</span> trees.</p></li>
@@ -629,8 +640,16 @@ r_i \leftarrow r_i - \lambda \hat f^b(x_i).
 </figure>
 </div>
 </section>
-<section id="summary" class="level2" data-number="20">
-<h2 data-number="20" class="anchored" data-anchor-id="summary"><span class="header-section-number">20</span> Summary</h2>
+<section id="baseball-example-boosting-for-regression" class="level2" data-number="22">
+<h2 data-number="22" class="anchored" data-anchor-id="baseball-example-boosting-for-regression"><span class="header-section-number">22</span> Baseball example (boosting for regression)</h2>
+<p><a href="https://ucla-econ-425t.github.io/2023winter/slides/08-tree/workflow_boosting_regtree.html">Workflow: boosting for regression</a>.</p>
+</section>
+<section id="heart-example-boosting-for-classification" class="level2" data-number="23">
+<h2 data-number="23" class="anchored" data-anchor-id="heart-example-boosting-for-classification"><span class="header-section-number">23</span> Heart example (boosting for classification)</h2>
+<p><a href="https://ucla-econ-425t.github.io/2023winter/slides/08-tree/workflow_boosting_class.html">Workflow: boosting for classification</a>.</p>
+</section>
+<section id="summary" class="level2" data-number="24">
+<h2 data-number="24" class="anchored" data-anchor-id="summary"><span class="header-section-number">24</span> Summary</h2>
 <ul>
 <li><p>Decision trees are simple and interpretable models for regression and classification.</p></li>
 <li><p>However they are often not competitive with other methods in terms of prediction accuracy.</p></li>

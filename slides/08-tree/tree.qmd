@@ -117,8 +117,7 @@ Hitters[Hitters['Hits'] < 10]
 ![](ISL_fig_8_1.pdf){width=500px height=700px}
 </p>
 
-- Overall, the tree stratifies or segments the players into
-three regions of predictor space:
+- Overall, the tree stratifies or segments the players into three regions of predictor space:
 \begin{eqnarray*}
 R_1 &=& \{ X \mid \text{Years} < 4.5\} \\
 R_2 &=& \{ X \mid \text{Years} \ge 4.5, \text{Hits} < 117.5\} \\
@@ -378,6 +377,14 @@ Results from random forests for the fifteen-class gene expression data set with 
 
 :::
 
+## Baseball example (random forest for prediction)
+
+[Workflow: random forest for regression](https://ucla-econ-425t.github.io/2023winter/slides/08-tree/workflow_rf_regtree.html).
+
+## Heart example (random forest for classification)
+
+[Workflow: random forest for classification](https://ucla-econ-425t.github.io/2023winter/slides/08-tree/workflow_rf_class.html).
+
 ## Boosting
 
 - Like bagging, boosting is a general approach that can be applied to many statistical learning methods for regression
@@ -459,6 +466,14 @@ cross-validation to select $B$.
 Variable importance plot for the `Heart` data.
 
 :::
+
+## Baseball example (boosting for regression)
+
+[Workflow: boosting for regression](https://ucla-econ-425t.github.io/2023winter/slides/08-tree/workflow_boosting_regtree.html).
+
+## Heart example (boosting for classification)
+
+[Workflow: boosting for classification](https://ucla-econ-425t.github.io/2023winter/slides/08-tree/workflow_boosting_class.html).
 
 ## Summary
 
