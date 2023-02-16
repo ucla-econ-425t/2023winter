@@ -21,18 +21,18 @@ knitr:
     cache: false
 ---
 
-## ISL Exercise 8.3.3 (10pts)
+## ISL Exercise 8.4.3 (10pts)
 
-## ISL Exercise 8.3.4 (10pts)
+## ISL Exercise 8.4.4 (10pts)
 
-## ISL Exercise 8.3.5 (10pts)
+## ISL Exercise 8.4.5 (10pts)
 
 ## ISL Lab 8.3. `Boston` data set (30pts)
 
-Follow the machine workflow to train regression tree, random forest, and boosting methods for predicting `medv`. Evaluate out-of-sample performance on a test set.
+Follow the machine learning workflow to train regression tree, random forest, and boosting methods for predicting `medv`. Evaluate out-of-sample performance on a test set.
 
 ## ISL Lab 8.3 `Carseats` data set (30pts)
 
-Follow the machine workflow to train classification tree, random forest, and boosting methods for classifying `Sales <= 8` versus `Sales > 8`. Evaluate out-of-sample performance on a test set.
+Follow the machine learning workflow to train classification tree, random forest, and boosting methods for classifying `Sales <= 8` versus `Sales > 8`. Evaluate out-of-sample performance on a test set.
 
 
