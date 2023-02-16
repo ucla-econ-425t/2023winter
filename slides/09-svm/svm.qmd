@@ -130,9 +130,7 @@ The maximal margin hyperplane is shown as a solid line. The margin is the distan
 \text{subject to} & & \sum_{j=1}^p \beta_j^2 = 1 \\
 & & y_i (\beta_0 + \beta^T x_i) \ge M \text{ for all } i.
 \end{eqnarray*}
-This is a convex quadratic program, which can be solved efficiently.
-
-    The constraints ensure that each observation is on the correct side of the hyperplane and at least a distance $M$ from the hyperplane.
+The constraints ensure that each observation is on the correct side of the hyperplane and at least a distance $M$ from the hyperplane.
 
 - We can get rid of the $\|\beta\|^2 = 1$ constraint by replacing the inequality by
 $$

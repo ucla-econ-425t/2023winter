@@ -286,8 +286,7 @@ f(X) = \beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p = \beta_0 + \beta^T X,
 \max\limits_{\beta_0,\beta_1,\ldots,\beta_p, M} &amp; &amp; \quad M \\
 \text{subject to} &amp; &amp; \sum_{j=1}^p \beta_j^2 = 1 \\
 &amp; &amp; y_i (\beta_0 + \beta^T x_i) \ge M \text{ for all } i.
-\end{eqnarray*}\]</span> This is a convex quadratic program, which can be solved efficiently.</p>
-<p>The constraints ensure that each observation is on the correct side of the hyperplane and at least a distance <span class="math inline">\(M\)</span> from the hyperplane.</p></li>
+\end{eqnarray*}\]</span> The constraints ensure that each observation is on the correct side of the hyperplane and at least a distance <span class="math inline">\(M\)</span> from the hyperplane.</p></li>
 <li><p>We can get rid of the <span class="math inline">\(\|\beta\|^2 = 1\)</span> constraint by replacing the inequality by <span class="math display">\[
 \frac{1}{\|\beta\|^2} y_i (\beta_0 + \beta^T x_i) \ge M,
 \]</span> (which redefines <span class="math inline">\(\beta_0\)</span>) or equivalently <span class="math display">\[
