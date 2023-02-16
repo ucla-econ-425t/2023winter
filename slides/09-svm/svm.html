@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Dr.&nbsp;Hua Zhou @ UCLA">
-<meta name="dcterms.date" content="2023-02-14">
+<meta name="dcterms.date" content="2023-02-16">
 
 <title>Support Vector Machines (ISL 9)</title>
 <style>
@@ -114,12 +114,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview"><span class="toc-section-number">1</span>  Overview</a></li>
   <li><a href="#hyperplane" id="toc-hyperplane" class="nav-link" data-scroll-target="#hyperplane"><span class="toc-section-number">2</span>  Hyperplane</a></li>
   <li><a href="#maximal-margin-classifier" id="toc-maximal-margin-classifier" class="nav-link" data-scroll-target="#maximal-margin-classifier"><span class="toc-section-number">3</span>  Maximal margin classifier</a></li>
-  <li><a href="#support-vector-classifier" id="toc-support-vector-classifier" class="nav-link" data-scroll-target="#support-vector-classifier"><span class="toc-section-number">4</span>  Support vector classifier</a></li>
+  <li><a href="#support-vector-classifier-soft-margin-classifier" id="toc-support-vector-classifier-soft-margin-classifier" class="nav-link" data-scroll-target="#support-vector-classifier-soft-margin-classifier"><span class="toc-section-number">4</span>  Support vector classifier (soft margin classifier)</a></li>
   <li><a href="#nonlinearity-support-vector-machines-svm" id="toc-nonlinearity-support-vector-machines-svm" class="nav-link" data-scroll-target="#nonlinearity-support-vector-machines-svm"><span class="toc-section-number">5</span>  Nonlinearity: support vector machines (SVM)</a></li>
   <li><a href="#kernels" id="toc-kernels" class="nav-link" data-scroll-target="#kernels"><span class="toc-section-number">6</span>  Kernels</a></li>
-  <li><a href="#heart-data-example-todo" id="toc-heart-data-example-todo" class="nav-link" data-scroll-target="#heart-data-example-todo"><span class="toc-section-number">7</span>  Heart data example (TODO)</a></li>
+  <li><a href="#heart-data-example" id="toc-heart-data-example" class="nav-link" data-scroll-target="#heart-data-example"><span class="toc-section-number">7</span>  <code>Heart</code> data example</a></li>
   <li><a href="#svm-for-more-than-2-classes" id="toc-svm-for-more-than-2-classes" class="nav-link" data-scroll-target="#svm-for-more-than-2-classes"><span class="toc-section-number">8</span>  SVM for more than 2 classes</a></li>
-  <li><a href="#svm-vs-logistic-regression." id="toc-svm-vs-logistic-regression." class="nav-link" data-scroll-target="#svm-vs-logistic-regression."><span class="toc-section-number">9</span>  SVM vs logistic regression.</a></li>
+  <li><a href="#svm-vs-logistic-regression-lr" id="toc-svm-vs-logistic-regression-lr" class="nav-link" data-scroll-target="#svm-vs-logistic-regression-lr"><span class="toc-section-number">9</span>  SVM vs logistic regression (LR)</a></li>
   </ul>
 </nav>
 </div>
@@ -147,7 +147,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">February 14, 2023</p>
+      <p class="date">February 16, 2023</p>
     </div>
   </div>
   
@@ -232,7 +232,7 @@ loaded via a namespace (and not attached):
 <ul>
 <li><p>A hyperplane in <span class="math inline">\(p\)</span> dimensions is a flat affine subspace of dimension <span class="math inline">\(p-1\)</span>.</p></li>
 <li><p>In general the equation for a hyperplane has the form <span class="math display">\[
-\beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p = 0.
+\beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p = \beta_0 + \beta^T X = 0.
 \]</span></p></li>
 <li><p>In <span class="math inline">\(p=2\)</span> dimensions, a hyperplane is a line.</p></li>
 </ul>
@@ -246,8 +246,17 @@ loaded via a namespace (and not attached):
 </div>
 <ul>
 <li><p>If <span class="math inline">\(\beta_0 = 0\)</span>, the hyperplane goes through the origin, otherwise not.</p></li>
-<li><p>The vector <span class="math inline">\(\beta = (\beta_1, \ldots, \beta_p)\)</span> is called the normal vector. It points in a direction orthogonal to the surface of hyperplane.</p></li>
-<li><p>If <span class="math inline">\(f(X) = \beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p\)</span>, then <span class="math inline">\(f(X) &gt; 0\)</span> for points on one side of the hyperplane, and <span class="math inline">\(f(X) &lt; 0\)</span> for points on the other.</p></li>
+<li><p>The vector <span class="math inline">\(\beta = (\beta_1, \ldots, \beta_p)\)</span> is called the normal vector. It points in a direction orthogonal to the surface of hyperplane. That is <span class="math display">\[
+\beta^T (x_1 - x_2) = 0
+\]</span> for any two points <span class="math inline">\(x_1, x_2\)</span> in the hyperplane.</p></li>
+<li><p>If <span class="math display">\[
+f(X) = \beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p = \beta_0 + \beta^T X,
+\]</span> then <span class="math inline">\(f(X) &gt; 0\)</span> for points on one side of the hyperplane, and <span class="math inline">\(f(X) &lt; 0\)</span> for points on the other.</p>
+<p>For any <span class="math inline">\(x_0\)</span> in the hyperplane <span class="math inline">\(f(x)=0\)</span>, <span class="math inline">\(\beta^T x_0 = - \beta_0\)</span>. The signed distance of any point <span class="math inline">\(x\)</span> to the hyperplane <span class="math inline">\(f(x)=0\)</span> is given by <span class="math display">\[
+\frac{1}{\|\beta\|} (\beta^T x - \beta^T x_0) = \frac{1}{\|\beta\|} (\beta^T x + \beta_0) = \frac{1}{\|\beta\|} f(x),
+\]</span> where <span class="math display">\[
+\|\beta\|=\sqrt{\sum_{j=1}^p \beta_j^2}.
+\]</span> Thus <span class="math inline">\(f(x)\)</span> is proportional to the signed distance from <span class="math inline">\(x\)</span> to the hyperplane defined by <span class="math inline">\(f(x) = 0\)</span>.</p></li>
 <li><p>If we code the colored points as <span class="math inline">\(y_i = +1\)</span> for blue, say and <span class="math inline">\(y_i = -1\)</span> for mauve, then if <span class="math inline">\(y_i \cdot f(X_i) &gt; 0\)</span> for all <span class="math inline">\(i\)</span>, <span class="math inline">\(f(X) = 0\)</span> defines a <strong>separating hyperplane</strong>.</p></li>
 </ul>
 <div id="fig-separating-hyperplane" class="quarto-figure quarto-figure-center anchored">
@@ -276,13 +285,40 @@ loaded via a namespace (and not attached):
 <li><p>Constrained optimization: <span class="math display">\[\begin{eqnarray*}
 \max\limits_{\beta_0,\beta_1,\ldots,\beta_p, M} &amp; &amp; \quad M \\
 \text{subject to} &amp; &amp; \sum_{j=1}^p \beta_j^2 = 1 \\
-&amp; &amp; y_i (\beta_0 + \beta_1 x_{i1} + \cdots + \beta_p x_{ip}) \ge M \text{ for all } i.
+&amp; &amp; y_i (\beta_0 + \beta^T x_i) \ge M \text{ for all } i.
 \end{eqnarray*}\]</span> This is a convex quadratic program, which can be solved efficiently.</p>
 <p>The constraints ensure that each observation is on the correct side of the hyperplane and at least a distance <span class="math inline">\(M\)</span> from the hyperplane.</p></li>
+<li><p>We can get rid of the <span class="math inline">\(\|\beta\|^2 = 1\)</span> constraint by replacing the inequality by <span class="math display">\[
+\frac{1}{\|\beta\|^2} y_i (\beta_0 + \beta^T x_i) \ge M,
+\]</span> (which redefines <span class="math inline">\(\beta_0\)</span>) or equivalently <span class="math display">\[
+y_i (\beta_0 + \beta^T x_i) \ge M \|\beta\|^2.
+\]</span> Since for any <span class="math inline">\(\beta_0,\beta_1,\ldots,\beta_p\)</span> satisfying these inequalities, any positively scaled multiple satisfies them too, we can arbitrarily set <span class="math inline">\(\|\beta\|^2 = 1/M\)</span>.</p></li>
+<li><p>Thus we equivalently solve <span class="math display">\[\begin{eqnarray*}
+\min_{\beta_0,\beta_1,\ldots,\beta_p} &amp; &amp; \frac 12 \|\beta\|^2 \\
+\text{subject to} &amp; &amp; y_i (\beta_0 + \beta^T x_i) \ge 1, \quad i = 1,\ldots,N.
+\end{eqnarray*}\]</span> This is a quadratic optimization problem.</p>
+<p>Intuitively, the constraints define an empty slab or margin around the linear decision boundary of thickness <span class="math inline">\(1/\|\beta\|^2\)</span>. Hence we choose <span class="math inline">\(\beta_0,\beta_1,\ldots,\beta_p\)</span> to maximize its thickness.</p></li>
+<li><p>The Lagrange (primal) function is <span class="math display">\[
+L_P = \frac 12 \|\beta\|^2 - \sum_{i=1}^n \alpha_i [y_i (x_i^T \beta + \beta_0) - 1].
+\]</span> Setting the derivatives to zero, we obtain <span class="math display">\[\begin{eqnarray*}
+\beta &amp;=&amp; \sum_{i=1}^n \alpha_i y_i x_i \\
+0 &amp;=&amp; \sum_{i=1}^n \alpha_i y_i,
+\end{eqnarray*}\]</span> and substituting these to the <span class="math inline">\(L_p\)</span> we obtained the dual <span class="math display">\[\begin{eqnarray*}
+\max_{\alpha_1,\ldots,\alpha_n} &amp; &amp; L_D = \sum_{i=1}^n \alpha_i - \frac 12 \sum_{i=1}^n \sum_{i'=1}^n \alpha_i \alpha_{i'} y_i y_{i'} x_i^T x_{i'} \\
+\text{subject to} &amp; &amp; \alpha_i \ge 0, \sum_{i=1}^n \alpha_i y_i = 0.
+\end{eqnarray*}\]</span></p>
+<p>The solution <span class="math inline">\(\alpha_i\)</span> must satisfy the so-called complimentary slackness condition <span class="math display">\[
+\alpha_i [y_i (\beta_0 + \beta^T x_i) - 1] = 0 \quad i=1,\ldots,n.
+\]</span> Thus</p>
+<ul>
+<li>if <span class="math inline">\(\alpha_i&gt;0\)</span>, then <span class="math inline">\(y_i (\beta_0 + \beta^T x_i) = 1\)</span>, or in other words, <span class="math inline">\(x_i\)</span> is on the boundary of the slab;<br>
+</li>
+<li>if <span class="math inline">\(y_i (\beta_0 + \beta^T x_i) &gt; 1\)</span>, <span class="math inline">\(x_i\)</span> is not on the boundary of the slab, and <span class="math inline">\(\alpha_i=0\)</span>. Hence the solution <span class="math inline">\(\beta\)</span> only depends on the support vectors with <span class="math inline">\(\alpha_i &gt; 0\)</span>.</li>
+</ul></li>
 </ul>
 </section>
-<section id="support-vector-classifier" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="support-vector-classifier"><span class="header-section-number">4</span> Support vector classifier</h2>
+<section id="support-vector-classifier-soft-margin-classifier" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="support-vector-classifier-soft-margin-classifier"><span class="header-section-number">4</span> Support vector classifier (soft margin classifier)</h2>
 <ul>
 <li>Non-separable data. Sometimes the data are not separable by a linear boundary. This if often the case, unless <span class="math inline">\(N &lt; p\)</span>.</li>
 </ul>
@@ -295,16 +331,16 @@ loaded via a namespace (and not attached):
 </figure>
 </div>
 <ul>
-<li>Noisy data. Sometimes the data are separable, but noisy. This can lead to a poor solution for the maximal-margin classifier.</li>
+<li>Noisy data. Sometimes the data are separable, but noisy. This can lead to a poor solution for the maximal margin classifier.</li>
 </ul>
 <p align="center">
 <embed src="ISL_fig_9_5.pdf" width="600" height="350">
 </p>
 <ul>
 <li><p>The <strong>support vector classifier</strong> maximizes a <strong>soft</strong> margin. <span class="math display">\[\begin{eqnarray*}
-\max\limits_{\beta_0,\beta_1,\ldots,\beta_p, \epsilon_1, \ldots, \epsilon_n} &amp; &amp; \quad M \\
+\max\limits_{\beta_0,\beta_1,\ldots,\beta_p, \epsilon_1, \ldots, \epsilon_n, M} &amp; &amp; \quad M \\
 \text{subject to} &amp; &amp; \sum_{j=1}^p \beta_j^2 = 1 \\
-&amp; &amp; y_i (\beta_0 + \beta_1 x_{i1} + \cdots + \beta_p x_{ip}) \ge M (1-\epsilon_i) \\
+&amp; &amp; y_i (\beta_0 + \beta^T x_i) \ge M (1-\epsilon_i) \\
 &amp; &amp; \epsilon_i \ge 0, \sum_{i=1}^n \epsilon_i \le C.
 \end{eqnarray*}\]</span> <span class="math inline">\(M\)</span> is the width of the margin.</p></li>
 <li><p><span class="math inline">\(\epsilon_1, \ldots, \epsilon_n\)</span> are <strong>slack variables</strong> that allow individual observations to be on the wrong side of the margin or the hyperplane.</p>
@@ -321,12 +357,12 @@ loaded via a namespace (and not attached):
 <p align="center">
 <embed src="ISL_fig_9_6.pdf" width="600" height="350">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;5: Left: A support vector classifier was fit to a small data set. The hyperplane is shown as a solid line and the margins are shown as dashed lines. Purple observations: Observations 3; 4; 5, and 6 are on the correct side of the margin, observation 2 is on the margin, and observation 1 is on the wrong side of the margin. Blue observations: Observations 7 and 10 are on the correct side of the margin, observation 9 is on the margin, and observation 8 is on the wrong side of the margin. No observations are on the wrong side of the hyperplane. Right: Same as left panel with two additional points, 11 and 12. These two observations are on the wrong side of the hyperplane and the wrong side of the margin.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;5: Left: A support vector classifier was fit to a small data set. The hyperplane is shown as a solid line and the margins are shown as dashed lines. Purple observations: Observations 3, 4, 5, and 6 are on the correct side of the margin, observation 2 is on the margin, and observation 1 is on the wrong side of the margin. Blue observations: Observations 7 and 10 are on the correct side of the margin, observation 9 is on the margin, and observation 8 is on the wrong side of the margin. No observations are on the wrong side of the hyperplane. Right: Same as left panel with two additional points, 11 and 12. These two observations are on the wrong side of the hyperplane and the wrong side of the margin.</figcaption><p></p>
 </figure>
 </div>
 <ul>
 <li><p><span class="math inline">\(C\)</span> is a regularization parameter that controls the amount that the margin can be violated by the <span class="math inline">\(n\)</span> observations.</p>
-<p><span class="math inline">\(C\)</span> controls the bias-varaince trade-off.</p></li>
+<p><span class="math inline">\(C\)</span> controls the bias-variance trade-off.</p></li>
 </ul>
 <div id="fig-C" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
@@ -336,6 +372,17 @@ loaded via a namespace (and not attached):
 <p></p><figcaption class="figure-caption">Figure&nbsp;6: The largest value of <span class="math inline">\(C\)</span> was used in the top left panel, and smaller values were used in the top right, bottom left, and bottom right panels. When <span class="math inline">\(C\)</span> is large, then there is a high tolerance for observations being on the wrong side of the margin, and so the margin will be large. As <span class="math inline">\(C\)</span> decreases, the tolerance for observations being on the wrong side of the margin decreases, and the margin narrows.</figcaption><p></p>
 </figure>
 </div>
+<ul>
+<li><p>By a similar reparameterization trick as before, we solve the equivalent optimization problem <span class="math display">\[\begin{eqnarray*}
+\min &amp; &amp; \frac 12 \|\beta\|^2 \\
+\text{subject to} &amp; &amp; y_i(\beta_0 + \beta^T x) \ge 1 - \xi_i, \quad i=1,\ldots,n \\
+&amp; &amp; \xi_i \ge 0, \sum_i \xi_i \le \text{constant}.
+\end{eqnarray*}\]</span></p></li>
+<li><p>The dual is (derivation omitted) <span class="math display">\[\begin{eqnarray*}
+\max_{\alpha_1,\ldots,\alpha_n} &amp; &amp; L_D = \sum_{i=1}^n \alpha_i - \frac 12 \sum_{i=1}^n \sum_{i'=1}^n \alpha_i \alpha_{i'} y_i y_{i'} x_i^T x_{i'} \\
+\text{subject to} &amp; &amp; 0 \le \alpha_i \le C, \sum_{i=1}^n \alpha_i y_i = 0.
+\end{eqnarray*}\]</span></p></li>
+</ul>
 </section>
 <section id="nonlinearity-support-vector-machines-svm" class="level2" data-number="5">
 <h2 data-number="5" class="anchored" data-anchor-id="nonlinearity-support-vector-machines-svm"><span class="header-section-number">5</span> Nonlinearity: support vector machines (SVM)</h2>
@@ -351,59 +398,67 @@ loaded via a namespace (and not attached):
 </figure>
 </div>
 <ul>
-<li>Enlarge the space of features by including transformations: <span class="math inline">\(X_1^2, X_1^3, X_1 X_2, X_1 X_2^2, \ldots\)</span> Hence go from a <span class="math inline">\(p\)</span>-dimensional space to a <span class="math inline">\(M &gt; p\)</span> dimensional space. <span class="math display">\[
+<li>Enlarge the space of features by including transformations: <span class="math inline">\(X_1^2, X_1^3, X_1 X_2, X_1 X_2^2, \ldots\)</span> Hence go from a <span class="math inline">\(p\)</span>-dimensional space to an <span class="math inline">\(M &gt; p\)</span> dimensional space. <span class="math display">\[
 \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \beta_3 X_1^2 + \beta_4 X_2^2 + \beta_5 X_1 X_2 + \beta_6 X_1^3 + \beta_7 X_2^3 + \beta_8 X_1 X_2^2 + \beta_9 X_1^2 X_2 = 0.
-\]</span>
-<p align="center">
-<embed src="ISL_fig_9_9.pdf" width="600" height="400">
-</p></li>
+\]</span></li>
 </ul>
 </section>
 <section id="kernels" class="level2" data-number="6">
 <h2 data-number="6" class="anchored" data-anchor-id="kernels"><span class="header-section-number">6</span> Kernels</h2>
 <ul>
-<li><p>Polynomials (especially high-dimensional ones) get wild rather fast.</p></li>
+<li><p>Polynomials (especially high-dimensional ones) get wild rather fast (too many features).</p></li>
 <li><p>There is a more elegant and controlled way to introduce nonlinearities in support-vector classifiers through the use of <strong>kernels</strong>.</p></li>
 <li><p><strong>Inner product</strong> between two vectors: <span class="math display">\[
 \langle x_i, x_{i'} \rangle = \sum_{j=1}^p x_{ij} x_{i'j}.
 \]</span></p></li>
 <li><p>The linear support vector classifier can be represented as <span class="math display">\[
-f(x) = \beta_0 + \sum_{i=1}^n \alpha_i \langle x, x_i \rangle.
-\]</span> To estimate the parameters <span class="math inline">\(\alpha_1,\ldots,\alpha_n\)</span> and <span class="math inline">\(\beta_0\)</span>, all we need are the <span class="math inline">\(\binom{n}{2}\)</span> inner products <span class="math inline">\(\langle x, x_i \rangle\)</span> between all pairs of training observations.</p></li>
+f(x) = \beta_0 + \sum_{i=1}^n \alpha_i y_i \langle x, x_i \rangle.
+\]</span> To estimate the parameters <span class="math inline">\(\alpha_1,\ldots,\alpha_n\)</span> and <span class="math inline">\(\beta_0\)</span>, all we need are the <span class="math inline">\(\binom{n}{2}\)</span> inner products <span class="math inline">\(\langle x_i, x_{i'} \rangle\)</span> between all pairs of training observations.</p></li>
 <li><p>It turns out that most of the <span class="math inline">\(\hat \alpha_i\)</span> (non-support vectors) can be zero: <span class="math display">\[
-f(x) = \beta_0 + \sum_{i \in \mathcal{S}} \hat{\alpha}_i \langle x, x_i \rangle.
-\]</span> <span class="math inline">\(\mathcal{S}\)</span> is the <strong>support set</strong> of indices <span class="math inline">\(i\)</span> such that <span class="math inline">\(\hat{\alpha}_i &gt; 0\)</span>.</p></li>
-<li><p>If we can compute inner products between observations, we can fit a SV classifier. Can be quite abstract!</p></li>
+\hat f(x) = \hat \beta_0 + \sum_{i \in \mathcal{S}} \hat \alpha_i y_i \langle x, x_i \rangle.
+\]</span> <span class="math inline">\(\mathcal{S}\)</span> is the <strong>support set</strong> of indices <span class="math inline">\(i\)</span> such that <span class="math inline">\(\alpha_i &gt; 0\)</span>.</p></li>
+<li><p>If we can compute inner products between observations, we can fit a SV classifier.</p></li>
 <li><p>Some special kernel functions can do this for us. E.g. the <strong>polynomial kernel</strong> of degree <span class="math inline">\(d\)</span> <span class="math display">\[
 K(x_i, x_{i'}) = \left(1 + \sum_{j=1}^p x_{ij} x_{i'j} \right)^d
-\]</span> computes the inner products needed for <span class="math inline">\(d\)</span>-dimensional polynomials.</p></li>
+\]</span> computes the inner products needed for <span class="math inline">\(d\)</span>-dimensional polynomials.</p>
+<p>For example, when degree <span class="math inline">\(d=2\)</span> and <span class="math inline">\(p=2\)</span> features, <span class="math display">\[\begin{eqnarray*}
+K(x, x') &amp;=&amp; (1 + \langle x, x' \rangle)^2 \\
+&amp;=&amp; 1 + 2x_1x_1' + 2 x_2 x_2' + (x_1x_1)^2 + (x_2x_2')^2 + 2x_1x_1'x_2x_2' \\
+&amp;=&amp; \langle \begin{pmatrix} 1 \\ \sqrt{2} x_1 \\ \sqrt{2} x_2 \\ x_1^2 \\ x_2^2 \\ \sqrt{2} x_1 x_2 \end{pmatrix}, \begin{pmatrix} 1 \\ \sqrt{2} x_1' \\ \sqrt{2} x_2' \\ x_1^{'2} \\ x_2^{'2} \\ \sqrt{2} x_1' x_2' \end{pmatrix} \rangle
+\end{eqnarray*}\]</span> is equivalent to inner product in a <span class="math inline">\(M=6\)</span> dimensional feature space.</p></li>
 <li><p>The solution has the form <span class="math display">\[
-f(x) = \beta_0 + \sum_{i \in \mathcal{S}} \hat{\alpha}_i K(x, x_i).
+\hat f(x) = \hat \beta_0 + \sum_{i \in \mathcal{S}} \hat{\alpha}_i y_i K(x, x_i).
 \]</span></p></li>
-<li><p>Radial kernel: <span class="math display">\[
-K(x_i, x_{i'}) = exp\left( - \gamma \sum_{j=1}^p (x_{ij} - x_{i'j})^2 \right).
+<li><p><strong>Radial kernel</strong>: <span class="math display">\[
+K(x_i, x_{i'}) = \exp \left( - \gamma \sum_{j=1}^p (x_{ij} - x_{i'j})^2 \right).
 \]</span> The solution has the form <span class="math display">\[
-f(x) = \beta_0 + \sum_{i \in \mathcal{S}} \hat{\alpha}_i K(x, x_i).
-\]</span> Implicit feature space is very high dimensional. Controls variance by squashing down most dimensions severely.</p></li>
+\hat f(x) = \hat \beta_0 + \sum_{i \in \mathcal{S}} \hat \alpha_i y_i K(x, x_i).
+\]</span> Implicit feature space is very high dimensional. Controls variance by squashing down most dimensions severely. The scale parameter <span class="math inline">\(\gamma\)</span> is tuned by cross-validation.</p></li>
 </ul>
+<div id="fig-nonlinear-svm" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
 <p align="center">
-<embed src="ISL_fig_9_9.pdf" width="800" height="400">
+<embed src="ISL_fig_9_9.pdf" width="600" height="400">
 </p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;8: Left: An SVM with a polynomial kernel of degree 3. Right: An SVM with a radial kernel. In this example, either kernel is capable of capturing the decision boundary.</figcaption><p></p>
+</figure>
+</div>
 </section>
-<section id="heart-data-example-todo" class="level2" data-number="7">
-<h2 data-number="7" class="anchored" data-anchor-id="heart-data-example-todo"><span class="header-section-number">7</span> Heart data example (TODO)</h2>
+<section id="heart-data-example" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="heart-data-example"><span class="header-section-number">7</span> <code>Heart</code> data example</h2>
+<p><a href="https://ucla-econ-425t.github.io/2023winter/slides/09-svm/workflow_svm.html">Workflow: SVM</a></p>
 </section>
 <section id="svm-for-more-than-2-classes" class="level2" data-number="8">
 <h2 data-number="8" class="anchored" data-anchor-id="svm-for-more-than-2-classes"><span class="header-section-number">8</span> SVM for more than 2 classes</h2>
 <ul>
 <li><p>What do we do if we have <span class="math inline">\(K &gt; 2\)</span> classes?</p></li>
-<li><p><strong>OVA</strong> One versus All. Fit <span class="math inline">\(K\)</span> different 2-class SVM classifiers <span class="math inline">\(hat f_k(x)\)</span>, <span class="math inline">\(k=1,\ldots,K\)</span>; each class versus the rest. Classify <span class="math inline">\(x^*\)</span> to the class for which <span class="math inline">\(\hat f_x(x^*)\)</span> is largest.</p></li>
-<li><p><strong>OVO</strong> One versus One. Fit all <span class="math inline">\(\binom{K}{2}\)</span> pairwise classifiers <span class="math inline">\(\hat f_{k\ell}(x)\)</span>. Classify <span class="math inline">\(x^*\)</span> to the class that wins the most pairwise competitions.</p></li>
+<li><p><strong>OVA</strong>. One versus All. Fit <span class="math inline">\(K\)</span> different 2-class SVM classifiers <span class="math inline">\(\hat f_k(x)\)</span>, <span class="math inline">\(k=1,\ldots,K\)</span>; each class (coded as 1) versus the rest (coded as -1). Classify <span class="math inline">\(x^*\)</span> to the class for which <span class="math inline">\(\hat f_k(x^*)\)</span> is largest, as it indicates high level of confidence that the test observation belongs to the <span class="math inline">\(k\)</span>th class rather than to any of the other classes.</p></li>
+<li><p><strong>OVO</strong>. One versus One. Fit all <span class="math inline">\(\binom{K}{2}\)</span> pairwise classifiers <span class="math inline">\(\hat f_{k\ell}(x)\)</span>. Classify <span class="math inline">\(x^*\)</span> to the class that wins the most pairwise competitions.</p></li>
 <li><p>Which to choose? If <span class="math inline">\(K\)</span> is not too large, use OVO.</p></li>
 </ul>
 </section>
-<section id="svm-vs-logistic-regression." class="level2" data-number="9">
-<h2 data-number="9" class="anchored" data-anchor-id="svm-vs-logistic-regression."><span class="header-section-number">9</span> SVM vs logistic regression.</h2>
+<section id="svm-vs-logistic-regression-lr" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="svm-vs-logistic-regression-lr"><span class="header-section-number">9</span> SVM vs logistic regression (LR)</h2>
 <ul>
 <li><p>With <span class="math inline">\(f(X) = \beta_0 + \beta_1 X_1 + \cdots + \beta_p X_p\)</span>, the support vector classifier optimization can be recast as <span class="math display">\[
 \min\limits_{\beta_0,\beta_1,\ldots,\beta_p} \left\{ \sum_{i=1}^n \max[0, 1 - y_i f(x_i)] + \lambda \sum_{j=1}^p \beta_j^2 \right\}.
