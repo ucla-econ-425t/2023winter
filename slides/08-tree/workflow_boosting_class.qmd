@@ -258,7 +258,7 @@ search = GridSearchCV(
   pipe,
   tuned_parameters,
   cv = n_folds, 
-  scoring = "accuracy",
+  scoring = "roc_auc",
   # Refit the best model on the whole data set
   refit = True
   )
@@ -276,7 +276,7 @@ Visualize CV results.
 #| code-fold: true
 cv_res = pd.DataFrame({
   "B": np.array(search.cv_results_["param_model__n_estimators"]),
-  "acc": search.cv_results_["mean_test_score"],
+  "auc": search.cv_results_["mean_test_score"],
   "lambda": search.cv_results_["param_model__learning_rate"],
   "depth": search.cv_results_["param_model__estimator"],
   })
@@ -286,12 +286,12 @@ sns.relplot(
   # kind = "line",
   data = cv_res,
   x = "B",
-  y = "acc",
+  y = "auc",
   hue = "lambda",
   style = "depth"
   ).set(
     xlabel = "B",
-    ylabel = "CV Accuracy"
+    ylabel = "CV AUC"
 );
 plt.show()
 ```

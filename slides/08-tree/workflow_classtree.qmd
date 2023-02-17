@@ -244,7 +244,7 @@ search = GridSearchCV(
   pipe,
   tuned_parameters,
   cv = n_folds, 
-  scoring = "accuracy",
+  scoring = "roc_auc",
   # Refit the best model on the whole data set
   refit = True
   )
@@ -262,7 +262,7 @@ Visualize CV results.
 #| code-fold: true
 cv_res = pd.DataFrame({
   "ccp_alpha": np.array(search.cv_results_["param_model__ccp_alpha"]),
-  "acc": search.cv_results_["mean_test_score"]
+  "auc": search.cv_results_["mean_test_score"]
   })
 
 plt.figure()
@@ -270,10 +270,10 @@ sns.relplot(
   # kind = "line",
   data = cv_res,
   x = "ccp_alpha",
-  y = "acc"
+  y = "auc"
   ).set(
     xlabel = "CCP Alpha",
-    ylabel = "CV Accuracy"
+    ylabel = "CV AUC"
 );
 plt.show()
 ```
