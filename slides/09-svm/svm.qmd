@@ -145,7 +145,7 @@ Since for any $\beta_0,\beta_1,\ldots,\beta_p$ satisfying these inequalities, an
 - Thus we equivalently solve
 \begin{eqnarray*}
 \min_{\beta_0,\beta_1,\ldots,\beta_p} & & \frac 12 \|\beta\|^2 \\
-\text{subject to} & & y_i (\beta_0 + \beta^T x_i) \ge 1, \quad i = 1,\ldots,N.
+\text{subject to} & & y_i (\beta_0 + \beta^T x_i) \ge 1, \quad i = 1,\ldots,n.
 \end{eqnarray*}
 This is a quadratic optimization problem.
 
@@ -238,7 +238,7 @@ The largest value of $C$ was used in the top left panel, and smaller values were
 - By a similar reparameterization trick as before, we solve the equivalent optimization problem
 \begin{eqnarray*}
 \min & & \frac 12 \|\beta\|^2 \\
-\text{subject to} & & y_i(\beta_0 + \beta^T x) \ge 1 - \xi_i, \quad i=1,\ldots,n \\
+\text{subject to} & & y_i(\beta_0 + \beta^T x_i) \ge 1 - \xi_i, \quad i=1,\ldots,n \\
 & & \xi_i \ge 0, \sum_i \xi_i \le \text{constant}.
 \end{eqnarray*}
 
@@ -299,7 +299,7 @@ K(x_i, x_{i'}) = \left(1 + \sum_{j=1}^p x_{ij} x_{i'j} \right)^d
 $$
 computes the inner products needed for $d$-dimensional polynomials.
 
-    For example, when degree $d=2$ and $p=2$ features, 
+    For example, for degree $d=2$ and $p=2$ features, 
 \begin{eqnarray*}
 K(x, x') &=& (1 + \langle x, x' \rangle)^2 \\
 &=& 1 + 2x_1x_1' + 2 x_2 x_2' + (x_1x_1)^2 + (x_2x_2')^2 + 2x_1x_1'x_2x_2' \\
@@ -333,7 +333,7 @@ Left: An SVM with a polynomial kernel of degree 3. Right: An SVM with a radial k
 
 ## `Heart` data example
 
-[Workflow: SVM](https://ucla-econ-425t.github.io/2023winter/slides/09-svm/workflow_svm.html)
+[Workflow: SVM](https://ucla-econ-425t.github.io/2023winter/slides/09-svm/workflow_svm_heart.html)
 
 ## SVM for more than 2 classes
 
