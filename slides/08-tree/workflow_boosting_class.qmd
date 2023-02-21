@@ -296,9 +296,19 @@ sns.relplot(
 plt.show()
 ```
 
-Best CV accuracy:
+Best CV AUC:
 ```{python}
 search.best_score_
+```
+
+The training accuracy is
+```{python}
+from sklearn.metrics import accuracy_score, roc_auc_score
+
+accuracy_score(
+  y_other,
+  search.best_estimator_.predict(X_other)
+  )
 ```
 
 :::
@@ -315,11 +325,16 @@ Since we called `GridSearchCV` with `refit = True`, the best model fit on the wh
 ```{python}
 search.best_estimator_
 ```
+The final AUC on the test set is
+```{python}
+roc_auc_score(
+  y_test,
+  search.best_estimator_.predict_proba(X_test)[:, 1]
+  )
+```
 
 The final classification accuracy on the test set is
 ```{python}
-from sklearn.metrics import accuracy_score
-
 accuracy_score(
   y_test,
   search.best_estimator_.predict(X_test)
