@@ -1,0 +1,172 @@
+---
+title: "MNIST - MLP"
+author: "Dr. Hua Zhou @ UCLA"
+date: "2/22/2022"
+subtitle: Biostat 203B
+output: 
+  html_document:
+    toc: true
+    toc_depth: 4
+---
+
+```{r setup, include=FALSE}
+#options(width = 1000)
+knitr::opts_chunk$set(echo = TRUE, cache = FALSE, cache.lazy = FALSE)
+```
+
+```{r}
+sessionInfo()
+```
+
+```{r}
+library(keras)
+```
+Source: <https://tensorflow.rstudio.com/keras/articles/examples/mnist_mlp.html>
+
+In this example, we train an MLP (multi-layer perceptron) on the [MNIST](https://en.wikipedia.org/wiki/MNIST_database) data set. Achieve testing accuracy 98.11% after 30 epochs.
+
+- The **MNIST** database (Modified National Institute of Standards and Technology database) is a large database of handwritten digits ($28 \times 28$) that is commonly used for training and testing machine learning algorithms.
+
+- 60,000 training images, 10,000 testing images. 
+
+### Prepare data
+
+Acquire data:
+```{r}
+mnist <- dataset_mnist()
+x_train <- mnist$train$x
+y_train <- mnist$train$y
+x_test <- mnist$test$x
+y_test <- mnist$test$y
+```
+Training set:
+```{r}
+dim(x_train)
+dim(y_train)
+```
+```{r}
+x_train[1, , ]
+image(
+  t(x_train[1, 28:1,]), 
+  useRaster = TRUE, 
+  axes = FALSE, 
+  col = grey(seq(0, 1, length = 256))
+  )
+y_train[1]
+```
+Testing set:
+```{r}
+dim(x_test)
+dim(y_test)
+```
+Vectorize $28 \times 28$ images into $784$-vectors and scale entries to [0, 1]:
+```{r}
+# reshape
+x_train <- array_reshape(x_train, c(nrow(x_train), 784))
+x_test <- array_reshape(x_test, c(nrow(x_test), 784))
+# rescale
+x_train <- x_train / 255
+x_test <- x_test / 255
+dim(x_train)
+dim(x_test)
+```
+Encode $y$ as binary class matrix:
+```{r}
+y_train <- to_categorical(y_train, 10)
+y_test <- to_categorical(y_test, 10)
+dim(y_train)
+dim(y_test)
+head(y_train)
+```
+
+### Define the model
+
+Define a **sequential model** (a linear stack of layers) with 2 fully-connected hidden layers (256 and 128 neurons):
+```{r}
+model <- keras_model_sequential() 
+model %>% 
+  layer_dense(units = 256, activation = 'relu', input_shape = c(784)) %>% 
+  layer_dropout(rate = 0.4) %>% 
+  layer_dense(units = 128, activation = 'relu') %>%
+  layer_dropout(rate = 0.3) %>%
+  layer_dense(units = 10, activation = 'softmax')
+summary(model)
+```
+
+Compile the model with appropriate loss function, optimizer, and metrics:
+```{r}
+model %>% compile(
+  loss = 'categorical_crossentropy',
+  optimizer = optimizer_rmsprop(),
+  metrics = c('accuracy')
+)
+```
+
+### Training and validation
+
+```{r}
+system.time({
+history <- model %>% fit(
+  x_train, y_train, 
+  epochs = 30, batch_size = 128, 
+  validation_split = 0.2
+)
+})
+plot(history)
+```
+
+### Testing
+
+Evaluate model performance on the test data:
+```{r}
+model %>% evaluate(x_test, y_test)
+```
+Generate predictions on new data:
+```{r}
+model %>% predict(x_test) %>% k_argmax()
+```
+
+### Exercise
+
+Suppose we want to fit a multinomial-logit model and use it as a baseline method to neural networks. How to do that? Of course we can use `mlogit` or other packages. Instead we can fit the same model using keras, since multinomial-logit is just an MLP with (1) one input layer with linear activation and (2) one output layer with softmax link function.
+```{r}
+# set up model
+library(keras)
+mlogit <- keras_model_sequential() 
+mlogit %>% 
+#  layer_dense(units = 256, activation = 'linear', input_shape = c(784)) %>% 
+#  layer_dropout(rate = 0.4) %>% 
+  layer_dense(units = 10, activation = 'softmax', input_shape = c(784))
+summary(mlogit)
+```
+```{r}
+# compile model
+mlogit %>% compile(
+  loss = 'categorical_crossentropy',
+  optimizer = optimizer_rmsprop(),
+  metrics = c('accuracy')
+)
+mlogit
+```
+```{r}
+# fit model
+mlogit_history <- mlogit %>% 
+  fit(
+    x_train, 
+    y_train, 
+    epochs = 20, 
+    batch_size = 128, 
+    validation_split = 0.2
+  )
+```
+
+```{r}
+# Evaluate model performance on the test data:
+mlogit %>% evaluate(x_test, y_test)
+```
+Generate predictions on new data:
+```{r}
+mlogit %>% predict(x_test) %>% k_argmax()
+```
+
+Experiment: Change the `linear` activation to `relu` in the multinomial-logit model and see the change in classification accuracy.
