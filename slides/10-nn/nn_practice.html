@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Dr.&nbsp;Hua Zhou @ UCLA">
+<meta name="dcterms.date" content="2023-02-21">
+
+<title>Neural Network and Deep Learning (Practice)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="nn_practice_files/libs/clipboard/clipboard.min.js"></script>
+<script src="nn_practice_files/libs/quarto-html/quarto.js"></script>
+<script src="nn_practice_files/libs/quarto-html/popper.min.js"></script>
+<script src="nn_practice_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="nn_practice_files/libs/quarto-html/anchor.min.js"></script>
+<link href="nn_practice_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="nn_practice_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="nn_practice_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="nn_practice_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="nn_practice_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#learning-sources" id="toc-learning-sources" class="nav-link active" data-scroll-target="#learning-sources"><span class="toc-section-number">1</span>  Learning sources</a></li>
+  <li><a href="#software" id="toc-software" class="nav-link" data-scroll-target="#software"><span class="toc-section-number">2</span>  Software</a></li>
+  <li><a href="#tensorflow" id="toc-tensorflow" class="nav-link" data-scroll-target="#tensorflow"><span class="toc-section-number">3</span>  TensorFlow</a></li>
+  <li><a href="#workflow-for-a-deep-learning-network" id="toc-workflow-for-a-deep-learning-network" class="nav-link" data-scroll-target="#workflow-for-a-deep-learning-network"><span class="toc-section-number">4</span>  Workflow for a deep learning network</a>
+  <ul>
+  <li><a href="#step-1-data-ingestion-preparation-and-processing" id="toc-step-1-data-ingestion-preparation-and-processing" class="nav-link" data-scroll-target="#step-1-data-ingestion-preparation-and-processing"><span class="toc-section-number">4.1</span>  Step 1: Data ingestion, preparation, and processing</a></li>
+  <li><a href="#step-2-select-neural-network" id="toc-step-2-select-neural-network" class="nav-link" data-scroll-target="#step-2-select-neural-network"><span class="toc-section-number">4.2</span>  Step 2: Select neural network</a></li>
+  <li><a href="#step-3-select-loss-function" id="toc-step-3-select-loss-function" class="nav-link" data-scroll-target="#step-3-select-loss-function"><span class="toc-section-number">4.3</span>  Step 3: Select loss function</a></li>
+  <li><a href="#step-4-train-and-evaluate-model" id="toc-step-4-train-and-evaluate-model" class="nav-link" data-scroll-target="#step-4-train-and-evaluate-model"><span class="toc-section-number">4.4</span>  Step 4: Train and evaluate model</a></li>
+  </ul></li>
+  <li><a href="#example-mnist---mlp" id="toc-example-mnist---mlp" class="nav-link" data-scroll-target="#example-mnist---mlp"><span class="toc-section-number">5</span>  Example: MNIST - MLP</a></li>
+  <li><a href="#example-mnist---cnn" id="toc-example-mnist---cnn" class="nav-link" data-scroll-target="#example-mnist---cnn"><span class="toc-section-number">6</span>  Example: MNIST - CNN</a></li>
+  <li><a href="#example-generate-text-from-nietzsches-writings---rnn-lstm" id="toc-example-generate-text-from-nietzsches-writings---rnn-lstm" class="nav-link" data-scroll-target="#example-generate-text-from-nietzsches-writings---rnn-lstm"><span class="toc-section-number">7</span>  Example: Generate text from Nietzsche’s writings - RNN LSTM</a></li>
+  <li><a href="#example-imdb-review-sentiment-analysis---rnn-lstm" id="toc-example-imdb-review-sentiment-analysis---rnn-lstm" class="nav-link" data-scroll-target="#example-imdb-review-sentiment-analysis---rnn-lstm"><span class="toc-section-number">8</span>  Example: IMDB review sentiment analysis - RNN LSTM</a></li>
+  <li><a href="#example-generate-handwritten-digits-from-mnist---gan" id="toc-example-generate-handwritten-digits-from-mnist---gan" class="nav-link" data-scroll-target="#example-generate-handwritten-digits-from-mnist---gan"><span class="toc-section-number">9</span>  Example: Generate handwritten digits from MNIST - GAN</a></li>
+  </ul>
+</nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Neural Network and Deep Learning (Practice)</h1>
+<p class="subtitle lead">Econ 425T</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Dr.&nbsp;Hua Zhou @ UCLA </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 21, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="learning-sources" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="learning-sources"><span class="header-section-number">1</span> Learning sources</h2>
+<p>This lecture draws heavily on following sources.</p>
+<ul>
+<li><em>Learning Deep Learning</em> lectures by Dr.&nbsp;Qiyang Hu (UCLA Office of Advanced Research Computing): <a href="https://github.com/huqy/deep_learning_workshops" class="uri">https://github.com/huqy/deep_learning_workshops</a></li>
+</ul>
+</section>
+<section id="software" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="software"><span class="header-section-number">2</span> Software</h2>
+<ul>
+<li><p>High-level software focuses on user-friendly interface to specify and train models.<br>
+<a href="https://keras.io">Keras</a>, <a href="http://scikit-learn.org/stable/">scikit-learn</a>, …</p></li>
+<li><p>Lower-level software focuses on developer tools for implementing deep learning models.<br>
+<a href="https://www.tensorflow.org">TensorFlow</a>, <a href="http://pytorch.org">PyTorch</a>, <a href="http://deeplearning.net/software/theano/#">Theano</a>, <a href="https://github.com/Microsoft/CNTK">CNTK</a>, <a href="http://caffe.berkeleyvision.org">Caffe</a>, <a href="http://torch.ch">Torch</a>, …</p></li>
+<li><p>Most tools are developed in Python plus a low-level language (C/C++, CUDA).</p></li>
+</ul>
+</section>
+<section id="tensorflow" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="tensorflow"><span class="header-section-number">3</span> TensorFlow</h2>
+<ul>
+<li><p>Developed by Google Brain team for internal Google use. Formerly DistBelief.</p></li>
+<li><p>Open sourced in Nov 2015.</p></li>
+<li><p>OS: Linux, MacOS, and Windows (since Nov 2016).</p></li>
+<li><p>GPU support: NVIDIA CUDA.</p></li>
+<li><p>TPU (tensor processing unit), built specifically for machine learning and tailored for TensorFlow.</p></li>
+<li><p>Mobile device deployment: TensorFlow Lite (May 2017) for Android and iOS.</p></li>
+</ul>
+<p align="center">
+<img src="./tf_toolkit_hierarchy.png" class="img-fluid" width="600">
+</p>
+<ul>
+<li>Used in a variety of Google apps: speech recognition (Google assistant), Gmail (Smart Reply), search, translate, self-driving car, …</li>
+</ul>
+<blockquote class="blockquote">
+<p>when you have a hammer, everything looks like a nail.</p>
+</blockquote>
+<p align="center">
+<img src="./hammer.jpg" class="img-fluid" width="200">
+</p>
+</section>
+<section id="workflow-for-a-deep-learning-network" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="workflow-for-a-deep-learning-network"><span class="header-section-number">4</span> Workflow for a deep learning network</h2>
+<p align="center">
+<img src="./dl_workflow.png" class="img-fluid" width="750">
+</p>
+<section id="step-1-data-ingestion-preparation-and-processing" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="step-1-data-ingestion-preparation-and-processing"><span class="header-section-number">4.1</span> Step 1: Data ingestion, preparation, and processing</h3>
+<p align="center">
+<img src="./data_scientists.png" class="img-fluid" width="750">
+</p>
+<p>Source: <a href="https://visit.figure-eight.com/rs/416-ZBE-142/images/CrowdFlower_DataScienceReport_2016.pdf">CrowdFlower</a></p>
+<ul>
+<li><p>The most time-consuming but the most <em>creative</em> job. Take &gt;80% time, require experience and domain knowledge.</p></li>
+<li><p>Determines the upper limit for the goodness of DL. <code>Garbage in, garbage out</code>.</p></li>
+<li><p>For structured/tabular data.</p></li>
+</ul>
+<p align="center">
+<img src="./dataprep_tabular_data.png" class="img-fluid" width="500">
+</p>
+<ul>
+<li><p>Data prep for special DL tasks.</p>
+<ul>
+<li><p>Image data: pixel scaling, train-time augmentation, test-time augmentation, convolution and flattening.</p></li>
+<li><p>Data tokenization: break sequences into units, map units to vectors, align and padd sequences.</p></li>
+<li><p>Data embedding: sparse to dense, merge diverse data, preserve relationship, dimension reduction, Word2Vec, be part of model training.</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="step-2-select-neural-network" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="step-2-select-neural-network"><span class="header-section-number">4.2</span> Step 2: Select neural network</h3>
+<ul>
+<li>Architecture.</li>
+</ul>
+<p align="center">
+<img src="./NeuralNetworkZo19High.png" class="img-fluid" width="500">
+</p>
+<p>Source: <a href="https://www.asimovinstitute.org/neural-network-zoo/" class="uri">https://www.asimovinstitute.org/neural-network-zoo/</a></p>
+<ul>
+<li>Activation function.</li>
+</ul>
+<p align="center">
+<img src="./choose_activation.png" class="img-fluid" width="750">
+</p>
+</section>
+<section id="step-3-select-loss-function" class="level3" data-number="4.3">
+<h3 data-number="4.3" class="anchored" data-anchor-id="step-3-select-loss-function"><span class="header-section-number">4.3</span> Step 3: Select loss function</h3>
+<ul>
+<li><p>Regression loss: MSE/quadratic loss/L2 loss, mean absolute error/L1 loss.</p></li>
+<li><p>Classification loss: cross-entropy loss, …</p></li>
+<li><p>Customized losses.</p></li>
+</ul>
+</section>
+<section id="step-4-train-and-evaluate-model" class="level3" data-number="4.4">
+<h3 data-number="4.4" class="anchored" data-anchor-id="step-4-train-and-evaluate-model"><span class="header-section-number">4.4</span> Step 4: Train and evaluate model</h3>
+<ul>
+<li><p>Choose optimization algorithm. Generalization (SGD) vs convergence rate (adaptive).</p>
+<ul>
+<li><p>Stochastic GD.</p></li>
+<li><p>Adding momentum: classical momentum, Nesterov acceleration.</p></li>
+<li><p>Adaptive learning rate: AdaGrad, AdaDelta, RMSprop.</p></li>
+<li><p>Comining acceleration and adaptive learning rate: ADAM (default in many libraries).</p></li>
+<li><p>Beyond ADAM: <a href="https://arxiv.org/abs/1907.08610">lookahead</a>, <a href="https://arxiv.org/abs/1908.03265">RAdam</a>, <a href="https://syncedreview.com/2019/03/07/iclr-2019-fast-as-adam-good-as-sgd-new-optimizer-has-both/">AdaBound/AmsBound</a>, <a href="https://arxiv.org/abs/1908.00700v2">Range</a>, <a href="https://arxiv.org/abs/2010.07468">AdaBelief</a>.</p></li>
+</ul></li>
+</ul>
+<p><em>A Visual Explanation of Gradient Descent Methods (Momentum, AdaGrad, RMSProp, Adam)</em> by Lili Jiang: <a href="https://towardsdatascience.com/a-visual-explanation-of-gradient-descent-methods-momentum-adagrad-rmsprop-adam-f898b102325c" class="uri">https://towardsdatascience.com/a-visual-explanation-of-gradient-descent-methods-momentum-adagrad-rmsprop-adam-f898b102325c</a></p>
+<ul>
+<li>Fitness of model: underfitting vs overfitting.</li>
+</ul>
+<p align="center">
+<img src="./overfitting_vs_underfitting.png" class="img-fluid" width="500">
+</p>
+<p>Source: <a href="https://stanford.edu/~shervine/teaching/cs-229/cheatsheet-machine-learning-tips-and-tricks" class="uri">https://stanford.edu/~shervine/teaching/cs-229/cheatsheet-machine-learning-tips-and-tricks</a></p>
+<ul>
+<li>Model selection: <span class="math inline">\(K\)</span>-fold cross validation.</li>
+</ul>
+<p align="center">
+<img src="./cross_validation.png" class="img-fluid" width="750">
+</p>
+</section>
+</section>
+<section id="example-mnist---mlp" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="example-mnist---mlp"><span class="header-section-number">5</span> Example: MNIST - MLP</h2>
+<p><a href="https://raw.githubusercontent.com/ucla-econ-425t/2023winter/master/slides/10-nn/mnist_mlp/mnist_mlp.qmd">Rmd</a>, <a href="https://ucla-econ-425t.github.io/2023winter/slides/10-nn/mnist_mlp/mnist_mlp.html">html</a>.</p>
+</section>
+<section id="example-mnist---cnn" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="example-mnist---cnn"><span class="header-section-number">6</span> Example: MNIST - CNN</h2>
+<p>TODO</p>
+</section>
+<section id="example-generate-text-from-nietzsches-writings---rnn-lstm" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="example-generate-text-from-nietzsches-writings---rnn-lstm"><span class="header-section-number">7</span> Example: Generate text from Nietzsche’s writings - RNN LSTM</h2>
+<p>TODO</p>
+</section>
+<section id="example-imdb-review-sentiment-analysis---rnn-lstm" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="example-imdb-review-sentiment-analysis---rnn-lstm"><span class="header-section-number">8</span> Example: IMDB review sentiment analysis - RNN LSTM</h2>
+<p>TODO</p>
+</section>
+<section id="example-generate-handwritten-digits-from-mnist---gan" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="example-generate-handwritten-digits-from-mnist---gan"><span class="header-section-number">9</span> Example: Generate handwritten digits from MNIST - GAN</h2>
+<p>TODO</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

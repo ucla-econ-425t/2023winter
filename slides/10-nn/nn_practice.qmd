@@ -1,0 +1,177 @@
+---
+title: "Neural Network and Deep Learning (Practice)"
+subtitle: "Econ 425T"
+author: "Dr. Hua Zhou @ UCLA"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+format:
+  html:
+    theme: cosmo
+    number-sections: true
+    toc: true
+    toc-depth: 4
+    toc-location: left
+    code-fold: false
+engine: knitr
+knitr:
+  opts_chunk: 
+    fig.align: 'center'
+    # fig.width: 6
+    # fig.height: 4
+    message: FALSE
+    cache: false
+---
+
+```{r setup, include=FALSE}
+options(width = 120)
+knitr::opts_chunk$set(echo = TRUE)
+sessionInfo()
+```
+
+## Learning sources
+
+This lecture draws heavily on following sources.
+
+- _Learning Deep Learning_ lectures by Dr. Qiyang Hu (UCLA Office of Advanced Research Computing): <https://github.com/huqy/deep_learning_workshops>
+
+## Software
+
+- High-level software focuses on user-friendly interface to specify and train models.  
+[Keras](https://keras.io), [scikit-learn](http://scikit-learn.org/stable/), ...
+
+- Lower-level software focuses on developer tools for implementing deep learning models.   
+[TensorFlow](https://www.tensorflow.org), [PyTorch](http://pytorch.org),  [Theano](http://deeplearning.net/software/theano/#), [CNTK](https://github.com/Microsoft/CNTK), [Caffe](http://caffe.berkeleyvision.org), [Torch](http://torch.ch), ...
+
+- Most tools are developed in Python plus a low-level language (C/C++, CUDA).
+
+## TensorFlow
+
+- Developed by Google Brain team for internal Google use. Formerly DistBelief.
+
+- Open sourced in Nov 2015.
+
+- OS: Linux, MacOS, and Windows (since Nov 2016).
+
+- GPU support: NVIDIA CUDA.
+
+- TPU (tensor processing unit), built specifically for machine learning and tailored for TensorFlow.
+
+- Mobile device deployment: TensorFlow Lite (May 2017) for Android and iOS.
+
+<p align="center">
+![](./tf_toolkit_hierarchy.png){width=600px}
+</p>
+
+
+- Used in a variety of Google apps: speech recognition (Google assistant), Gmail (Smart Reply), search, translate, self-driving car, ...
+
+> when you have a hammer, everything looks like a nail.  
+
+<p align="center">
+![](./hammer.jpg){width=200px}
+</p>
+
+
+## Workflow for a deep learning network
+
+<p align="center">
+![](./dl_workflow.png){width=750px}
+</p>
+
+### Step 1: Data ingestion, preparation, and processing
+
+<p align="center">
+![](./data_scientists.png){width=750px}
+</p>
+
+Source: [CrowdFlower](https://visit.figure-eight.com/rs/416-ZBE-142/images/CrowdFlower_DataScienceReport_2016.pdf)
+
+- The most time-consuming but the most _creative_ job. Take >80% time, require experience and domain knowledge.
+
+- Determines the upper limit for the goodness of DL. ``Garbage in, garbage out``. 
+
+- For structured/tabular data.
+
+<p align="center">
+![](./dataprep_tabular_data.png){width=500px}
+</p>
+
+- Data prep for special DL tasks.
+
+    - Image data: pixel scaling, train-time augmentation, test-time augmentation, convolution and flattening.  
+    
+    - Data tokenization: break sequences into units, map units to vectors, align and padd sequences.  
+    
+    - Data embedding: sparse to dense, merge diverse data, preserve relationship, dimension reduction, Word2Vec, be part of model training.  
+
+### Step 2: Select neural network
+
+- Architecture. 
+
+<p align="center">
+![](./NeuralNetworkZo19High.png){width=500px}
+</p>
+
+Source: <https://www.asimovinstitute.org/neural-network-zoo/>
+
+- Activation function.
+
+<p align="center">
+![](./choose_activation.png){width=750px}
+</p>
+
+### Step 3: Select loss function
+
+- Regression loss: MSE/quadratic loss/L2 loss, mean absolute error/L1 loss.  
+
+- Classification loss: cross-entropy loss, ...
+
+- Customized losses. 
+
+### Step 4: Train and evaluate model
+
+- Choose optimization algorithm. Generalization (SGD) vs convergence rate (adaptive). 
+
+    - Stochastic GD. 
+    
+    - Adding momentum: classical momentum, Nesterov acceleration.  
+    
+    - Adaptive learning rate: AdaGrad, AdaDelta, RMSprop. 
+    
+    - Comining acceleration and adaptive learning rate: ADAM (default in many libraries). 
+    
+    - Beyond ADAM: [lookahead](https://arxiv.org/abs/1907.08610), [RAdam](https://arxiv.org/abs/1908.03265), [AdaBound/AmsBound](https://syncedreview.com/2019/03/07/iclr-2019-fast-as-adam-good-as-sgd-new-optimizer-has-both/), [Range](https://arxiv.org/abs/1908.00700v2), [AdaBelief](https://arxiv.org/abs/2010.07468).
+
+_A Visual Explanation of Gradient Descent Methods (Momentum, AdaGrad, RMSProp, Adam)_ by Lili Jiang: <https://towardsdatascience.com/a-visual-explanation-of-gradient-descent-methods-momentum-adagrad-rmsprop-adam-f898b102325c>
+
+- Fitness of model: underfitting vs overfitting.
+
+<p align="center">
+![](./overfitting_vs_underfitting.png){width=500px}
+</p>
+Source: <https://stanford.edu/~shervine/teaching/cs-229/cheatsheet-machine-learning-tips-and-tricks>
+
+- Model selection: $K$-fold cross validation.
+
+<p align="center">
+![](./cross_validation.png){width=750px}
+</p>
+
+## Example: MNIST - MLP
+
+[Rmd](https://raw.githubusercontent.com/ucla-econ-425t/2023winter/master/slides/10-nn/mnist_mlp/mnist_mlp.qmd), [html](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/mnist_mlp/mnist_mlp.html).
+
+## Example: MNIST - CNN
+
+TODO
+
+## Example: Generate text from Nietzsche’s writings - RNN LSTM
+
+TODO
+
+## Example: IMDB review sentiment analysis - RNN LSTM
+
+TODO
+
+## Example: Generate handwritten digits from MNIST - GAN
+
+TODO
