@@ -304,6 +304,7 @@ sns.barplot(
     xlabel = "Feature",
     ylabel = "VI"
 );
+plt.xticks(rotation = 90);
 plt.show()
 ```
 

@@ -301,15 +301,37 @@ search.best_estimator_
 Visualize the best classification tree.
 ```{python}
 #| eval: true
-plt.figure()
-plot_tree(
-  search.best_estimator_['model'],
-  feature_names = np.concatenate([
+
+features = np.concatenate([
     features[:-2], 
     ['ChestPain:asymptomatic', 'ChestPain:nonanginal', 'ChestPain:nontypical', 'ChestPain:typical'],
     ['Thal:fixed', 'Thal:normal', 'Thal:reversable']
     ])
+
+plt.figure()
+plot_tree(
+  search.best_estimator_['model'],
+  feature_names = features
   );
+plt.show()
+```
+Feature importances:
+```{python}
+vi_df = pd.DataFrame({
+  "feature": features,
+  "vi": search.best_estimator_['model'].feature_importances_
+  })
+
+plt.figure()
+sns.barplot(
+  data = vi_df,
+  x = "feature",
+  y = "vi"
+  ).set(
+    xlabel = "Feature",
+    ylabel = "VI"
+);
+plt.xticks(rotation = 90);
 plt.show()
 ```
 
