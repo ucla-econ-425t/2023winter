@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Dr.&nbsp;Hua Zhou @ UCLA">
-<meta name="dcterms.date" content="2023-02-17">
+<meta name="dcterms.date" content="2023-02-20">
 
 <title>Support Vector Machines (ISL 9)</title>
 <style>
@@ -147,7 +147,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">February 17, 2023</p>
+      <p class="date">February 20, 2023</p>
     </div>
   </div>
   
@@ -299,10 +299,11 @@ y_i (\beta_0 + \beta^T x_i) \ge M \|\beta\|^2.
 <p>Intuitively, the constraints define an empty slab or margin around the linear decision boundary of thickness <span class="math inline">\(1/\|\beta\|^2\)</span>. Hence we choose <span class="math inline">\(\beta_0,\beta_1,\ldots,\beta_p\)</span> to maximize its thickness.</p></li>
 <li><p>The Lagrange (primal) function is <span class="math display">\[
 L_P = \frac 12 \|\beta\|^2 - \sum_{i=1}^n \alpha_i [y_i (x_i^T \beta + \beta_0) - 1].
-\]</span> Setting the derivatives to zero, we obtain <span class="math display">\[\begin{eqnarray*}
-\beta &amp;=&amp; \sum_{i=1}^n \alpha_i y_i x_i \\
-0 &amp;=&amp; \sum_{i=1}^n \alpha_i y_i,
-\end{eqnarray*}\]</span> and substituting these to the <span class="math inline">\(L_p\)</span> we obtained the dual <span class="math display">\[\begin{eqnarray*}
+\]</span> Setting the derivatives (with respect to <span class="math inline">\(\beta\)</span> and <span class="math inline">\(\beta_0\)</span>) to zero, we obtain <span id="eq-svm-primal-stationary-condition"><span class="math display">\[
+\beta = \sum_{i=1}^n \alpha_i y_i x_i
+\tag{1}\]</span></span> <span class="math display">\[
+0 = \sum_{i=1}^n \alpha_i y_i,
+\]</span> and substituting these to the <span class="math inline">\(L_p\)</span> we obtained the dual <span class="math display">\[\begin{eqnarray*}
 \max_{\alpha_1,\ldots,\alpha_n} &amp; &amp; L_D = \sum_{i=1}^n \alpha_i - \frac 12 \sum_{i=1}^n \sum_{i'=1}^n \alpha_i \alpha_{i'} y_i y_{i'} x_i^T x_{i'} \\
 \text{subject to} &amp; &amp; \alpha_i \ge 0, \sum_{i=1}^n \alpha_i y_i = 0.
 \end{eqnarray*}\]</span></p>
@@ -410,7 +411,7 @@ L_P = \frac 12 \|\beta\|^2 - \sum_{i=1}^n \alpha_i [y_i (x_i^T \beta + \beta_0) 
 <li><p><strong>Inner product</strong> between two vectors: <span class="math display">\[
 \langle x_i, x_{i'} \rangle = \sum_{j=1}^p x_{ij} x_{i'j}.
 \]</span></p></li>
-<li><p>The linear support vector classifier can be represented as <span class="math display">\[
+<li><p>By (<a href="#eq-svm-primal-stationary-condition">Equation&nbsp;1</a>), the linear support vector classifier can be represented as <span class="math display">\[
 f(x) = \beta_0 + \sum_{i=1}^n \alpha_i y_i \langle x, x_i \rangle.
 \]</span> To estimate the parameters <span class="math inline">\(\alpha_1,\ldots,\alpha_n\)</span> and <span class="math inline">\(\beta_0\)</span>, all we need are the <span class="math inline">\(\binom{n}{2}\)</span> inner products <span class="math inline">\(\langle x_i, x_{i'} \rangle\)</span> between all pairs of training observations.</p></li>
 <li><p>It turns out that most of the <span class="math inline">\(\hat \alpha_i\)</span> (non-support vectors) can be zero: <span class="math display">\[
