@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Dr.&nbsp;Hua Zhou @ UCLA">
-<meta name="dcterms.date" content="2023-02-20">
+<meta name="dcterms.date" content="2023-02-21">
 
 <title>Neural Network and Deep Learning (ISL 10)</title>
 <style>
@@ -79,7 +79,10 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#lasso-versus-neural-network-imdb-reviews" id="toc-lasso-versus-neural-network-imdb-reviews" class="nav-link" data-scroll-target="#lasso-versus-neural-network-imdb-reviews"><span class="toc-section-number">10.2</span>  Lasso versus neural network: IMDB reviews</a></li>
   </ul></li>
   <li><a href="#recurrent-neural-network-rnn" id="toc-recurrent-neural-network-rnn" class="nav-link" data-scroll-target="#recurrent-neural-network-rnn"><span class="toc-section-number">11</span>  Recurrent neural network (RNN)</a></li>
-  <li><a href="#lstm" id="toc-lstm" class="nav-link" data-scroll-target="#lstm"><span class="toc-section-number">12</span>  LSTM</a></li>
+  <li><a href="#lstm" id="toc-lstm" class="nav-link" data-scroll-target="#lstm"><span class="toc-section-number">12</span>  LSTM</a>
+  <ul>
+  <li><a href="#transformers" id="toc-transformers" class="nav-link" data-scroll-target="#transformers"><span class="toc-section-number">12.1</span>  Transformers</a></li>
+  </ul></li>
   <li><a href="#nyse-new-york-stock-exchange-data" id="toc-nyse-new-york-stock-exchange-data" class="nav-link" data-scroll-target="#nyse-new-york-stock-exchange-data"><span class="toc-section-number">13</span>  NYSE (New York Stock Exchange) data</a>
   <ul>
   <li><a href="#rnn-forecaster" id="toc-rnn-forecaster" class="nav-link" data-scroll-target="#rnn-forecaster"><span class="toc-section-number">13.1</span>  RNN forecaster</a></li>
@@ -125,7 +128,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">February 20, 2023</p>
+      <p class="date">February 21, 2023</p>
     </div>
   </div>
   
@@ -716,6 +719,11 @@ The <strong>gates</strong> give the ability to remove or add information to the 
 <img src="./colah-lstm3-gate.png" class="img-fluid" width="100">
 </p></li>
 </ul>
+<section id="transformers" class="level3" data-number="12.1">
+<h3 data-number="12.1" class="anchored" data-anchor-id="transformers"><span class="header-section-number">12.1</span> Transformers</h3>
+<p><a href="https://towardsdatascience.com/transformer-models-101-getting-started-part-1-b3a77ccfa14d">Transformer Models 101 (Towards Data Science)</a></p>
+<p><a href="https://youtu.be/S27pHKBEp30">LSTM is dead. Long live Transformers! (Youtube)</a></p>
+</section>
 </section>
 <section id="nyse-new-york-stock-exchange-data" class="level2" data-number="13">
 <h2 data-number="13" class="anchored" data-anchor-id="nyse-new-york-stock-exchange-data"><span class="header-section-number">13</span> NYSE (New York Stock Exchange) data</h2>
@@ -843,7 +851,7 @@ f(x_i) = \beta_0 + \sum_{k=1}^K \beta_k g(w_{k0} + \sum_{j=1}^p w_{kj} x_{ij}).
 <p align="center">
 <embed src="ISL_fig_10_17.pdf" width="600" height="450">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;16: <strong>?(caption)</strong></figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;16: Illustration of gradient descent for one-dimensional <span class="math inline">\(\theta\)</span>. The objective function <span class="math inline">\(R(\theta)\)</span> is not convex, and has two minima, one at <span class="math inline">\(\theta = −0.46\)</span> (local), the other at <span class="math inline">\(\theta = 1.02\)</span> (global). Starting at some value <span class="math inline">\(\theta^0\)</span> (typically randomly chosen), each step in <span class="math inline">\(\theta\)</span> moves downhill - against the gradient - until it cannot go down any further. Here gradient descent reached the global minimum in 7 steps.</figcaption><p></p>
 </figure>
 </div>
 <ul>
@@ -865,9 +873,9 @@ R(\theta) = \frac 12 \sum_{i=1}^n (y_i - f_\theta(x_i))^2
 \theta^{t+1} \gets \theta^t - \rho \nabla R(\theta^t),
 \]</span> where <span class="math inline">\(\rho\)</span> is the <strong>learning rate</strong> (typically small, e.g., <span class="math inline">\(\rho=0.001\)</span>).</p></li>
 <li><p>Since <span class="math inline">\(R(\theta) = \sum_{i=1}^n R_i(\theta)\)</span> is a sum, so gradient is sum of gradients. <span class="math display">\[
-R_i(\theta) = \frac 12 (y_i - f_\theta(x_i))^2 = \frac 12 (y_i - \beta_0 - \sum_{k=1}^K \beta_k g(w_{k0} + \sum_{j=1}^p w_{ij} w_{ij}))^2.
+R_i(\theta) = \frac 12 (y_i - f_\theta(x_i))^2 = \frac 12 (y_i - \beta_0 - \sum_{k=1}^K \beta_k g(w_{k0} + \sum_{j=1}^p w_{kj} x_{ij}))^2.
 \]</span> For ease of notation, let <span class="math display">\[
-z_{ik} = w_{k0} + \sum_{j=1}^p w_{ij} w_{ij}.
+z_{ik} = w_{k0} + \sum_{j=1}^p w_{kj} x_{ij}.
 \]</span></p></li>
 <li><p><strong>Backpropagation</strong> uses the chain rule for differentiation: <span class="math display">\[\begin{eqnarray*}
 \frac{\partial R_i(\theta)}{\partial \beta_k} &amp;=&amp; \frac{\partial R_i(\theta)}{\partial f_\theta(x_i)} \cdot \frac{\partial f_\theta(x_i)}{\partial \beta_k} \\
@@ -876,15 +884,15 @@ z_{ik} = w_{k0} + \sum_{j=1}^p w_{ij} w_{ij}.
 &amp;=&amp; - (y_i - f_\theta(x_i)) \cdot \beta_k \cdot g'(z_{ik}) \cdot x_{ij}.
 \end{eqnarray*}\]</span></p></li>
 <li><p>Two-pass updates: <span class="math display">\[\begin{eqnarray*}
-  &amp; &amp; \text{initialization} \to \widehat{f}_k(x_i) \quad \quad \quad \text{(forward pass)}   \\
-  &amp;\to&amp; \delta_{ki} \to s_{mi} \to \widehat{\beta}_{km} \text{ and } \widehat{\alpha}_{ml} \quad \quad \text{(backward pass)}.
+  &amp; &amp; \text{initialization} \to z_{ik} \to g(z_{ik}) \to \widehat{f}_{\theta}(x_i) \quad \quad \quad \text{(forward pass)}   \\
+  &amp;\to&amp; y_i - f_\theta(x_i) \to \frac{\partial R_i(\theta)}{\partial \beta_k}, \frac{\partial R_i(\theta)}{\partial w_{kj}} \to \widehat{\beta}_{k} \text{ and } \widehat{w}_{kj} \quad \quad \text{(backward pass)}.
 \end{eqnarray*}\]</span></p></li>
 <li><p>Advantages: each hidden unit passes and receives information only to and from units that share a connection; can be implemented efficiently on a parallel architecture computer.</p></li>
 <li><p>Tricks of the trade</p>
 <ul>
 <li><p><strong>Slow learning</strong>. Gradient descent is slow, and a small learning rate <span class="math inline">\(\rho\)</span> slows it even further. With <strong>early stopping</strong>, this is a form of regularization.</p></li>
 <li><p><strong>Stochastic gradient descent</strong>. Rather than compute the gradient using all the data, use a small <strong>minibatch</strong> drawn at random at each step. E.g. for <code>MNIST</code> data, with n = 60K, we use minibatches of 128 observations.</p></li>
-<li><p>An <strong>epoch</strong> is a count of iterations and amounts to the number of minibatch updates such that <span class="math inline">\(n\)</span> samples in total have been processed; i.e.&nbsp;<span class="math inline">\(60,000/128 \approx 469\)</span> for <code>MNIST</code>.</p></li>
+<li><p>An <strong>epoch</strong> is a count of iterations and amounts to the number of minibatch updates such that <span class="math inline">\(n\)</span> samples in total have been processed; i.e.&nbsp;<span class="math inline">\(60,000/128 \approx 469\)</span> minibatches for <code>MNIST</code>.</p></li>
 <li><p><strong>Regularization</strong>. Ridge and lasso regularization can be used to shrink the weights at each layer. Two other popular forms of regularization are <strong>dropout</strong> and <strong>augmentation</strong>.</p></li>
 </ul></li>
 </ul>
@@ -909,21 +917,18 @@ z_{ik} = w_{k0} + \sum_{j=1}^p w_{ij} w_{ij}.
 <section id="ridge-and-data-augmentation" class="level3" data-number="15.3">
 <h3 data-number="15.3" class="anchored" data-anchor-id="ridge-and-data-augmentation"><span class="header-section-number">15.3</span> Ridge and data augmentation</h3>
 <ul>
-<li><p>Make many copies of each <span class="math inline">\((xi, yi)\)</span> and add a small amount of Gaussian noise to the <span class="math inline">\(x_i\)</span>, a little cloud around each observation, but leave the copies of <span class="math inline">\(y_i\)</span> alone!</p></li>
+<li><p>Make many copies of each <span class="math inline">\((x_i, y_i)\)</span> and add a small amount of Gaussian noise to the <span class="math inline">\(x_i\)</span>, a little cloud around each observation, but leave the copies of <span class="math inline">\(y_i\)</span> alone!</p></li>
 <li><p>This makes the fit robust to small perturbations in <span class="math inline">\(x_i\)</span>, and is equivalent to ridge regularization in an OLS setting.</p></li>
 <li><p>Data augmentation is especially effective with SGD, here demonstrated for a CNN and image classification.</p></li>
 <li><p>Natural transformations are made of each training image when it is sampled by SGD, thus ultimately making a cloud of images around each original training image.</p></li>
 <li><p>The label is left unchanged, in each case still <code>tiger</code>.</p></li>
 <li><p>Improves performance of CNN and is similar to ridge.</p></li>
 </ul>
-<div id="fig-data-aug-tiger" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
+<!-- ::: {#fig-data-aug-tiger} -->
 <p align="center">
-<img src="ISL_fig_10_9.jpg" class="img-fluid figure-img" width="600">
+<img src="ISL_fig_10_9.jpg" class="img-fluid" width="600">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;18: <strong>?(caption)</strong></figcaption><p></p>
-</figure>
-</div>
+<!-- ::: -->
 </section>
 </section>
 <section id="double-descent" class="level2" data-number="16">
@@ -939,7 +944,9 @@ z_{ik} = w_{k0} + \sum_{j=1}^p w_{ij} w_{ij}.
 <section id="simulation-study" class="level3" data-number="16.1">
 <h3 data-number="16.1" class="anchored" data-anchor-id="simulation-study"><span class="header-section-number">16.1</span> Simulation study</h3>
 <ul>
-<li><p><span class="math inline">\(y= sin(x) + \epsilon\)</span> with <span class="math inline">\(x \sim Uniform(-5, 5)\)</span> and <span class="math inline">\(\epsilon\)</span> Gaussian with s.d.=0.3.</p></li>
+<li><p>Model: <span class="math display">\[
+y= \sin(x) + \epsilon
+\]</span> with <span class="math inline">\(x \sim\)</span> Uniform(-5, 5) and <span class="math inline">\(\epsilon\)</span> is Gaussian with sd=0.3.</p></li>
 <li><p>Training set <span class="math inline">\(n=20\)</span>, test set very large (10K).</p></li>
 <li><p>We fit a natural spline to the data with <span class="math inline">\(d\)</span> degrees of freedom, i.e., a linear regression onto <span class="math inline">\(d\)</span> basis functions <span class="math display">\[
 \hat y_i = \hat \beta_1 N_1(x_i) + \hat \beta_2 N_2(x_i) + \cdots + \hat \beta_d N_d(x_i).
@@ -952,19 +959,19 @@ z_{ik} = w_{k0} + \sum_{j=1}^p w_{ij} w_{ij}.
 <p align="center">
 <embed src="ISL_fig_10_20.pdf" width="600" height="400">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;19: <strong>?(caption)</strong></figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;18: Double descent phenomenon, illustrated using error plots for a one-dimensional natural spline example. The horizontal axis refers to the number of spline basis functions on the log scale. The training error hits zero when the degrees of freedom coincides with the sample size <span class="math inline">\(n = 20\)</span>, the “interpolation threshold”, and remains zero thereafter. The test error increases dramatically at this threshold, but then descends again to a reasonable value before finally increasing again.</figcaption><p></p>
 </figure>
 </div>
 <ul>
 <li><p>When <span class="math inline">\(d \le 20\)</span>, model is OLS, and we see usual bias-variance trade-off.</p></li>
-<li><p>When <span class="math inline">\(d &gt; 20\)</span>, we revert to minimum-norm. As <span class="math inline">\(d\)</span> increases above 20, <span class="math inline">\(\sum_{j=1}^d \hat \beta_j^2\)</span> <strong>decreases</strong> since it is easier to achieve zero error, and hence less wiggly solutions.</p></li>
+<li><p>When <span class="math inline">\(d &gt; 20\)</span>, we revert to minimum-norm solution. As <span class="math inline">\(d\)</span> increases above 20, <span class="math inline">\(\sum_{j=1}^d \hat \beta_j^2\)</span> <strong>decreases</strong> since it is easier to achieve zero error, and hence less wiggly solutions.</p></li>
 </ul>
 <div id="fig-double-descent" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p align="center">
 <embed src="ISL_fig_10_21.pdf" width="600" height="400">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;20: To achieve a zero-residual solution with <span class="math inline">\(d = 20\)</span> is a real stretch! Easier for larger <span class="math inline">\(d\)</span>.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;19: To achieve a zero-residual solution with <span class="math inline">\(d = 20\)</span> is a real stretch! Easier for larger <span class="math inline">\(d\)</span>.</figcaption><p></p>
 </figure>
 </div>
 <ul>

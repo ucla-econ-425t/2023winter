@@ -681,6 +681,12 @@ Depiction of a sequence of 20 words representing a single document: one-hot enco
     ![](./colah-lstm3-gate.png){width=100px}
     </p>
 
+### Transformers
+
+[Transformer Models 101 (Towards Data Science)](https://towardsdatascience.com/transformer-models-101-getting-started-part-1-b3a77ccfa14d)
+
+[LSTM is dead. Long live Transformers! (Youtube)](https://youtu.be/S27pHKBEp30)
+
 ## NYSE (New York Stock Exchange) data
 
 ::: {#fig-nyse}
@@ -786,8 +792,7 @@ known as an **order-$L$ autoregression** model or AR($L$).
 
 - RNNs have had big wins in speech modeling, language translation, and forecasting.
 
-- Often the big successes occur when the signal to noise ratio
-is high, e.g., image recognition and language translation. Datasets are large, and overfitting is not a big problem.
+- Often the big successes occur when the signal to noise ratio is high, e.g., image recognition and language translation. Datasets are large, and overfitting is not a big problem.
 
 - For noisier data, simpler models can often work better.
 
@@ -823,6 +828,8 @@ $$
 ![](ISL_fig_10_17.pdf){width=600px height=450px}
 </p>
 
+Illustration of gradient descent for one-dimensional $\theta$. The objective function $R(\theta)$ is not convex, and has two minima, one at $\theta = −0.46$ (local), the other at $\theta = 1.02$ (global). Starting at some value $\theta^0$ (typically randomly chosen), each step in $\theta$ moves downhill - against the gradient - until it cannot go down any further. Here gradient descent reached the global minimum in 7 steps.
+
 :::
 
 - Let
@@ -857,11 +864,11 @@ where $\rho$ is the **learning rate** (typically small, e.g., $\rho=0.001$).
 
 - Since $R(\theta) = \sum_{i=1}^n R_i(\theta)$ is a sum, so gradient is sum of gradients.
 $$
-R_i(\theta) = \frac 12 (y_i - f_\theta(x_i))^2 = \frac 12 (y_i - \beta_0 - \sum_{k=1}^K \beta_k g(w_{k0} + \sum_{j=1}^p w_{ij} w_{ij}))^2.
+R_i(\theta) = \frac 12 (y_i - f_\theta(x_i))^2 = \frac 12 (y_i - \beta_0 - \sum_{k=1}^K \beta_k g(w_{k0} + \sum_{j=1}^p w_{kj} x_{ij}))^2.
 $$
 For ease of notation, let
 $$
-z_{ik} = w_{k0} + \sum_{j=1}^p w_{ij} w_{ij}.
+z_{ik} = w_{k0} + \sum_{j=1}^p w_{kj} x_{ij}.
 $$
 
 - **Backpropagation** uses the chain rule for differentiation:
@@ -874,8 +881,8 @@ $$
 
 - Two-pass updates:
 \begin{eqnarray*}
-    & & \text{initialization} \to \widehat{f}_k(x_i) \quad \quad \quad \text{(forward pass)}   \\
-    &\to& \delta_{ki} \to s_{mi} \to \widehat{\beta}_{km} \text{ and } \widehat{\alpha}_{ml} \quad \quad \text{(backward pass)}.
+    & & \text{initialization} \to z_{ik} \to g(z_{ik}) \to \widehat{f}_{\theta}(x_i) \quad \quad \quad \text{(forward pass)}   \\
+    &\to& y_i - f_\theta(x_i) \to \frac{\partial R_i(\theta)}{\partial \beta_k}, \frac{\partial R_i(\theta)}{\partial w_{kj}} \to \widehat{\beta}_{k} \text{ and } \widehat{w}_{kj} \quad \quad \text{(backward pass)}.
 \end{eqnarray*}
 
 - Advantages: each hidden unit passes and receives information only to and from units that share a connection; can be implemented efficiently on a parallel architecture computer.
@@ -886,10 +893,9 @@ $$
     
     - **Stochastic gradient descent**. Rather than compute the gradient using all the data, use a small **minibatch** drawn at random at each step. E.g. for `MNIST` data, with n = 60K, we use minibatches of 128 observations.
     
-    - An **epoch** is a count of iterations and amounts to the number of minibatch updates such that $n$ samples in total have been processed; i.e. $60,000/128 \approx 469$ for `MNIST`.
+    - An **epoch** is a count of iterations and amounts to the number of minibatch updates such that $n$ samples in total have been processed; i.e. $60,000/128 \approx 469$ minibatches for `MNIST`.
     
     - **Regularization**. Ridge and lasso regularization can be used to shrink the weights at each layer. Two other popular forms of regularization are **dropout** and **augmentation**.
-    
     
 ### Droptout learning
 
@@ -909,12 +915,11 @@ Dropout Learning. Left: a fully connected network. Right: network with dropout i
 
 - As in ridge, the other units **stand** in for those temporarily removed, and their weights are drawn closer together.
 
-- Similar to randomly omitting variables when growing trees
-in random forests.
+- Similar to randomly omitting variables when growing trees in random forests.
 
 ### Ridge and data augmentation
 
-- Make many copies of each $(xi, yi)$ and add a small amount of Gaussian noise to the $x_i$, a little cloud around each
+- Make many copies of each $(x_i, y_i)$ and add a small amount of Gaussian noise to the $x_i$, a little cloud around each
 observation, but leave the copies of $y_i$ alone!
 
 - This makes the fit robust to small perturbations in $x_i$, and is equivalent to ridge regularization in an OLS setting.
@@ -927,13 +932,13 @@ observation, but leave the copies of $y_i$ alone!
 
 - Improves performance of CNN and is similar to ridge.
 
-::: {#fig-data-aug-tiger}
+<!-- ::: {#fig-data-aug-tiger} -->
 
 <p align="center">
 ![](ISL_fig_10_9.jpg){width=600px}
 </p>
 
-:::
+<!-- ::: -->
 
 ## Double descent
 
@@ -951,7 +956,11 @@ Belkin, Hsu, Ma and Mandal (2018) _Reconciling Modern Machine Learning and the B
 
 ### Simulation study
 
-- $y= sin(x) + \epsilon$ with $x \sim Uniform(-5, 5)$ and $\epsilon$ Gaussian with s.d.=0.3.
+- Model:
+$$
+y= \sin(x) + \epsilon
+$$
+with $x \sim$ Uniform(-5, 5) and $\epsilon$ is Gaussian with sd=0.3.
 
 - Training set $n=20$, test set very large (10K).
 
@@ -970,12 +979,13 @@ $$
 ![](ISL_fig_10_20.pdf){width=600px height=400px}
 </p>
 
+Double descent phenomenon, illustrated using error plots for a one-dimensional natural spline example. The horizontal axis refers to the number of spline basis functions on the log scale. The training error hits zero when the degrees of freedom coincides with the sample size $n = 20$, the "interpolation threshold", and remains zero thereafter. The test error increases dramatically at this threshold, but then descends again to a reasonable value before finally increasing again.
+
 :::
 
 - When $d \le 20$, model is OLS, and we see usual bias-variance trade-off.
 
-- When $d > 20$, we revert to minimum-norm. As $d$ increases
-above 20, $\sum_{j=1}^d \hat \beta_j^2$ **decreases** since it is easier to achieve zero error, and hence less wiggly solutions.
+- When $d > 20$, we revert to minimum-norm solution. As $d$ increases above 20, $\sum_{j=1}^d \hat \beta_j^2$ **decreases** since it is easier to achieve zero error, and hence less wiggly solutions.
 
 ::: {#fig-double-descent}
 
