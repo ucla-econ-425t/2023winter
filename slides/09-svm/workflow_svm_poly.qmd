@@ -1,5 +1,5 @@
 ---
-title: "Machine Learning Workflow: Support Vector Machines"
+title: "Machine Learning Workflow: Support Vector Machines (Polynomial Kernel)"
 subtitle: "Econ 425T"
 author: "Dr. Hua Zhou @ UCLA"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
@@ -183,17 +183,19 @@ from sklearn.svm import SVC
 
 svm_mod = SVC(
   C = 1.0,
-  kernel = 'rbf',
+  kernel = 'poly',
+  degree = 3,
   gamma = 'scale', # 1 / (n_features * X.var())
+  probability = True,
   random_state = 425
   )
 ```
 
 :::
 
-## Pipeline (Python) or workflow (R)
+## Pipeline
 
-Here we bundle the preprocessing step (Python) or recipe (R) and model.
+Here we bundle the preprocessing step and model.
 
 ::: {.panel-tabset}
 
@@ -223,10 +225,10 @@ Here we tune the regularization parameter $C$, and $\gamma$ in the radial basis 
 ```{python}
 # Tune hyper-parameter(s)
 C_grid = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0]
-gamma_grid = np.logspace(start = -3, stop = 0, base = 10, num = 10)
+d_grid = [2, 3, 4, 5]
 tuned_parameters = {
   "model__C": C_grid,
-  "model__gamma": gamma_grid
+  "model__degree": d_grid
   }
 tuned_parameters 
 ```
@@ -269,27 +271,36 @@ Visualize CV results.
 cv_res = pd.DataFrame({
   "C": np.array(search.cv_results_["param_model__C"]),
   "auc": search.cv_results_["mean_test_score"],
-  "gamma": search.cv_results_["param_model__gamma"]
+  "d": search.cv_results_["param_model__degree"]
   })
 
 plt.figure()
 sns.relplot(
   # kind = "line",
   data = cv_res,
-  x = "gamma",
+  x = "d",
   y = "auc",
   hue = "C"
   ).set(
-    xscale = "log",
-    xlabel = "gamma",
+    xlabel = "d",
     ylabel = "CV AUC"
     );
 plt.show()
 ```
 
-Best CV accuracy:
+Best CV AUC:
 ```{python}
 search.best_score_
+```
+
+The training accuracy is
+```{python}
+from sklearn.metrics import accuracy_score, roc_auc_score
+
+accuracy_score(
+  y_other,
+  search.best_estimator_.predict(X_other)
+  )
 ```
 
 :::
@@ -307,10 +318,16 @@ Since we called `GridSearchCV` with `refit = True`, the best model fit on the wh
 search.best_estimator_
 ```
 
+The final AUC on the test set is
+```{python}
+roc_auc_score(
+  y_test,
+  search.best_estimator_.predict_proba(X_test)[:, 1]
+  )
+```
+
 The final classification accuracy on the test set is
 ```{python}
-from sklearn.metrics import accuracy_score
-
 accuracy_score(
   y_test,
   search.best_estimator_.predict(X_test)
