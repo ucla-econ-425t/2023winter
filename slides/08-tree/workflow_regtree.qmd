@@ -288,6 +288,25 @@ plot_tree(
 plt.show()
 ```
 
+Feature importances:
+```{python}
+vi_df = pd.DataFrame({
+  "feature": features,
+  "vi": search.best_estimator_['model'].feature_importances_
+  })
+
+plt.figure()
+sns.barplot(
+  data = vi_df,
+  x = "feature",
+  y = "vi"
+  ).set(
+    xlabel = "Feature",
+    ylabel = "VI"
+);
+plt.show()
+```
+
 The final prediction RMSE on the test set is
 ```{python}
 from sklearn.metrics import mean_squared_error
