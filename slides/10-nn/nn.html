@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.269">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Dr.&nbsp;Hua Zhou @ UCLA">
+<meta name="dcterms.date" content="2023-02-20">
+
+<title>Neural Network and Deep Learning (ISL 10)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="nn_files/libs/clipboard/clipboard.min.js"></script>
+<script src="nn_files/libs/quarto-html/quarto.js"></script>
+<script src="nn_files/libs/quarto-html/popper.min.js"></script>
+<script src="nn_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="nn_files/libs/quarto-html/anchor.min.js"></script>
+<link href="nn_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="nn_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="nn_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="nn_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="nn_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview"><span class="toc-section-number">1</span>  Overview</a></li>
+  <li><a href="#history-and-recent-surge" id="toc-history-and-recent-surge" class="nav-link" data-scroll-target="#history-and-recent-surge"><span class="toc-section-number">2</span>  History and recent surge</a></li>
+  <li><a href="#canonical-datasets-for-computer-vision-tasks" id="toc-canonical-datasets-for-computer-vision-tasks" class="nav-link" data-scroll-target="#canonical-datasets-for-computer-vision-tasks"><span class="toc-section-number">3</span>  Canonical datasets for computer vision tasks</a></li>
+  <li><a href="#single-layer-neural-network" id="toc-single-layer-neural-network" class="nav-link" data-scroll-target="#single-layer-neural-network"><span class="toc-section-number">4</span>  Single layer neural network</a>
+  <ul>
+  <li><a href="#activation-functions" id="toc-activation-functions" class="nav-link" data-scroll-target="#activation-functions"><span class="toc-section-number">4.1</span>  Activation functions</a></li>
+  <li><a href="#loss-function" id="toc-loss-function" class="nav-link" data-scroll-target="#loss-function"><span class="toc-section-number">4.2</span>  Loss function</a></li>
+  </ul></li>
+  <li><a href="#multiple-layer-neural-network" id="toc-multiple-layer-neural-network" class="nav-link" data-scroll-target="#multiple-layer-neural-network"><span class="toc-section-number">5</span>  Multiple layer neural network</a></li>
+  <li><a href="#expressivity-of-neural-network" id="toc-expressivity-of-neural-network" class="nav-link" data-scroll-target="#expressivity-of-neural-network"><span class="toc-section-number">6</span>  Expressivity of neural network</a></li>
+  <li><a href="#universal-approximation-properties" id="toc-universal-approximation-properties" class="nav-link" data-scroll-target="#universal-approximation-properties"><span class="toc-section-number">7</span>  Universal approximation properties</a></li>
+  <li><a href="#convolutional-neural-network-cnn" id="toc-convolutional-neural-network-cnn" class="nav-link" data-scroll-target="#convolutional-neural-network-cnn"><span class="toc-section-number">8</span>  Convolutional neural network (CNN)</a>
+  <ul>
+  <li><a href="#convolution" id="toc-convolution" class="nav-link" data-scroll-target="#convolution"><span class="toc-section-number">8.1</span>  Convolution</a></li>
+  <li><a href="#pooling" id="toc-pooling" class="nav-link" data-scroll-target="#pooling"><span class="toc-section-number">8.2</span>  Pooling</a></li>
+  <li><a href="#cnn-architecture" id="toc-cnn-architecture" class="nav-link" data-scroll-target="#cnn-architecture"><span class="toc-section-number">8.3</span>  CNN architecture</a></li>
+  <li><a href="#results-using-pre-trained-resnet50" id="toc-results-using-pre-trained-resnet50" class="nav-link" data-scroll-target="#results-using-pre-trained-resnet50"><span class="toc-section-number">8.4</span>  Results using pre-trained resnet50</a></li>
+  </ul></li>
+  <li><a href="#popular-architectures-for-image-classification" id="toc-popular-architectures-for-image-classification" class="nav-link" data-scroll-target="#popular-architectures-for-image-classification"><span class="toc-section-number">9</span>  Popular architectures for image classification</a>
+  <ul>
+  <li><a href="#alexnet" id="toc-alexnet" class="nav-link" data-scroll-target="#alexnet"><span class="toc-section-number">9.1</span>  AlexNet</a></li>
+  <li><a href="#vgg" id="toc-vgg" class="nav-link" data-scroll-target="#vgg"><span class="toc-section-number">9.2</span>  VGG</a></li>
+  <li><a href="#resnet" id="toc-resnet" class="nav-link" data-scroll-target="#resnet"><span class="toc-section-number">9.3</span>  ResNet</a></li>
+  <li><a href="#inception" id="toc-inception" class="nav-link" data-scroll-target="#inception"><span class="toc-section-number">9.4</span>  Inception</a></li>
+  </ul></li>
+  <li><a href="#document-classification-imdb-movie-reviews." id="toc-document-classification-imdb-movie-reviews." class="nav-link" data-scroll-target="#document-classification-imdb-movie-reviews."><span class="toc-section-number">10</span>  Document classification: IMDB movie reviews.</a>
+  <ul>
+  <li><a href="#feature-extraction-bag-of-words" id="toc-feature-extraction-bag-of-words" class="nav-link" data-scroll-target="#feature-extraction-bag-of-words"><span class="toc-section-number">10.1</span>  Feature extraction: bag of words</a></li>
+  <li><a href="#lasso-versus-neural-network-imdb-reviews" id="toc-lasso-versus-neural-network-imdb-reviews" class="nav-link" data-scroll-target="#lasso-versus-neural-network-imdb-reviews"><span class="toc-section-number">10.2</span>  Lasso versus neural network: IMDB reviews</a></li>
+  </ul></li>
+  <li><a href="#recurrent-neural-network-rnn" id="toc-recurrent-neural-network-rnn" class="nav-link" data-scroll-target="#recurrent-neural-network-rnn"><span class="toc-section-number">11</span>  Recurrent neural network (RNN)</a></li>
+  <li><a href="#lstm" id="toc-lstm" class="nav-link" data-scroll-target="#lstm"><span class="toc-section-number">12</span>  LSTM</a></li>
+  <li><a href="#nyse-new-york-stock-exchange-data" id="toc-nyse-new-york-stock-exchange-data" class="nav-link" data-scroll-target="#nyse-new-york-stock-exchange-data"><span class="toc-section-number">13</span>  NYSE (New York Stock Exchange) data</a>
+  <ul>
+  <li><a href="#rnn-forecaster" id="toc-rnn-forecaster" class="nav-link" data-scroll-target="#rnn-forecaster"><span class="toc-section-number">13.1</span>  RNN forecaster</a></li>
+  <li><a href="#autoregression-forecaster" id="toc-autoregression-forecaster" class="nav-link" data-scroll-target="#autoregression-forecaster"><span class="toc-section-number">13.2</span>  Autoregression forecaster</a></li>
+  <li><a href="#summary-of-rnns" id="toc-summary-of-rnns" class="nav-link" data-scroll-target="#summary-of-rnns"><span class="toc-section-number">13.3</span>  Summary of RNNs</a></li>
+  </ul></li>
+  <li><a href="#when-to-use-deep-learning" id="toc-when-to-use-deep-learning" class="nav-link" data-scroll-target="#when-to-use-deep-learning"><span class="toc-section-number">14</span>  When to use deep learning</a></li>
+  <li><a href="#fitting-neural-networks" id="toc-fitting-neural-networks" class="nav-link" data-scroll-target="#fitting-neural-networks"><span class="toc-section-number">15</span>  Fitting neural networks</a>
+  <ul>
+  <li><a href="#gradient-descent" id="toc-gradient-descent" class="nav-link" data-scroll-target="#gradient-descent"><span class="toc-section-number">15.1</span>  Gradient descent</a></li>
+  <li><a href="#droptout-learning" id="toc-droptout-learning" class="nav-link" data-scroll-target="#droptout-learning"><span class="toc-section-number">15.2</span>  Droptout learning</a></li>
+  <li><a href="#ridge-and-data-augmentation" id="toc-ridge-and-data-augmentation" class="nav-link" data-scroll-target="#ridge-and-data-augmentation"><span class="toc-section-number">15.3</span>  Ridge and data augmentation</a></li>
+  </ul></li>
+  <li><a href="#double-descent" id="toc-double-descent" class="nav-link" data-scroll-target="#double-descent"><span class="toc-section-number">16</span>  Double descent</a>
+  <ul>
+  <li><a href="#simulation-study" id="toc-simulation-study" class="nav-link" data-scroll-target="#simulation-study"><span class="toc-section-number">16.1</span>  Simulation study</a></li>
+  </ul></li>
+  <li><a href="#generative-adversarial-networks-gans" id="toc-generative-adversarial-networks-gans" class="nav-link" data-scroll-target="#generative-adversarial-networks-gans"><span class="toc-section-number">17</span>  Generative Adversarial Networks (GANs)</a></li>
+  </ul>
+</nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Neural Network and Deep Learning (ISL 10)</h1>
+<p class="subtitle lead">Econ 425T</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Dr.&nbsp;Hua Zhou @ UCLA </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 20, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<p>Credit: This note heavily uses material from</p>
+<ul>
+<li><p><a href="https://www.statlearning.com/"><em>An Introduction to Statistical Learning: with Applications in R</em></a> (ISL2).</p></li>
+<li><p><a href="https://hastie.su.domains/ElemStatLearn/"><em>Elements of Statistical Learning: Data Mining, Inference, and Prediction</em></a> (ESL2).</p></li>
+<li><p>UFLDL: <a href="http://ufldl.stanford.edu/tutorial/" class="uri">http://ufldl.stanford.edu/tutorial/</a>.</p></li>
+<li><p>Stanford CS231n: <a href="http://cs231n.github.io" class="uri">http://cs231n.github.io</a>.</p></li>
+<li><p><em>On the origin of deep learning</em> by Wang and Raj (2017): <a href="https://arxiv.org/pdf/1702.07800.pdf" class="uri">https://arxiv.org/pdf/1702.07800.pdf</a></p></li>
+<li><p><em>Learning Deep Learning</em> lectures by Dr.&nbsp;Qiyang Hu (UCLA Office of Advanced Research Computing): <a href="https://github.com/huqy/deep_learning_workshops" class="uri">https://github.com/huqy/deep_learning_workshops</a></p></li>
+</ul>
+<section id="overview" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="overview"><span class="header-section-number">1</span> Overview</h2>
+<ul>
+<li><p>Neural networks became popular in the 1980s.</p></li>
+<li><p>Lots of successes, hype, and great conferences: NeurIPS, Snowbird.</p></li>
+<li><p>Then along came SVMs, Random Forests and Boosting in the 1990s, and Neural Networks took a back seat.</p></li>
+<li><p>Re-emerged around 2010 as Deep Learning. By 2020s very dominant and successful.</p></li>
+<li><p>Part of success due to vast improvements in computing power, larger training sets, and software: Tensorflow and PyTorch.</p></li>
+<li><p>Much of the credit goes to three pioneers and their students: Yann LeCun, Geoffrey Hinton, and Yoshua Bengio, who received the <a href="https://awards.acm.org/about/2018-turing">2018 ACM Turing Award</a> for their work in Neural Networks.</p></li>
+</ul>
+</section>
+<section id="history-and-recent-surge" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="history-and-recent-surge"><span class="header-section-number">2</span> History and recent surge</h2>
+<p>From <a href="https://arxiv.org/pdf/1702.07800.pdf">Wang and Raj (2017)</a>:</p>
+<p align="center">
+<img src="./wangraj-table1.png" class="img-fluid" width="600">
+</p>
+<p>The current AI wave came in 2012 when AlexNet (60 million parameters) cuts the error rate of ImageNet competition (classify 1.2 million natural images) by half.</p>
+</section>
+<section id="canonical-datasets-for-computer-vision-tasks" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="canonical-datasets-for-computer-vision-tasks"><span class="header-section-number">3</span> Canonical datasets for computer vision tasks</h2>
+<ul>
+<li><a href="http://yann.lecun.com/exdb/mnist/">MNIST</a></li>
+</ul>
+<p align="center">
+<img src="./esl-fig-11-9.png" class="img-fluid" width="500">
+</p>
+<ul>
+<li><a href="https://github.com/zalandoresearch/fashion-mnist#fashion-mnist">Fashion MNIST</a></li>
+</ul>
+<p align="center">
+<img src="./fashion-mnist-sprite.png" class="img-fluid" width="500">
+</p>
+<ul>
+<li><a href="https://www.cs.toronto.edu/~kriz/cifar.html">CIFAR10 and CIFAR100</a></li>
+</ul>
+<p align="center">
+<img src="./cifar10.png" class="img-fluid" width="500">
+</p>
+<ul>
+<li><a href="https://www.image-net.org/">ImageNet</a></li>
+</ul>
+<p align="center">
+<img src="./colah-KSH-results.png" class="img-fluid" width="500">
+</p>
+<ul>
+<li><a href="https://cocodataset.org/#home">Microsoft COCO</a> (object detection, segmentation, and captioning)</li>
+</ul>
+<p align="center">
+<img src="./coco-examples.jpeg" class="img-fluid" width="500">
+</p>
+<ul>
+<li><a href="http://groups.csail.mit.edu/vision/datasets/ADE20K/">ADE20K</a> (scene parsing)</li>
+</ul>
+<p align="center">
+<img src="./ade20k_examples.png" class="img-fluid" width="500">
+</p>
+</section>
+<section id="single-layer-neural-network" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="single-layer-neural-network"><span class="header-section-number">4</span> Single layer neural network</h2>
+<div id="fig-slp" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<img src="ISL_fig_10_1.png" width="400" height="400" class="figure-img">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;1: Neural network with a single hidden layer. The hidden layer computes activations <span class="math inline">\(A_k = h_k(X)\)</span> that are nonlinear transformations of linear combinations of the inputs <span class="math inline">\(X_1, X_2, \ldots, X_p\)</span>. Hence these <span class="math inline">\(A_k\)</span> are not directly observed. The functions <span class="math inline">\(h_k(\cdot)\)</span> are not fixed in advance, but are learned during the training of the network. The output layer is a linear model that uses these activations <span class="math inline">\(A_k\)</span> as inputs, resulting in a function <span class="math inline">\(f(X)\)</span>.</figcaption><p></p>
+</figure>
+</div>
+<ul>
+<li>Inspired by the biological neuron model.</li>
+</ul>
+<p align="center">
+<img src="./mcp_neuron_model.png" class="img-fluid" width="500">
+</p>
+<ul>
+<li>Model:</li>
+</ul>
+<p><span class="math display">\[\begin{eqnarray*}
+f(X) &amp;=&amp; \beta_0 + \sum_{k=1}^K \beta_k h_k(X) \\
+&amp;=&amp; \beta_0 + \sum_{k=1}^K \beta_k g(w_{k0} + \sum_{j=1}^p w_{kj} X_j).
+\end{eqnarray*}\]</span></p>
+<section id="activation-functions" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="activation-functions"><span class="header-section-number">4.1</span> Activation functions</h3>
+<ul>
+<li><p><strong>Activations</strong> in the <strong>hidden layer</strong>: <span class="math display">\[
+A_k = h_k(X) = g(w_{k0} + \sum_{j=1}^p w_{kj} X_j)
+\]</span></p></li>
+<li><p><span class="math inline">\(g(z)\)</span> is called the <strong>activation function</strong>. Popular are the <strong>sigmoid</strong> and <strong>rectified linear</strong>, shown in figure.</p>
+<ul>
+<li><p>Sigmoid activation: <span class="math display">\[
+  g(z) = \frac{e^z}{1 + e^z} = \frac{1}{1 + e^{-z}}.
+  \]</span></p></li>
+<li><p>ReLU (rectified linear unit): <span class="math display">\[
+  g(z) = (z)_+ = \begin{cases}
+  0 &amp; \text{if } z&lt;0 \\
+  z &amp; \text{otherwise}
+  \end{cases}.
+  \]</span> According to Wikipedia: <em>The rectifier is, as of 2017, the most popular activation function for deep neural networks.</em></p></li>
+</ul></li>
+</ul>
+<div id="fig-activation" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<embed src="ISL_fig_10_2.pdf" width="600" height="450">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;2: Activation functions. The piecewise-linear ReLU function is popular for its efficiency and computability. We have scaled it down by a factor of five for ease of comparison.</figcaption><p></p>
+</figure>
+</div>
+<ul>
+<li><p>Activation functions in hidden layers are typically <strong>nonlinear</strong>, otherwise the model collapses to a linear model.</p></li>
+<li><p>So the activations are like derived features. Nonlinear transformations of linear combinations of the features.</p></li>
+<li><p>Consider a simple example with 2 input variables <span class="math inline">\(X=(X_1,X_2)\)</span> and <span class="math inline">\(K=2\)</span> hidden units <span class="math inline">\(h_1(X)\)</span> and <span class="math inline">\(h_2(X)\)</span> with <span class="math inline">\(g(z) = z^2\)</span>. Assumings specific parameter values <span class="math display">\[\begin{eqnarray*}
+\beta_0 = 0, \beta_1 &amp;=&amp; \frac 14, \beta_2 = - \frac 14 \\
+w_{10} = 0, w_{11} &amp;=&amp; 1, w_{12} = 1 \\
+w_{20} = 0, w_{21} &amp;=&amp; 1, w_{22} = -1.
+\end{eqnarray*}\]</span> Then <span class="math display">\[\begin{eqnarray*}
+h_1(X) &amp;=&amp; (0 + X_1 + X_2)^2, \\
+h_2(X) &amp;=&amp; (0 + X_1 - X_2)^2.
+\end{eqnarray*}\]</span> Plugging, we get <span class="math display">\[\begin{eqnarray*}
+f(X) &amp;=&amp; 0 + \frac 14 \cdot (0 + X_1 + X_2)^2 - \frac 14 \cdot (0 + X_1 - X_2)^2 \\
+&amp;=&amp; \frac 14[(X_1 + X_2)^2 - (X_1 - X_2)^2] \\
+&amp;=&amp; X_1 X_2.
+\end{eqnarray*}\]</span> So the sum of two nonlinear transformations of linear functions can give us an interaction!</p></li>
+</ul>
+</section>
+<section id="loss-function" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="loss-function"><span class="header-section-number">4.2</span> Loss function</h3>
+<ul>
+<li>The model is fit by minimizing <span class="math display">\[
+\sum_{i=1}^n (y_{i} - f(x_i))^2.
+\]</span> for <strong>regression</strong>.</li>
+</ul>
+</section>
+</section>
+<section id="multiple-layer-neural-network" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="multiple-layer-neural-network"><span class="header-section-number">5</span> Multiple layer neural network</h2>
+<div id="fig-mnist" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<embed src="ISL_fig_10_3a.pdf" width="600" height="300">
+</p>
+<p align="center">
+<embed src="ISL_fig_10_3b.pdf" width="600" height="200">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3: Examples of handwritten digits from the MNIST corpus. Each grayscale image has <span class="math inline">\(28 \times 28\)</span> pixels, each of which is an eight-bit number (0-255) which represents how dark that pixel is. The first 3, 5, and 8 are enlarged to show their 784 individual pixel values.</figcaption><p></p>
+</figure>
+</div>
+<ul>
+<li><p>Example: MNIST digits. Handwritten digits <span class="math inline">\(28 \times 28\)</span> grayscale images. 60K train, 10K test images. Features are the 784 pixel grayscale values in [0,255]. Labels are the digit class 0-9.</p>
+<p>Goal: build a classifier to predict the image class.</p></li>
+<li><p>We build a two-layer network with 256 units at first layer, 128 units at second layer, and 10 units at output layer.</p></li>
+<li><p>Along with intercepts (called <strong>biases</strong>) there are 235,146 parameters (referred to as <strong>weights</strong>).</p></li>
+</ul>
+<div id="fig-mlp" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<img src="ISL_fig_10_4.png" width="400" height="400" class="figure-img">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;4: Neural network diagram with two hidden layers and multiple outputs, suitable for the MNIST handwritten-digit problem. The input layer has <span class="math inline">\(p = 784\)</span> units, the two hidden layers <span class="math inline">\(K_1 = 256\)</span> and <span class="math inline">\(K_2 = 128\)</span> units respectively, and the output layer 10 units. Along with intercepts (referred to as <strong>biases</strong> in the deep-learning community) this network has 235,146 parameters (referred to as <strong>weights</strong>).</figcaption><p></p>
+</figure>
+</div>
+<ul>
+<li><p><strong>Output layer</strong>: Let <span class="math display">\[
+Z_m = \beta_{m0} + \sum_{\ell=1}^{K_2} \beta_{m\ell} A_{\ell}^{(2)}, m = 0,1,\ldots,9
+\]</span> be 10 linear combinations of activations at second layer.</p></li>
+<li><p>Output activation function encodes the <strong>softmax</strong> function <span class="math display">\[
+f_m(X) = \operatorname{Pr}(Y = m \mid X) = \frac{e^{Z_m}}{\sum_{\ell=0}^9 e^{Z_{\ell}}}.
+\]</span></p></li>
+<li><p>We fit the model by minimizing the negative multinomial log-likelihood (or <strong>cross-entropy</strong>): <span class="math display">\[
+\, - \sum_{i=1}^n \sum_{m=0}^9 y_{im} \log (f_m(x_i)).
+\]</span> <span class="math inline">\(y_{im}=1\)</span> if true class for observation <span class="math inline">\(i\)</span> is <span class="math inline">\(m\)</span>, else 0 (one-hot encoded).</p></li>
+<li><p>Results:</p></li>
+</ul>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Test Error</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Neural Network + Ridge Regularization</td>
+<td>2.3%</td>
+</tr>
+<tr class="even">
+<td>Neural Network + Dropout Regularization</td>
+<td>1.8%</td>
+</tr>
+<tr class="odd">
+<td>Multinomial Logistic Regression</td>
+<td>7.2%</td>
+</tr>
+<tr class="even">
+<td>Linear Discriminant Analysis</td>
+<td>12.7%</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p>Early success for neural networks in the 1990s.</p></li>
+<li><p>With so many parameters, regularization is essential.</p></li>
+<li><p>Very overworked problem – best reported rates are &lt;0.5%!</p>
+<p>Human error rate is reported to be around 0.2%, or 20 of the 10K test images.</p></li>
+</ul>
+</section>
+<section id="expressivity-of-neural-network" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="expressivity-of-neural-network"><span class="header-section-number">6</span> Expressivity of neural network</h2>
+<ul>
+<li><p>Playground: <a href="http://playground.tensorflow.org" class="uri">http://playground.tensorflow.org</a></p></li>
+<li><p>Sources:</p>
+<ul>
+<li><a href="https://arxiv.org/abs/1606.05336">On the expressive power of deep neural network</a>.<br>
+</li>
+<li><a href="https://arxiv.org/abs/1312.6098">On the number of response regions of deep feed forward networks with piece-wise linear activations</a>.</li>
+</ul></li>
+<li><p>Consider the function <span class="math inline">\(F: \mathbb{R}^m \mapsto \mathbb{R}^n\)</span> <span class="math display">\[
+F(\mathbf{v}) = \text{ReLU}(\mathbf{A} \mathbf{v} + \mathbf{b}).
+\]</span> Each equation <span class="math display">\[
+\mathbf{a}_i^T \mathbf{v} + b_i = 0
+\]</span> creates a hyperplane in <span class="math inline">\(\mathbb{R}^m\)</span>. ReLU creates a <em>fold</em> along that hyperplane. There are a total of <span class="math inline">\(n\)</span> folds.</p>
+<ul>
+<li>When there are <span class="math inline">\(n=2\)</span> hyperplanes in <span class="math inline">\(\mathbb{R}^2\)</span>, 2 folds create 4 pieces.<br>
+</li>
+<li>When there are <span class="math inline">\(n=3\)</span> hyperplanes in <span class="math inline">\(\mathbb{R}^2\)</span>, 3 folds create 7 pieces.</li>
+</ul></li>
+<li><p>The number of linear pieces of <span class="math inline">\(\mathbb{R}^m\)</span> sliced by <span class="math inline">\(n\)</span> hyperplanes is <span class="math display">\[
+r(n, m) = \sum_{i=0}^m \binom{n}{i} = \binom{n}{0} + \cdots + \binom{n}{m}.
+\]</span></p>
+<p>Proof: Induction using the recursion <span class="math display">\[
+r(n, m) = r(n-1, m) + r(n-1, m-1).
+\]</span></p></li>
+<li><p>Corollary:</p>
+<ul>
+<li>When there are relatively few neurons <span class="math inline">\(n \ll m\)</span>, <span class="math display">\[
+r(n,m) \approx 2^n.
+\]</span></li>
+<li>When there are many neurons <span class="math inline">\(n \gg m\)</span>, <span class="math display">\[
+r(n,m) \approx \frac{n^m}{m!}.
+\]</span></li>
+</ul></li>
+<li><p>Counting the number of flat pieces with more hidden layers is much harder.</p></li>
+</ul>
+</section>
+<section id="universal-approximation-properties" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="universal-approximation-properties"><span class="header-section-number">7</span> Universal approximation properties</h2>
+<ul>
+<li><p>Boolean Approximation: an MLP of one hidden layer can represent any Boolean function exactly.</p></li>
+<li><p>Continuous Approximation: an MLP of one hidden layer can approximate any bounded continuous function with arbitrary accuracy.</p></li>
+<li><p>Arbitrary Approximation: an MLP of two hidden layers can approximate any function with arbitrary accuracy.</p></li>
+</ul>
+</section>
+<section id="convolutional-neural-network-cnn" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="convolutional-neural-network-cnn"><span class="header-section-number">8</span> Convolutional neural network (CNN)</h2>
+<ul>
+<li>Major success story for classifying images.</li>
+</ul>
+<div id="fig-cifar" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<img src="ISL_fig_10_5.jpg" width="600" height="300" class="figure-img">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;5: A sample of images from the CIFAR100 database: a collection of natural images from everyday life, with 100 different classes represented. <span class="math inline">\(32 \times 32\)</span> color natural images, with 100 classes.</figcaption><p></p>
+</figure>
+</div>
+<ul>
+<li><p>CIFAR100: 50K training images, 10K test images.</p>
+<p>Each image is a three-dimensional array or feature map: <span class="math inline">\(32 \times 32 \times 3\)</span> array of 8-bit numbers. The last dimension represents the three color channels for red, green and blue.</p></li>
+</ul>
+<div id="fig-cifar" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<img src="ISL_fig_10_6.jpg" width="600" height="400" class="figure-img">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;6: Schematic showing how a convolutional neural network classifies an image of a tiger. The network takes in the image and identifies local features. It then combines the local features in order to create compound features, which in this example include eyes and ears. These compound features are used to output the label <em>tiger</em>.</figcaption><p></p>
+</figure>
+</div>
+<ul>
+<li><p>The CNN builds up an image in a hierarchical fashion.</p></li>
+<li><p>Edges and shapes are recognized and pieced together to form more complex shapes, eventually assembling the target image.</p></li>
+<li><p>This hierarchical construction is achieved using <strong>convolution</strong> and <strong>pooling</strong> layers.</p></li>
+</ul>
+<section id="convolution" class="level3" data-number="8.1">
+<h3 data-number="8.1" class="anchored" data-anchor-id="convolution"><span class="header-section-number">8.1</span> Convolution</h3>
+<ul>
+<li><p>The convolution filter is itself an image, and represents a small shape, edge, etc.</p></li>
+<li><p>We slide it around the input image, scoring for matches.</p></li>
+<li><p>The scoring is done via <strong>dot-products</strong>, illustrated above. <span class="math display">\[
+\text{Input image} = \begin{pmatrix}
+a &amp; b &amp; c \\
+d &amp; e &amp; f \\
+g &amp; h &amp; i \\
+j &amp; k &amp; l
+\end{pmatrix}
+\]</span> <span class="math display">\[
+\text{Convolution Filter} = \begin{pmatrix}
+\alpha &amp; \beta \\
+\gamma &amp; \delta
+\end{pmatrix}
+\]</span> <span class="math display">\[
+\text{Convolved Image} = \begin{pmatrix}
+a \alpha + b \beta + d \gamma + e \delta &amp; b \alpha + c \beta + e \gamma + f \delta \\
+d \alpha + e \beta + g \gamma + h \delta &amp; e \alpha + f \beta + h \gamma + i \delta \\
+g \alpha + h \beta + j \gamma + k \delta &amp; h \alpha + i \beta + k \gamma + l \delta
+\end{pmatrix}
+\]</span></p></li>
+</ul>
+<p align="center">
+<img src="./ufldl-convolution-schematic.gif" class="img-fluid" width="400">
+</p>
+<ul>
+<li>If the subimage of the input image is similar to the filter, the score is high, otherwise low.</li>
+</ul>
+<div id="fig-convolution" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<embed src="ISL_fig_10_7.pdf" width="600" height="400">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;7: The two filters shown here highlight vertical and horizontal stripes.</figcaption><p></p>
+</figure>
+</div>
+<ul>
+<li><p>Interactive visualization: <a href="https://setosa.io/ev/image-kernels/" class="uri">https://setosa.io/ev/image-kernels/</a></p></li>
+<li><p>The filters are <strong>learned</strong> during training.</p></li>
+<li><p>The idea of convolution with a filter is to find common patterns that occur in different parts of the image.</p></li>
+<li><p>The result of the convolution is a new feature map.</p></li>
+<li><p>Since images have three colors channels, the filter does as well: one filter per channel, and dot-products are summed.</p></li>
+</ul>
+<p align="center">
+<img src="./convolution-with-multiple-filters2.png" class="img-fluid" width="400">
+</p>
+<p>Source: <a href="https://indoml.com/2018/03/07/student-notes-convolutional-neural-networks-cnn-introduction/" class="uri">https://indoml.com/2018/03/07/student-notes-convolutional-neural-networks-cnn-introduction/</a></p>
+</section>
+<section id="pooling" class="level3" data-number="8.2">
+<h3 data-number="8.2" class="anchored" data-anchor-id="pooling"><span class="header-section-number">8.2</span> Pooling</h3>
+<p align="center">
+<img src="./ufldl-pooling-schematic.gif" class="img-fluid" width="400">
+</p>
+<ul>
+<li><p>Max pool: <span class="math display">\[
+\begin{pmatrix}
+1 &amp; 2 &amp; 5 &amp; 3 \\
+3 &amp; 0 &amp; 1 &amp; 2 \\
+2 &amp; 1 &amp; 3 &amp; 4 \\
+1 &amp; 1 &amp; 2 &amp; 0
+\end{pmatrix} \to \begin{pmatrix}
+3 &amp; 5 \\
+2 &amp; 4
+\end{pmatrix}
+\]</span></p></li>
+<li><p>Each non-overlapping <span class="math inline">\(2 \times 2\)</span> block is replaced by its maximum.</p></li>
+<li><p>This sharpens the feature identification.</p></li>
+<li><p>Allows for locational invariance.</p></li>
+<li><p>Reduces the dimension by a factor of 4.</p></li>
+</ul>
+</section>
+<section id="cnn-architecture" class="level3" data-number="8.3">
+<h3 data-number="8.3" class="anchored" data-anchor-id="cnn-architecture"><span class="header-section-number">8.3</span> CNN architecture</h3>
+<div id="fig-cnn-arch" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<embed src="ISL_fig_10_8.pdf" width="600" height="200">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;8: Architecture of a deep CNN for the CIFAR100 classification task. Convolution layers are interspersed with <span class="math inline">\(2 \times 2\)</span> max-pool layers, which reduce the size by a factor of 2 in both dimensions.</figcaption><p></p>
+</figure>
+</div>
+<ul>
+<li><p>Many convolve + pool layers.</p></li>
+<li><p>Filters are typically small, e.g.&nbsp;each channel <span class="math inline">\(3 \times 3\)</span>.</p></li>
+<li><p>Each filter creates a new channel in convolution layer.</p></li>
+<li><p>As pooling reduces size, the number of filters/channels is typically increased.</p></li>
+<li><p>Number of layers can be very large. E.g. resnet50 trained on ImageNet 1000-class image data base has 50 layers!</p></li>
+</ul>
+</section>
+<section id="results-using-pre-trained-resnet50" class="level3" data-number="8.4">
+<h3 data-number="8.4" class="anchored" data-anchor-id="results-using-pre-trained-resnet50"><span class="header-section-number">8.4</span> Results using pre-trained resnet50</h3>
+<div id="fig-cnn-arch" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<img src="ISL_fig_10_10.png" width="600" height="600" class="figure-img">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;9: Classification of six photographs using the resnet50 CNN trained on the ImageNet corpus.</figcaption><p></p>
+</figure>
+</div>
+</section>
+</section>
+<section id="popular-architectures-for-image-classification" class="level2" data-number="9">
+<h2 data-number="9" class="anchored" data-anchor-id="popular-architectures-for-image-classification"><span class="header-section-number">9</span> Popular architectures for image classification</h2>
+<p align="center">
+<img src="./imagenet_top_performers.png" class="img-fluid" width="500">
+</p>
+<p>Source: <a href="https://towardsdatascience.com/architecture-comparison-of-alexnet-vggnet-resnet-inception-densenet-beb8b116866d">Architecture comparison of AlexNet, VGGNet, ResNet, Inception, DenseNet</a></p>
+<section id="alexnet" class="level3" data-number="9.1">
+<h3 data-number="9.1" class="anchored" data-anchor-id="alexnet"><span class="header-section-number">9.1</span> AlexNet</h3>
+<p>Source: <a href="http://cs231n.github.io/convolutional-networks/" class="uri">http://cs231n.github.io/convolutional-networks/</a></p>
+<ul>
+<li><p><a href="http://www.image-net.org">ImageNet</a> dataset. Classify 1.2 million high-resolution images (<span class="math inline">\(224 \times 224 \times 3\)</span>) into 1000 classes.</p></li>
+<li><p><strong>AlexNet</strong>: <a href="http://www.cs.toronto.edu/~fritz/absps/imagenet.pdf">Krizhevsky, Sutskever, Hinton (2012)</a></p></li>
+<li><p>A combination of techniques: GPU, ReLU, DropOut (0.5), SGD + Momentum with 0.9, initial learning rate 0.01 and again reduced by 10 when validation accuracy become flat.</p></li>
+<li><p>5 convolutional layers, pooling interspersed, 3 fully connected layers. <span class="math inline">\(\sim 60\)</span> million parameters, 650,000 neurons.</p>
+<p align="center">
+</p><p><img src="./colah-KSH-arch.png" class="img-fluid" width="500"></p>
+<p></p></li>
+</ul>
+<p align="center">
+<img src="./alexnet.png" class="img-fluid" width="500">
+</p>
+<ul>
+<li><p>AlexNet was the winner of the ImageNet Large Scale Visual Recognition Challenge (ILSVRC) classification the benchmark in 2012.</p></li>
+<li><p>Achieved 62.5% accuracy:</p>
+<p align="center">
+</p><p><img src="./colah-KSH-results.png" class="img-fluid" width="500"></p>
+<p></p>
+<p>96 learnt filters:<br>
+</p>
+<p align="center">
+</p><p><img src="./krizhevsky-weights.jpg" class="img-fluid" width="500"></p>
+<p></p></li>
+</ul>
+</section>
+<section id="vgg" class="level3" data-number="9.2">
+<h3 data-number="9.2" class="anchored" data-anchor-id="vgg"><span class="header-section-number">9.2</span> VGG</h3>
+<p><a href="https://arxiv.org/abs/1409.1556"><strong>VGG-16</strong></a> and VGG-19 (2014). The numbers 16 and 19 refer to the number of trainable layers. VGG-16 has <span class="math inline">\(\sim 138\)</span> million parameters. <strong>VGGNet</strong> was the runner up of the ImageNet Large Scale Visual Recognition Challenge (ILSVRC) classification the benchmark in 2014.</p>
+<p align="center">
+<img src="./vgg16.png" class="img-fluid" width="400">
+</p>
+<p align="center">
+<img src="./vgg1619.jpg" height="400">
+</p>
+<p align="center">
+<img src="./vgg16params.jpg" class="img-fluid" width="400">
+</p>
+</section>
+<section id="resnet" class="level3" data-number="9.3">
+<h3 data-number="9.3" class="anchored" data-anchor-id="resnet"><span class="header-section-number">9.3</span> ResNet</h3>
+<p><a href="https://arxiv.org/abs/1512.03385"><strong>ResNet</strong></a> secured 1st Position in ILSVRC and COCO 2015 competition with an error rate of 3.6% (Better than Human Performance !!!) Batch Normalization after every conv layer. It also uses Xavier initialization with SGD + Momentum. The learning rate is 0.1 and is divided by 10 as validation error becomes constant. Moreover, batch-size is 256 and weight decay is 1e-5. The important part is there is no dropout is used in ResNet.</p>
+<p align="center">
+<img src="./resnet.jpg" class="img-fluid" width="400">
+</p>
+</section>
+<section id="inception" class="level3" data-number="9.4">
+<h3 data-number="9.4" class="anchored" data-anchor-id="inception"><span class="header-section-number">9.4</span> Inception</h3>
+<p>Inception-v3 with 144 crops and 4 models ensembled, the top-5 error rate of 3.58% is obtained, and finally obtained 1st Runner Up (image classification) in ILSVRC 2015. The motivation of the inception network is, rather than requiring us to pick the filter size manually, let the network decide what is best to put in a layer. <a href="https://arxiv.org/abs/1409.4842">GoogLeNet</a> has 9 inception modules.</p>
+<p align="center">
+<img src="./inception.png" class="img-fluid" width="600">
+</p>
+<p align="center">
+<img src="./inception-module1.png" class="img-fluid" width="500">
+</p>
+</section>
+</section>
+<section id="document-classification-imdb-movie-reviews." class="level2" data-number="10">
+<h2 data-number="10" class="anchored" data-anchor-id="document-classification-imdb-movie-reviews."><span class="header-section-number">10</span> Document classification: IMDB movie reviews.</h2>
+<ul>
+<li>The <code>IMDB</code> corpus consists of user-supplied movie ratings for a large collection of movies. Each has been labeled for sentiment as <strong>positive</strong> or <strong>negative</strong>. Here is the beginning of a negative review:</li>
+</ul>
+<blockquote class="blockquote">
+<p>This has to be one of the worst films of the 1990s. When my friends &amp; I were watching this film (being the target audience it was aimed at) we just sat &amp; watched the first half an hour with our jaws touching the floor at how bad it really was. The rest of the time, everyone else in the theater just started talking to each other, leaving or generally crying into their popcorn…</p>
+</blockquote>
+<ul>
+<li><p>We have labeled training and test sets, each consisting of 25,000 reviews, and each balanced with regard to sentiment.</p>
+<p>We wish to build a classifier to predict the sentiment of a review.</p></li>
+</ul>
+<section id="feature-extraction-bag-of-words" class="level3" data-number="10.1">
+<h3 data-number="10.1" class="anchored" data-anchor-id="feature-extraction-bag-of-words"><span class="header-section-number">10.1</span> Feature extraction: bag of words</h3>
+<ul>
+<li><p>Documents have different lengths, and consist of sequences of words. How do we create features <span class="math inline">\(X\)</span> to characterize a document?</p></li>
+<li><p>From a dictionary, identify the 10K most frequently occurring words.</p></li>
+<li><p>Create a binary vector of length <span class="math inline">\(p = 10K\)</span> for each document, and score a 1 in every position that the corresponding word occurred.</p></li>
+<li><p>With <span class="math inline">\(n\)</span> documents, we now have an <span class="math inline">\(n \times p\)</span> sparse feature matrix <span class="math inline">\(X\)</span>.</p></li>
+<li><p>We compare a lasso logistic regression model to a two-hidden-layer neural network on the next slide. (No convolutions here!)</p></li>
+<li><p>Bag-of-words are <strong>unigrams</strong>. We can instead use <strong>bigrams</strong> (occurrences of adjacent word pairs), and in general <strong><span class="math inline">\(m\)</span>-grams</strong>.</p></li>
+</ul>
+</section>
+<section id="lasso-versus-neural-network-imdb-reviews" class="level3" data-number="10.2">
+<h3 data-number="10.2" class="anchored" data-anchor-id="lasso-versus-neural-network-imdb-reviews"><span class="header-section-number">10.2</span> Lasso versus neural network: IMDB reviews</h3>
+<div id="fig-cnn-arch" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<embed src="ISL_fig_10_11.pdf" width="600" height="450">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;10: Accuracy of the lasso and a two-hidden-layer neural network on the IMDb data. For the lasso, the x-axis displays <span class="math inline">\(−\log(\lambda)\)</span>, while for the neural network it displays <strong>epochs</strong> (number of times the fitting algorithm passes through the training set). Both show a tendency to overfit, and achieve approximately the same test accuracy.</figcaption><p></p>
+</figure>
+</div>
+</section>
+</section>
+<section id="recurrent-neural-network-rnn" class="level2" data-number="11">
+<h2 data-number="11" class="anchored" data-anchor-id="recurrent-neural-network-rnn"><span class="header-section-number">11</span> Recurrent neural network (RNN)</h2>
+<ul>
+<li><p>Often data arise as sequences:</p>
+<ul>
+<li><p>Documents are sequences of words, and their relative positions have meaning.</p></li>
+<li><p>Time-series such as weather data or financial indices.</p></li>
+<li><p>Recorded speech or music.</p></li>
+<li><p>Handwriting, such as doctor’s notes.</p></li>
+</ul></li>
+<li><p>RNNs build models that take into account this sequential nature of the data, and build a memory of the past.</p></li>
+<li><p>The feature for each observation is a sequence of vectors <span class="math inline">\(X = \{X_1, X_2, \ldots, X_L\}\)</span>.</p></li>
+<li><p>The target <span class="math inline">\(Y\)</span> is often of the usual kind. For example, a single variable such as <strong>Sentiment</strong>, or a one-hot vector for multiclass.</p></li>
+<li><p>However, <span class="math inline">\(Y\)</span> can also be a sequence, such as the same document in a different language.</p></li>
+<li><p>Schematic of a simple recurrent neural network.</p></li>
+</ul>
+<div id="fig-cnn-arch" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<embed src="ISL_fig_10_12.pdf" width="600" height="450">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;11: The input is a sequence of vectors <span class="math inline">\(\{X_\ell\}_{\ell=1}^L\)</span>, and here the target is a single response. The network processes the input sequence <span class="math inline">\(X\)</span> sequentially; each <span class="math inline">\(X_\ell\)</span> feeds into the hidden layer, which also has as input the activation vector <span class="math inline">\(A_{\ell-1}\)</span> from the previous element in the sequence, and produces the current activation vector <span class="math inline">\(A_{\ell}\)</span>. The <strong>same</strong> collections of weights <span class="math inline">\(W\)</span>, <span class="math inline">\(U\)</span> and <span class="math inline">\(B\)</span> are used as each element of the sequence is processed. The output layer produces a sequence of predictions <span class="math inline">\(O_\ell\)</span> from the current activation <span class="math inline">\(A_\ell\)</span>, but typically only the last of these, <span class="math inline">\(O_\ell\)</span>, is of relevance. To the left of the equal sign is a concise representation of the network, which is unrolled into a more explicit version on the right.</figcaption><p></p>
+</figure>
+</div>
+<ul>
+<li><p>In detail, suppose <span class="math inline">\(X_\ell^T = (X_{\ell 1}, X_{\ell 2}, \ldots, X_{\ell p})\)</span> has <span class="math inline">\(p\)</span> components, and <span class="math inline">\(A_\ell^T = (A_{\ell 1}, A_{\ell 2}, \ldots, A_{\ell K})\)</span> has <span class="math inline">\(K\)</span> components. Then the computation at the <span class="math inline">\(k\)</span>th components of hidden unit <span class="math inline">\(A_\ell\)</span> is <span class="math display">\[\begin{eqnarray*}
+A_{\ell k} &amp;=&amp; g(w_{k0} + \sum_{j=1}^p w_{kj} X_{\ell j} + \sum_{s=1}^K u_{ks} A_{\ell-1,s}) \\
+O_\ell &amp;=&amp; \beta_0 + \sum_{k=1}^K \beta_k A_{\ell k}.
+\end{eqnarray*}\]</span></p></li>
+<li><p>Often we are concerned only with the prediction <span class="math inline">\(O_L\)</span> at the last unit. For squared error loss, and <span class="math inline">\(n\)</span> sequence/response pairs, we would minimize <span class="math display">\[
+\sum_{i=1}^n (y_i - o_{iL})^2 = \sum_{i=1}^n (y_i - (\beta_0 + \sum_{k=1}^K \beta_kg(w_{k0} + \sum_{j=1}^p w_{ij} x_{iLj} + \sum_{s=1}^K u_{ks}A_{i,L-1,s})))^2.
+\]</span></p></li>
+<li><p>RNN and IMDB reviews.</p>
+<ul>
+<li><p>The document feature is a sequence of words <span class="math inline">\(\{\mathcal{W}_\ell\}_1^L\)</span>. We typically truncate/pad the documents to the same number <span class="math inline">\(L\)</span> of words (we use <span class="math inline">\(L = 500\)</span>).</p></li>
+<li><p>Each word <span class="math inline">\(\mathcal{W}_\ell\)</span> is represented as a one-hot encoded binary vector <span class="math inline">\(X_\ell\)</span> (dummy variable) of length 10K, with all zeros and a single one in the position for that word in the dictionary.</p></li>
+<li><p>This results in an extremely sparse feature representation, and would not work well.</p></li>
+<li><p>Instead we use a lower-dimensional pretrained word embedding matrix <span class="math inline">\(E\)</span> (<span class="math inline">\(m \times 10K\)</span>).</p></li>
+<li><p>This reduces the binary feature vector of length 10K to a real feature vector of dimension <span class="math inline">\(m \ll 10K\)</span> (e.g.&nbsp;<span class="math inline">\(m\)</span> in the low hundreds.)</p></li>
+</ul></li>
+</ul>
+<div id="fig-word-embedding" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<embed src="ISL_fig_10_13a.pdf" width="600" height="300">
+</p>
+<p align="center">
+<embed src="ISL_fig_10_13b.pdf" width="600" height="80">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;12: Depiction of a sequence of 20 words representing a single document: one-hot encoded using a dictionary of 16 words (top panel) and embedded in an <span class="math inline">\(m\)</span>-dimensional space with <span class="math inline">\(m = 5\)</span> (bottom panel). Embeddings are pretrained on very large corpora of documents, using methods similar to principal components. <code>word2vec</code> and <code>GloVe</code> are popular.</figcaption><p></p>
+</figure>
+</div>
+<ul>
+<li><p>After a lot of work, the results are a disappointing 76% accuracy.</p></li>
+<li><p>We then fit a more exotic RNN, an LSTM with long and short term memory. Here <span class="math inline">\(A_\ell\)</span> receives input from <span class="math inline">\(A_{\ell-1}\)</span> (short term memory) as well as from a version that reaches further back in time (long term memory). Now we get 87% accuracy, slightly less than the 88% achieved by glmnet.</p></li>
+<li><p>Leaderboard for IMDb sentiment analysis: <a href="https://paperswithcode.com/sota/sentiment-analysis-on-imdb" class="uri">https://paperswithcode.com/sota/sentiment-analysis-on-imdb</a>.</p></li>
+</ul>
+</section>
+<section id="lstm" class="level2" data-number="12">
+<h2 data-number="12" class="anchored" data-anchor-id="lstm"><span class="header-section-number">12</span> LSTM</h2>
+<ul>
+<li>Short-term dependencies: to predict the last word in “the clouds are in the <em>sky</em>”:
+<p align="center">
+<img src="./colah-rnn-shorttermdepdencies.png" class="img-fluid" width="500">
+</p></li>
+<li>Long-term dependencies: to predict the last word in “I grew up in France… I speek fluent <em>French</em>”:
+<p align="center">
+<img src="./colah-rnn-longtermdependencies.png" class="img-fluid" width="500">
+</p></li>
+<li>Typical RNNs are having trouble with learning long-term dependencies.
+<p align="center">
+<img src="./colah-lstm3-simplernn.png" class="img-fluid" width="500">
+</p></li>
+<li><strong>Long Short-Term Memory networks (LSTM)</strong> are a special kind of RNN capable of learning long-term dependencies.
+<p align="center">
+<img src="./colah-lstm3-chain.png" class="img-fluid" width="500"> <img src="./colah-lstm2-notation.png" class="img-fluid" width="500">
+</p>
+The <strong>cell state</strong> allows information to flow along it unchanged.
+<p align="center">
+<img src="./colah-lstm3-c-line.png" class="img-fluid" width="500">
+</p>
+The <strong>gates</strong> give the ability to remove or add information to the cell state.
+<p align="center">
+<img src="./colah-lstm3-gate.png" class="img-fluid" width="100">
+</p></li>
+</ul>
+</section>
+<section id="nyse-new-york-stock-exchange-data" class="level2" data-number="13">
+<h2 data-number="13" class="anchored" data-anchor-id="nyse-new-york-stock-exchange-data"><span class="header-section-number">13</span> NYSE (New York Stock Exchange) data</h2>
+<div id="fig-nyse" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<embed src="ISL_fig_10_14.pdf" width="600" height="400">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;13: Historical trading statistics from the New York Stock Exchange. Daily values of the normalized log trading volume, DJIA return, and log volatility are shown for a 24-year period from 1962-1986. We wish to predict trading volume on any day, given the history on all earlier days. To the left of the red bar (January 2, 1980) is training data, and to the right test data.</figcaption><p></p>
+</figure>
+</div>
+<ul>
+<li><p>Three daily time series for the period Dec 3, 1962-Dec 31, 1986 (6,051 trading days).</p>
+<ul>
+<li><p><code>Log trading volume</code>: This is the fraction of all outstanding shares that are traded on that day, relative to a 100-day moving average of past turnover, on the log scale.</p></li>
+<li><p><code>Dow Jones return</code>: This is the difference between the log of the Dow Jones Industrial Index on consecutive trading days.</p></li>
+<li><p><code>Log volatility</code>: This is based on the absolute values of daily price movements.</p></li>
+</ul></li>
+</ul>
+<div id="fig-autocor" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<embed src="ISL_fig_10_15.pdf" width="600" height="400">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;14: The autocorrelation function for log volume. We see that nearby values are fairly strongly correlated, with correlations above 0.2 as far as 20 days apart.</figcaption><p></p>
+</figure>
+</div>
+<ul>
+<li><p>The <strong>autocorrelation</strong> at lag <span class="math inline">\(\ell\)</span> is the correlation of all pairs <span class="math inline">\((v_t, v_{t-\ell})\)</span> that are <span class="math inline">\(\ell\)</span> trading days apart.</p></li>
+<li><p>These sizable correlations give us confidence that past values will be helpful in predicting the future.</p></li>
+</ul>
+<section id="rnn-forecaster" class="level3" data-number="13.1">
+<h3 data-number="13.1" class="anchored" data-anchor-id="rnn-forecaster"><span class="header-section-number">13.1</span> RNN forecaster</h3>
+<ul>
+<li><p>We extract many short mini-series of input sequences <span class="math inline">\(X=\{X_1,X_2,\ldots,X_L\}\)</span> with a predefied length <span class="math inline">\(L\)</span> known as the <code>lag</code>: <span class="math display">\[\begin{eqnarray*}
+X_1 &amp;=&amp; \begin{pmatrix} v_{t-L} \\ r_{t-L} \\ z_{t-L} \end{pmatrix}, \\
+X_2 &amp;=&amp; \begin{pmatrix} v_{t-L+1} \\ r_{t-L+1} \\ z_{t-L+1} \end{pmatrix}, \\
+&amp;\vdots&amp; \\
+X_L &amp;=&amp; \begin{pmatrix} v_{t-1} \\ r_{t-1} \\ z_{t-1} \end{pmatrix},
+\end{eqnarray*}\]</span> and <span class="math display">\[
+Y = v_t.
+\]</span></p></li>
+<li><p>Since <span class="math inline">\(T=6,051\)</span>, with <span class="math inline">\(L=5\)</span> we can create <span class="math inline">\(6,046\)</span> such <span class="math inline">\((X,Y)\)</span> pairs.</p>
+<p>We use the first 4,281 as training data, and the following 1,770 as test data. We fit an RNN with 12 hidden units per lag step (i.e.&nbsp;per <span class="math inline">\(A_\ell\)</span>.)</p></li>
+</ul>
+<div id="fig-" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<embed src="ISL_fig_10_16.pdf" width="600" height="400">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;15: RNN forecast of log volume on the NYSE test data. The black lines are the true volumes, and the superimposed orange the forecasts. The forecasted series accounts for 42% of the variance of log volume.</figcaption><p></p>
+</figure>
+</div>
+<ul>
+<li><span class="math inline">\(R^2=0.42\)</span> for RNN, <span class="math inline">\(R^2=0.18\)</span> for straw man (use yesterday’s value of <code>log trading volume</code> to predict that of today).</li>
+</ul>
+</section>
+<section id="autoregression-forecaster" class="level3" data-number="13.2">
+<h3 data-number="13.2" class="anchored" data-anchor-id="autoregression-forecaster"><span class="header-section-number">13.2</span> Autoregression forecaster</h3>
+<ul>
+<li><p>The RNN forecaster is similar in structure to a traditional <strong>autoregression</strong> procedure. <span class="math display">\[
+y = \begin{pmatrix} v_{L+1} \\ v_{L+2} \\ v_{L+3} \\ \vdots \\ v_T \end{pmatrix}, M = \begin{pmatrix}
+1 &amp; v_L &amp; v_{L-1} &amp; \cdots &amp; v_1 \\
+1 &amp; v_{L+1} &amp; v_{L} &amp; \cdots &amp; v_2 \\
+\vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+1 &amp; v_{T-1} &amp; v_{T-2} &amp; \cdots &amp; v_{T-L}
+\end{pmatrix}.
+\]</span></p></li>
+<li><p>Fit an OLS regression of <span class="math inline">\(y\)</span> on <span class="math inline">\(M\)</span>, giving <span class="math display">\[
+\hat v_t = \hat \beta_0 + \hat \beta_1 v_{t-1} + \hat \beta_2 v_{t-2} + \cdots + \hat \beta_L v_{t-L},
+\]</span> known as an <strong>order-<span class="math inline">\(L\)</span> autoregression</strong> model or AR(<span class="math inline">\(L\)</span>).</p></li>
+<li><p>For the NYSE data we can include lagged versions of <code>DJ_return</code> and <code>log_volatility</code> in matrix <span class="math inline">\(M\)</span>, resulting in <span class="math inline">\(3L+1\)</span> columns.</p>
+<ul>
+<li><span class="math inline">\(R^2=0.41\)</span> for AR(5) model (16 parameters)</li>
+<li><span class="math inline">\(R^2=0.42\)</span> for RNN model (205 parameter)<br>
+</li>
+<li><span class="math inline">\(R^2=0.42\)</span> for AR(5) model fit by neural network<br>
+</li>
+<li><span class="math inline">\(R^2=0.46\)</span> for all models if we include <code>day_of_week</code> of the day being predicted.</li>
+</ul></li>
+</ul>
+</section>
+<section id="summary-of-rnns" class="level3" data-number="13.3">
+<h3 data-number="13.3" class="anchored" data-anchor-id="summary-of-rnns"><span class="header-section-number">13.3</span> Summary of RNNs</h3>
+<ul>
+<li><p>We have presented the simplest of RNNs. Many more complex variations exist.</p></li>
+<li><p>One variation treats the sequence as a one-dimensional image, and uses CNNs for fitting. For example, a sequence of words using an embedding representation can be viewed as an image, and the CNN convolves by sliding a convolutional filter along the sequence.</p></li>
+<li><p>Can have additional hidden layers, where each hidden layer is a sequence, and treats the previous hidden layer as an input sequence.</p></li>
+<li><p>Can have output also be a sequence, and input and output share the hidden units. So called <code>seq2seq</code> learning are used for language translation.</p></li>
+</ul>
+</section>
+</section>
+<section id="when-to-use-deep-learning" class="level2" data-number="14">
+<h2 data-number="14" class="anchored" data-anchor-id="when-to-use-deep-learning"><span class="header-section-number">14</span> When to use deep learning</h2>
+<ul>
+<li><p>CNNs have had enormous successes in image classification and modeling, and are starting to be used in medical diagnosis. Examples include digital mammography, ophthalmology, MRI scans, and digital X-rays.</p></li>
+<li><p>RNNs have had big wins in speech modeling, language translation, and forecasting.</p></li>
+<li><p>Often the big successes occur when the signal to noise ratio is high, e.g., image recognition and language translation. Datasets are large, and overfitting is not a big problem.</p></li>
+<li><p>For noisier data, simpler models can often work better.</p>
+<ul>
+<li><p>On the <code>NYSE</code> data, the AR(5) model is much simpler than a RNN, and performed as well.</p></li>
+<li><p>On the <code>IMDB</code> review data, the linear model fit by glmnet did as well as the neural network, and better than the RNN.</p></li>
+</ul></li>
+<li><p>We endorse the <strong>Occam’s razor</strong> principal. We prefer simpler models if they work as well. More interpretable!</p></li>
+</ul>
+</section>
+<section id="fitting-neural-networks" class="level2" data-number="15">
+<h2 data-number="15" class="anchored" data-anchor-id="fitting-neural-networks"><span class="header-section-number">15</span> Fitting neural networks</h2>
+<p align="center">
+<img src="ISL_fig_10_1.png" width="400" height="400">
+</p>
+<p><span class="math display">\[
+\min_{w_1,\ldots,w_K,\beta} \quad \frac 12 \sum_{i=1}^n (y_i - f(x_i))^2,
+\]</span> where <span class="math display">\[
+f(x_i) = \beta_0 + \sum_{k=1}^K \beta_k g(w_{k0} + \sum_{j=1}^p w_{kj} x_{ij}).
+\]</span></p>
+<ul>
+<li><p>This problem is difficult because the objective is <strong>non-convex</strong>.</p></li>
+<li><p>Despite this, effective algorithms have evolved that can optimize complex neural network problems efficiently.</p></li>
+</ul>
+<section id="gradient-descent" class="level3" data-number="15.1">
+<h3 data-number="15.1" class="anchored" data-anchor-id="gradient-descent"><span class="header-section-number">15.1</span> Gradient descent</h3>
+<div id="fig-gd" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<embed src="ISL_fig_10_17.pdf" width="600" height="450">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;16: <strong>?(caption)</strong></figcaption><p></p>
+</figure>
+</div>
+<ul>
+<li><p>Let <span class="math display">\[
+R(\theta) = \frac 12 \sum_{i=1}^n (y_i - f_\theta(x_i))^2
+\]</span> with <span class="math inline">\(\theta = (w_1,\ldots,w_K,\beta)\)</span>.</p>
+<ol type="1">
+<li><p>Start with a guess <span class="math inline">\(\theta_0\)</span> for all the parameters in <span class="math inline">\(\theta\)</span>, and set <span class="math inline">\(t = 0\)</span>.</p></li>
+<li><p>Iterate until the objective <span class="math inline">\(R(\theta)\)</span> fails to decrease:</p>
+<p>(a). Find a vector <span class="math inline">\(\delta\)</span> that reflects a small change in <span class="math inline">\(\theta\)</span> such that <span class="math inline">\(\theta^{t+1} = \theta^t + \delta\)</span> reduces the objective; i.e.&nbsp;<span class="math inline">\(R(\theta^{t+1}) &lt; R(\theta^t)\)</span>.</p>
+<p>(b). Set <span class="math inline">\(t \gets t+1\)</span>.</p></li>
+</ol></li>
+<li><p>In this simple example we reached the <strong>global minimum</strong>.</p></li>
+<li><p>If we had started a little to the left of <span class="math inline">\(\theta^0\)</span> we would have gone in the other direction, and ended up in a local minimum.</p></li>
+<li><p>Although <span class="math inline">\(\theta\)</span> is multi-dimensional, we have depicted the process as one-dimensional. It is much harder to identify whether one is in a local minimum in high dimensions.</p></li>
+<li><p>How to find a direction <span class="math inline">\(\delta\)</span> that points downhill? We compute the gradient vector <span class="math display">\[
+\nabla R(\theta^t) = \frac{\partial R(\theta)}{\partial \theta} \mid_{\theta = \theta^t}
+\]</span> and set <span class="math display">\[
+\theta^{t+1} \gets \theta^t - \rho \nabla R(\theta^t),
+\]</span> where <span class="math inline">\(\rho\)</span> is the <strong>learning rate</strong> (typically small, e.g., <span class="math inline">\(\rho=0.001\)</span>).</p></li>
+<li><p>Since <span class="math inline">\(R(\theta) = \sum_{i=1}^n R_i(\theta)\)</span> is a sum, so gradient is sum of gradients. <span class="math display">\[
+R_i(\theta) = \frac 12 (y_i - f_\theta(x_i))^2 = \frac 12 (y_i - \beta_0 - \sum_{k=1}^K \beta_k g(w_{k0} + \sum_{j=1}^p w_{ij} w_{ij}))^2.
+\]</span> For ease of notation, let <span class="math display">\[
+z_{ik} = w_{k0} + \sum_{j=1}^p w_{ij} w_{ij}.
+\]</span></p></li>
+<li><p><strong>Backpropagation</strong> uses the chain rule for differentiation: <span class="math display">\[\begin{eqnarray*}
+\frac{\partial R_i(\theta)}{\partial \beta_k} &amp;=&amp; \frac{\partial R_i(\theta)}{\partial f_\theta(x_i)} \cdot \frac{\partial f_\theta(x_i)}{\partial \beta_k} \\
+&amp;=&amp; - (y_i - f_\theta(x_i)) \cdot g(z_{ik}) \\
+\frac{\partial R_i(\theta)}{\partial w_{kj}} &amp;=&amp; \frac{\partial R_i(\theta)}{\partial f_\theta(x_i)} \cdot \frac{\partial f_\theta(x_i)}{\partial g(z_{ik})} \cdot \frac{\partial g(z_{ik})}{\partial z_{ik}} \cdot \frac{\partial z_{ik}}{\partial w_{kj}} \\
+&amp;=&amp; - (y_i - f_\theta(x_i)) \cdot \beta_k \cdot g'(z_{ik}) \cdot x_{ij}.
+\end{eqnarray*}\]</span></p></li>
+<li><p>Two-pass updates: <span class="math display">\[\begin{eqnarray*}
+  &amp; &amp; \text{initialization} \to \widehat{f}_k(x_i) \quad \quad \quad \text{(forward pass)}   \\
+  &amp;\to&amp; \delta_{ki} \to s_{mi} \to \widehat{\beta}_{km} \text{ and } \widehat{\alpha}_{ml} \quad \quad \text{(backward pass)}.
+\end{eqnarray*}\]</span></p></li>
+<li><p>Advantages: each hidden unit passes and receives information only to and from units that share a connection; can be implemented efficiently on a parallel architecture computer.</p></li>
+<li><p>Tricks of the trade</p>
+<ul>
+<li><p><strong>Slow learning</strong>. Gradient descent is slow, and a small learning rate <span class="math inline">\(\rho\)</span> slows it even further. With <strong>early stopping</strong>, this is a form of regularization.</p></li>
+<li><p><strong>Stochastic gradient descent</strong>. Rather than compute the gradient using all the data, use a small <strong>minibatch</strong> drawn at random at each step. E.g. for <code>MNIST</code> data, with n = 60K, we use minibatches of 128 observations.</p></li>
+<li><p>An <strong>epoch</strong> is a count of iterations and amounts to the number of minibatch updates such that <span class="math inline">\(n\)</span> samples in total have been processed; i.e.&nbsp;<span class="math inline">\(60,000/128 \approx 469\)</span> for <code>MNIST</code>.</p></li>
+<li><p><strong>Regularization</strong>. Ridge and lasso regularization can be used to shrink the weights at each layer. Two other popular forms of regularization are <strong>dropout</strong> and <strong>augmentation</strong>.</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="droptout-learning" class="level3" data-number="15.2">
+<h3 data-number="15.2" class="anchored" data-anchor-id="droptout-learning"><span class="header-section-number">15.2</span> Droptout learning</h3>
+<div id="fig-dropout" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<img src="ISL_fig_10_19.png" class="img-fluid figure-img" width="600">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;17: Dropout Learning. Left: a fully connected network. Right: network with dropout in the input and hidden layer. The nodes in grey are selected at random, and ignored in an instance of training.</figcaption><p></p>
+</figure>
+</div>
+<ul>
+<li><p>At each SGD update, randomly remove units with probability <span class="math inline">\(\phi\)</span>, and scale up the weights of those retained by <span class="math inline">\(1/(1-\phi)\)</span> to compensate.</p></li>
+<li><p>In simple scenarios like linear regression, a version of this process can be shown to be equivalent to ridge regularization.</p></li>
+<li><p>As in ridge, the other units <strong>stand</strong> in for those temporarily removed, and their weights are drawn closer together.</p></li>
+<li><p>Similar to randomly omitting variables when growing trees in random forests.</p></li>
+</ul>
+</section>
+<section id="ridge-and-data-augmentation" class="level3" data-number="15.3">
+<h3 data-number="15.3" class="anchored" data-anchor-id="ridge-and-data-augmentation"><span class="header-section-number">15.3</span> Ridge and data augmentation</h3>
+<ul>
+<li><p>Make many copies of each <span class="math inline">\((xi, yi)\)</span> and add a small amount of Gaussian noise to the <span class="math inline">\(x_i\)</span>, a little cloud around each observation, but leave the copies of <span class="math inline">\(y_i\)</span> alone!</p></li>
+<li><p>This makes the fit robust to small perturbations in <span class="math inline">\(x_i\)</span>, and is equivalent to ridge regularization in an OLS setting.</p></li>
+<li><p>Data augmentation is especially effective with SGD, here demonstrated for a CNN and image classification.</p></li>
+<li><p>Natural transformations are made of each training image when it is sampled by SGD, thus ultimately making a cloud of images around each original training image.</p></li>
+<li><p>The label is left unchanged, in each case still <code>tiger</code>.</p></li>
+<li><p>Improves performance of CNN and is similar to ridge.</p></li>
+</ul>
+<div id="fig-data-aug-tiger" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<img src="ISL_fig_10_9.jpg" class="img-fluid figure-img" width="600">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;18: <strong>?(caption)</strong></figcaption><p></p>
+</figure>
+</div>
+</section>
+</section>
+<section id="double-descent" class="level2" data-number="16">
+<h2 data-number="16" class="anchored" data-anchor-id="double-descent"><span class="header-section-number">16</span> Double descent</h2>
+<ul>
+<li><p>With neural networks, it seems better to have too many hidden units than too few.</p></li>
+<li><p>Likewise more hidden layers better than few.</p></li>
+<li><p>Running stochastic gradient descent till zero training error often gives good out-of-sample error.</p></li>
+<li><p>Increasing the number of units or layers and again training till zero error sometimes gives <strong>even better</strong> out-of-sample error.</p></li>
+<li><p>What happened to overfitting and the usual bias-variance trade-off?</p></li>
+</ul>
+<p>Belkin, Hsu, Ma and Mandal (2018) <em>Reconciling Modern Machine Learning and the Bias-Variance Trade-off</em>. <a href="https://arxiv.org/abs/1812.11118">arXiv</a></p>
+<section id="simulation-study" class="level3" data-number="16.1">
+<h3 data-number="16.1" class="anchored" data-anchor-id="simulation-study"><span class="header-section-number">16.1</span> Simulation study</h3>
+<ul>
+<li><p><span class="math inline">\(y= sin(x) + \epsilon\)</span> with <span class="math inline">\(x \sim Uniform(-5, 5)\)</span> and <span class="math inline">\(\epsilon\)</span> Gaussian with s.d.=0.3.</p></li>
+<li><p>Training set <span class="math inline">\(n=20\)</span>, test set very large (10K).</p></li>
+<li><p>We fit a natural spline to the data with <span class="math inline">\(d\)</span> degrees of freedom, i.e., a linear regression onto <span class="math inline">\(d\)</span> basis functions <span class="math display">\[
+\hat y_i = \hat \beta_1 N_1(x_i) + \hat \beta_2 N_2(x_i) + \cdots + \hat \beta_d N_d(x_i).
+\]</span></p></li>
+<li><p>When <span class="math inline">\(d = 20\)</span> we fit the training data exactly, and get all residuals equal to zero.</p></li>
+<li><p>When <span class="math inline">\(d &gt; 20\)</span>, we still fit the data exactly, but the solution is not unique. Among the zero-residual solutions, we pick the one with <strong>minimum norm</strong>, i.e.&nbsp;the zero-residual solution with smallest <span class="math inline">\(\sum_{j=1}^d \hat \beta_j^2\)</span>.</p></li>
+</ul>
+<div id="fig-double-descent" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<embed src="ISL_fig_10_20.pdf" width="600" height="400">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;19: <strong>?(caption)</strong></figcaption><p></p>
+</figure>
+</div>
+<ul>
+<li><p>When <span class="math inline">\(d \le 20\)</span>, model is OLS, and we see usual bias-variance trade-off.</p></li>
+<li><p>When <span class="math inline">\(d &gt; 20\)</span>, we revert to minimum-norm. As <span class="math inline">\(d\)</span> increases above 20, <span class="math inline">\(\sum_{j=1}^d \hat \beta_j^2\)</span> <strong>decreases</strong> since it is easier to achieve zero error, and hence less wiggly solutions.</p></li>
+</ul>
+<div id="fig-double-descent" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p align="center">
+<embed src="ISL_fig_10_21.pdf" width="600" height="400">
+</p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;20: To achieve a zero-residual solution with <span class="math inline">\(d = 20\)</span> is a real stretch! Easier for larger <span class="math inline">\(d\)</span>.</figcaption><p></p>
+</figure>
+</div>
+<ul>
+<li><p>Some facts.</p>
+<ul>
+<li><p>In a wide linear model (<span class="math inline">\(p \gg n\)</span>) fit by least squares, SGD with a small step size leads to a <strong>minimum norm</strong> zero-residual solution.</p></li>
+<li><p>Stochastic gradient <strong>flow</strong>, i.e.&nbsp;the entire path of SGD solutions, is somewhat similar to ridge path.</p></li>
+<li><p>By analogy, deep and wide neural networks fit by SGD down to zero training error often give good solutions that generalize well.</p></li>
+<li><p>In particular cases with high <strong>signal-to-noise ratio</strong>, e.g., image recognition, are less prone to overfitting; the zero-error solution is mostly signal!</p></li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section id="generative-adversarial-networks-gans" class="level2" data-number="17">
+<h2 data-number="17" class="anchored" data-anchor-id="generative-adversarial-networks-gans"><span class="header-section-number">17</span> Generative Adversarial Networks (GANs)</h2>
+<p align="center">
+<img src="./ian_goodfellow.png" class="img-fluid" width="400">
+</p>
+<blockquote class="blockquote">
+<p>The coolest idea in deep learning in the last 20 years.<br>
+- Yann LeCun on GANs.</p>
+</blockquote>
+<ul>
+<li><p>Sources:</p>
+<ul>
+<li><a href="https://sites.google.com/view/cvpr2018tutorialongans/" class="uri">https://sites.google.com/view/cvpr2018tutorialongans/</a><br>
+</li>
+<li><a href="https://medium.com/ai-society/gans-from-scratch-1-a-deep-introduction-with-code-in-pytorch-and-tensorflow-cb03cdcdba0f" class="uri">https://medium.com/ai-society/gans-from-scratch-1-a-deep-introduction-with-code-in-pytorch-and-tensorflow-cb03cdcdba0f</a><br>
+</li>
+<li><a href="https://skymind.ai/wiki/generative-adversarial-network-gan" class="uri">https://skymind.ai/wiki/generative-adversarial-network-gan</a></li>
+</ul></li>
+<li><p>Applications:</p>
+<ul>
+<li><p>AI-generated celebrity photos: <a href="https://www.youtube.com/watch?v=G06dEcZ-QTg" class="uri">https://www.youtube.com/watch?v=G06dEcZ-QTg</a></p></li>
+<li><p>Digital art: <a href="https://en.wikipedia.org/wiki/Edmond_de_Belamy">Edmond de Belamy</a></p></li>
+<li><p>Image-to-image translation</p></li>
+</ul>
+<p align="center">
+</p><p><img src="./image-to-image-translation.jpg" class="img-fluid" width="600"></p>
+<p></p>
+<ul>
+<li>Self play</li>
+</ul></li>
+</ul>
+<p align="center">
+<img src="./alpha-go.png" class="img-fluid" width="600">
+</p>
+<ul>
+<li>GAN:</li>
+</ul>
+<p align="center">
+<img src="./gan.jpg" class="img-fluid" width="600">
+</p>
+<p align="center">
+<img src="./gan_illustration.png" class="img-fluid" width="600">
+</p>
+<ul>
+<li><p>Value function of GAN <span class="math display">\[
+\min_G \max_D V(D, G) = \mathbb{E}_{x \sim p_{\text{data}}(x)} [\log D(x)] + \mathbb{E}_{z \sim p_z(z)} [\log (1 - D(G(z)))].
+\]</span></p></li>
+<li><p>Training GAN</p></li>
+</ul>
+<p align="center">
+<img src="./training-gan.png" class="img-fluid" width="600">
+</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
