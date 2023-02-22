@@ -160,15 +160,15 @@ Source: <https://stanford.edu/~shervine/teaching/cs-229/cheatsheet-machine-learn
 
 [Rmd](https://raw.githubusercontent.com/ucla-econ-425t/2023winter/master/slides/10-nn/mnist_mlp/mnist_mlp.qmd), [html](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/mnist_mlp/mnist_mlp.html).
 
-## Example: MNIST - CNN
+## Example: CIFAR100 - CNN
+
+[Rmd](https://raw.githubusercontent.com/ucla-econ-425t/2023winter/master/slides/10-nn/cifar100_cnn/cifar100_cnn.qmd), [html](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/cifar100_cnn/cifar100_cnn.html).
+
+## Example: IMDB review sentiment analysis - RNN LSTM
 
 TODO
 
 ## Example: Generate text from Nietzsche’s writings - RNN LSTM
-
-TODO
-
-## Example: IMDB review sentiment analysis - RNN LSTM
 
 TODO
 
