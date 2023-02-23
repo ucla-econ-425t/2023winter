@@ -1,6 +1,6 @@
 ---
 title: "Neural Network and Deep Learning (ISL 10)"
-subtitle: "Econ 425T"
+subtitle: "Econ 425T / Biostat 203B"
 author: "Dr. Hua Zhou @ UCLA"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 format:
@@ -559,6 +559,8 @@ Inception-v3 with 144 crops and 4 models ensembled, the top-5 error rate of 3.58
 
 - Bag-of-words are **unigrams**. We can instead use **bigrams** (occurrences of adjacent word pairs), and in general **$m$-grams**.
 
+- For more complicated feature extraction from text data, see the book [_Text Mining with R: A Tidy Approach_](https://www.tidytextmining.com/)
+
 ### Lasso versus neural network: IMDB reviews
 
 ::: {#fig-cnn-arch}
@@ -596,7 +598,7 @@ Accuracy of the lasso and a two-hidden-layer neural network on the IMDb data. Fo
 ::: {#fig-cnn-arch}
 
 <p align="center">
-![](ISL_fig_10_12.pdf){width=600px height=450px}
+![](ISL_fig_10_12.pdf){width=600px height=300px}
 </p>
 
 The input is a sequence of vectors $\{X_\ell\}_{\ell=1}^L$, and here the target is a single response. The network processes the input sequence $X$ sequentially; each $X_\ell$ feeds into the hidden layer, which also has as input the activation vector $A_{\ell-1}$ from the previous element in the sequence, and produces the current activation vector $A_{\ell}$. The **same** collections of weights $W$, $U$ and $B$ are used as each element of the sequence is processed. The output layer produces a sequence of predictions $O_\ell$ from the current  activation $A_\ell$, but typically only the last of these, $O_\ell$, is of relevance. To the left of the equal sign is a concise representation of the network, which is unrolled into a more
@@ -604,7 +606,7 @@ explicit version on the right.
 
 :::
 
-- In detail, suppose $X_\ell^T = (X_{\ell 1}, X_{\ell 2}, \ldots, X_{\ell p})$ has $p$ components, and $A_\ell^T = (A_{\ell 1}, A_{\ell 2}, \ldots, A_{\ell K})$ has $K$ components. Then the computation at the $k$th components of hidden unit $A_\ell$ is
+- In detail, suppose $X_\ell = (X_{\ell 1}, X_{\ell 2}, \ldots, X_{\ell p})$ has $p$ components, and $A_\ell = (A_{\ell 1}, A_{\ell 2}, \ldots, A_{\ell K})$ has $K$ components. Then the computation at the $k$th components of hidden unit $A_\ell$ is
 \begin{eqnarray*}
   A_{\ell k} &=& g(w_{k0} + \sum_{j=1}^p w_{kj} X_{\ell j} + \sum_{s=1}^K u_{ks} A_{\ell-1,s}) \\
   O_\ell &=& \beta_0 + \sum_{k=1}^K \beta_k A_{\ell k}.
@@ -681,7 +683,9 @@ Depiction of a sequence of 20 words representing a single document: one-hot enco
     ![](./colah-lstm3-gate.png){width=100px}
     </p>
 
-### Transformers
+## Transformers
+
+More recent large language models (LMMs) such at ChatGPT3 extensively use transformers, which are capable of capturing even longer memory than LSTM.
 
 [Transformer Models 101 (Towards Data Science)](https://towardsdatascience.com/transformer-models-101-getting-started-part-1-b3a77ccfa14d)
 
