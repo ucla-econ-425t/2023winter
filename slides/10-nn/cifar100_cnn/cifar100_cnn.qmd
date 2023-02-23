@@ -1,6 +1,6 @@
 ---
 title: "CNN on the CIFAR100 Data"
-subtitle: "Econ 425T"
+subtitle: "Econ 425T / Biostat 203B"
 author: "Dr. Hua Zhou @ UCLA"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 format:
@@ -266,7 +266,7 @@ Plot the model:
 tf.keras.utils.plot_model(
     model,
     to_file = "model.png",
-    show_shapes = False,
+    show_shapes = True,
     show_dtype = False,
     show_layer_names = True,
     rankdir = "TB",
@@ -276,6 +276,10 @@ tf.keras.utils.plot_model(
     show_layer_activations = False,
 )
 ```
+
+<p align="center">
+![](./model.png){width=500px}
+</p>
 
 #### R
 

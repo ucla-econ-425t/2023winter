@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Dr.&nbsp;Hua Zhou @ UCLA">
-<meta name="dcterms.date" content="2023-02-22">
+<meta name="dcterms.date" content="2023-02-23">
 
 <title>CNN on the CIFAR100 Data</title>
 <style>
@@ -125,7 +125,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
 <h1 class="title">CNN on the CIFAR100 Data</h1>
-<p class="subtitle lead">Econ 425T</p>
+<p class="subtitle lead">Econ 425T / Biostat 203B</p>
 </div>
 
 
@@ -142,7 +142,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">February 22, 2023</p>
+      <p class="date">February 23, 2023</p>
     </div>
   </div>
   
@@ -195,7 +195,7 @@ attached base packages:
 loaded via a namespace (and not attached):
  [1] Rcpp_1.0.9        here_1.0.1        lattice_0.20-45   png_0.1-8        
  [5] withr_2.5.0       rprojroot_2.0.3   digest_0.6.29     grid_4.2.2       
- [9] jsonlite_1.8.0    magrittr_2.0.3    evaluate_0.15     rlang_1.0.4      
+ [9] jsonlite_1.8.0    magrittr_2.0.3    evaluate_0.15     rlang_1.0.6      
 [13] stringi_1.7.8     cli_3.4.1         rstudioapi_0.13   Matrix_1.5-1     
 [17] reticulate_1.27   rmarkdown_2.14    tools_4.2.2       stringr_1.4.0    
 [21] htmlwidgets_1.6.1 xfun_0.31         yaml_2.3.5        fastmap_1.1.0    
@@ -699,7 +699,7 @@ _________________________________________________________________</code></pre>
 <div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>tf.keras.utils.plot_model(</span>
 <span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>    model,</span>
 <span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>    to_file <span class="op">=</span> <span class="st">"model.png"</span>,</span>
-<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>    show_shapes <span class="op">=</span> <span class="va">False</span>,</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>    show_shapes <span class="op">=</span> <span class="va">True</span>,</span>
 <span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>    show_dtype <span class="op">=</span> <span class="va">False</span>,</span>
 <span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>    show_layer_names <span class="op">=</span> <span class="va">True</span>,</span>
 <span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>    rankdir <span class="op">=</span> <span class="st">"TB"</span>,</span>
@@ -712,6 +712,9 @@ _________________________________________________________________</code></pre>
 
 </div>
 </div>
+<p align="center">
+<img src="./model.png" class="img-fluid" width="500">
+</p>
 </div>
 <div id="tabset-7-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-2-tab">
 <div class="cell" data-layout-align="center">
@@ -856,7 +859,7 @@ ________________________________________________________________________________
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="cifar100_cnn_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="618"></p>
+<p><img src="cifar100_cnn_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="617"></p>
 </figure>
 </div>
 </div>
@@ -878,7 +881,7 @@ ________________________________________________________________________________
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="cifar100_cnn_files/figure-html/unnamed-chunk-21-2.png" class="img-fluid figure-img" width="618"></p>
+<p><img src="cifar100_cnn_files/figure-html/unnamed-chunk-21-2.png" class="img-fluid figure-img" width="617"></p>
 </figure>
 </div>
 </div>
@@ -895,7 +898,7 @@ ________________________________________________________________________________
 <span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    user   system  elapsed 
-5653.867 2957.431  864.392 </code></pre>
+6007.114 3219.508  917.691 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(history)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -921,11 +924,11 @@ ________________________________________________________________________________
 <div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>score <span class="op">=</span> model.evaluate(x_test, y_test, verbose <span class="op">=</span> <span class="dv">0</span>)</span>
 <span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Test loss:"</span>, score[<span class="dv">0</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Test loss: 2.5372560024261475</code></pre>
+<pre><code>Test loss: 2.4657680988311768</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Test accuracy:"</span>, score[<span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Test accuracy: 0.45879998803138733</code></pre>
+<pre><code>Test accuracy: 0.4530999958515167</code></pre>
 </div>
 </div>
 </div>
@@ -934,14 +937,14 @@ ________________________________________________________________________________
 <div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>model <span class="sc">%&gt;%</span> <span class="fu">evaluate</span>(x_test, y_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    loss accuracy 
-2.408759 0.458100 </code></pre>
+2.407828 0.453700 </code></pre>
 </div>
 </div>
 <p>Generate predictions on new data:</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>model <span class="sc">%&gt;%</span> <span class="fu">predict</span>(x_test) <span class="sc">%&gt;%</span> <span class="fu">k_argmax</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>tf.Tensor([49 33 55 ... 51 88 70], shape=(10000), dtype=int64)</code></pre>
+<pre><code>tf.Tensor([30 80 55 ... 51 42 70], shape=(10000), dtype=int64)</code></pre>
 </div>
 </div>
 </div>
