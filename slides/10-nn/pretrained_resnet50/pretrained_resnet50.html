@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.280">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Dr.&nbsp;Hua Zhou @ UCLA">
+<meta name="dcterms.date" content="2023-02-22">
+
+<title>Using Pretrained CNN Models</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="pretrained_resnet50_files/libs/clipboard/clipboard.min.js"></script>
+<script src="pretrained_resnet50_files/libs/quarto-html/quarto.js"></script>
+<script src="pretrained_resnet50_files/libs/quarto-html/popper.min.js"></script>
+<script src="pretrained_resnet50_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="pretrained_resnet50_files/libs/quarto-html/anchor.min.js"></script>
+<link href="pretrained_resnet50_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="pretrained_resnet50_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="pretrained_resnet50_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="pretrained_resnet50_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="pretrained_resnet50_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#prepare-data" id="toc-prepare-data" class="nav-link active" data-scroll-target="#prepare-data"><span class="toc-section-number">1</span>  Prepare data</a></li>
+  <li><a href="#load-the-trained-network" id="toc-load-the-trained-network" class="nav-link" data-scroll-target="#load-the-trained-network"><span class="toc-section-number">2</span>  Load the trained network</a></li>
+  <li><a href="#classify-images" id="toc-classify-images" class="nav-link" data-scroll-target="#classify-images"><span class="toc-section-number">3</span>  Classify images</a></li>
+  </ul>
+</nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Using Pretrained CNN Models</h1>
+<p class="subtitle lead">Econ 425T / Biostat 203B</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Dr.&nbsp;Hua Zhou @ UCLA </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 22, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<p>Display system information for reproducibility.</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> IPython</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(IPython.sys_info())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{'commit_hash': 'add5877a4',
+ 'commit_source': 'installation',
+ 'default_encoding': 'utf-8',
+ 'ipython_path': '/Users/huazhou/opt/anaconda3/lib/python3.9/site-packages/IPython',
+ 'ipython_version': '8.8.0',
+ 'os_name': 'posix',
+ 'platform': 'macOS-10.16-x86_64-i386-64bit',
+ 'sys_executable': '/Users/huazhou/opt/anaconda3/bin/python3',
+ 'sys_platform': 'darwin',
+ 'sys_version': '3.9.12 (main, Apr  5 2022, 01:56:13) \n[Clang 12.0.0 ]'}</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>R version 4.2.2 (2022-10-31)
+Platform: x86_64-apple-darwin17.0 (64-bit)
+Running under: macOS Big Sur ... 10.16
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.9        here_1.0.1        lattice_0.20-45   png_0.1-8        
+ [5] withr_2.5.0       rprojroot_2.0.3   digest_0.6.29     grid_4.2.2       
+ [9] jsonlite_1.8.0    magrittr_2.0.3    evaluate_0.15     rlang_1.0.4      
+[13] stringi_1.7.8     cli_3.4.1         rstudioapi_0.13   Matrix_1.5-1     
+[17] reticulate_1.27   rmarkdown_2.14    tools_4.2.2       stringr_1.4.0    
+[21] htmlwidgets_1.6.1 xfun_0.31         yaml_2.3.5        fastmap_1.1.0    
+[25] compiler_4.2.2    htmltools_0.5.4   knitr_1.39       </code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Load some libraries.</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the pandas library</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Load numpy for array manipulation</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Load seaborn plotting library</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Set font sizes in plots</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>sns.<span class="bu">set</span>(font_scale <span class="op">=</span> <span class="fl">1.2</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Display all columns</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">'display.max_columns'</span>, <span class="va">None</span>)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Load Tensorflow and Keras</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow <span class="im">import</span> keras</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tensorflow.keras <span class="im">import</span> layers</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(keras)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(jpeg)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(imager)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+<p>In this example, we usea a CNN (convolution neural network) pretrained on the ImageNet database to classify natural images.</p>
+<section id="prepare-data" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="prepare-data"><span class="header-section-number">1</span> Prepare data</h2>
+<p>Read in images from the <code>/book_images</code> folder, convert them to arrays of size <code>224 x 224 x 3</code>, and preprocess them using the <a href="https://www.tensorflow.org/api_docs/python/tf/keras/applications/imagenet_utils/preprocess_input"><code>preprocess_input</code></a> function in keras.</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>img_dir <span class="op">=</span> <span class="st">"book_images"</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>image_names <span class="op">=</span> os.listdir(img_dir)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>num_images <span class="op">=</span> <span class="bu">len</span>(image_names)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.empty((num_images, <span class="dv">224</span>, <span class="dv">224</span>, <span class="dv">3</span>))</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_images):</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  img_path <span class="op">=</span> img_dir <span class="op">+</span> <span class="st">'/'</span> <span class="op">+</span> image_names[i]</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  img <span class="op">=</span> keras.utils.load_img(img_path, target_size <span class="op">=</span> (<span class="dv">224</span>, <span class="dv">224</span>))</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  plt.imshow(img)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  x[i] <span class="op">=</span> keras.utils.img_to_array(img)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  plt.show(x[i] <span class="op">/</span> <span class="dv">255</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pretrained_resnet50_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pretrained_resnet50_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pretrained_resnet50_files/figure-html/unnamed-chunk-5-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pretrained_resnet50_files/figure-html/unnamed-chunk-5-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pretrained_resnet50_files/figure-html/unnamed-chunk-5-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pretrained_resnet50_files/figure-html/unnamed-chunk-5-6.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> keras.applications.imagenet_utils.preprocess_input(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>img_dir <span class="ot">&lt;-</span> <span class="st">"book_images"</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>image_names <span class="ot">&lt;-</span> <span class="fu">list.files</span>(img_dir)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>num_images <span class="ot">&lt;-</span> <span class="fu">length</span>(image_names)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="at">dim =</span> <span class="fu">c</span>(num_images, <span class="dv">224</span>, <span class="dv">224</span>, <span class="dv">3</span>))</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>))</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>num_images) {</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  img_path <span class="ot">&lt;-</span> <span class="fu">paste</span>(img_dir, image_names[i], <span class="at">sep =</span> <span class="st">"/"</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(<span class="fu">load.image</span>(img_path))</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  img <span class="ot">&lt;-</span> <span class="fu">image_load</span>(img_path, <span class="at">target_size =</span> <span class="fu">c</span>(<span class="dv">224</span>, <span class="dv">224</span>))</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  x[i, , ,] <span class="ot">&lt;-</span> <span class="fu">image_to_array</span>(img)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pretrained_resnet50_files/figure-html/unnamed-chunk-6-13.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">imagenet_preprocess_input</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="load-the-trained-network" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="load-the-trained-network"><span class="header-section-number">2</span> Load the trained network</h2>
+<p>We load the resnet50 network trained on the ImageNet database.</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> keras.applications.resnet.ResNet50(weights <span class="op">=</span> <span class="st">'imagenet'</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>model.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Model: "resnet50"
+__________________________________________________________________________________________________
+ Layer (type)                   Output Shape         Param #     Connected to                     
+==================================================================================================
+ input_1 (InputLayer)           [(None, 224, 224, 3  0           []                               
+                                )]                                                                
+                                                                                                  
+ conv1_pad (ZeroPadding2D)      (None, 230, 230, 3)  0           ['input_1[0][0]']                
+                                                                                                  
+ conv1_conv (Conv2D)            (None, 112, 112, 64  9472        ['conv1_pad[0][0]']              
+                                )                                                                 
+                                                                                                  
+ conv1_bn (BatchNormalization)  (None, 112, 112, 64  256         ['conv1_conv[0][0]']             
+                                )                                                                 
+                                                                                                  
+ conv1_relu (Activation)        (None, 112, 112, 64  0           ['conv1_bn[0][0]']               
+                                )                                                                 
+                                                                                                  
+ pool1_pad (ZeroPadding2D)      (None, 114, 114, 64  0           ['conv1_relu[0][0]']             
+                                )                                                                 
+                                                                                                  
+ pool1_pool (MaxPooling2D)      (None, 56, 56, 64)   0           ['pool1_pad[0][0]']              
+                                                                                                  
+ conv2_block1_1_conv (Conv2D)   (None, 56, 56, 64)   4160        ['pool1_pool[0][0]']             
+                                                                                                  
+ conv2_block1_1_bn (BatchNormal  (None, 56, 56, 64)  256         ['conv2_block1_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv2_block1_1_relu (Activatio  (None, 56, 56, 64)  0           ['conv2_block1_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv2_block1_2_conv (Conv2D)   (None, 56, 56, 64)   36928       ['conv2_block1_1_relu[0][0]']    
+                                                                                                  
+ conv2_block1_2_bn (BatchNormal  (None, 56, 56, 64)  256         ['conv2_block1_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv2_block1_2_relu (Activatio  (None, 56, 56, 64)  0           ['conv2_block1_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv2_block1_0_conv (Conv2D)   (None, 56, 56, 256)  16640       ['pool1_pool[0][0]']             
+                                                                                                  
+ conv2_block1_3_conv (Conv2D)   (None, 56, 56, 256)  16640       ['conv2_block1_2_relu[0][0]']    
+                                                                                                  
+ conv2_block1_0_bn (BatchNormal  (None, 56, 56, 256)  1024       ['conv2_block1_0_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv2_block1_3_bn (BatchNormal  (None, 56, 56, 256)  1024       ['conv2_block1_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv2_block1_add (Add)         (None, 56, 56, 256)  0           ['conv2_block1_0_bn[0][0]',      
+                                                                  'conv2_block1_3_bn[0][0]']      
+                                                                                                  
+ conv2_block1_out (Activation)  (None, 56, 56, 256)  0           ['conv2_block1_add[0][0]']       
+                                                                                                  
+ conv2_block2_1_conv (Conv2D)   (None, 56, 56, 64)   16448       ['conv2_block1_out[0][0]']       
+                                                                                                  
+ conv2_block2_1_bn (BatchNormal  (None, 56, 56, 64)  256         ['conv2_block2_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv2_block2_1_relu (Activatio  (None, 56, 56, 64)  0           ['conv2_block2_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv2_block2_2_conv (Conv2D)   (None, 56, 56, 64)   36928       ['conv2_block2_1_relu[0][0]']    
+                                                                                                  
+ conv2_block2_2_bn (BatchNormal  (None, 56, 56, 64)  256         ['conv2_block2_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv2_block2_2_relu (Activatio  (None, 56, 56, 64)  0           ['conv2_block2_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv2_block2_3_conv (Conv2D)   (None, 56, 56, 256)  16640       ['conv2_block2_2_relu[0][0]']    
+                                                                                                  
+ conv2_block2_3_bn (BatchNormal  (None, 56, 56, 256)  1024       ['conv2_block2_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv2_block2_add (Add)         (None, 56, 56, 256)  0           ['conv2_block1_out[0][0]',       
+                                                                  'conv2_block2_3_bn[0][0]']      
+                                                                                                  
+ conv2_block2_out (Activation)  (None, 56, 56, 256)  0           ['conv2_block2_add[0][0]']       
+                                                                                                  
+ conv2_block3_1_conv (Conv2D)   (None, 56, 56, 64)   16448       ['conv2_block2_out[0][0]']       
+                                                                                                  
+ conv2_block3_1_bn (BatchNormal  (None, 56, 56, 64)  256         ['conv2_block3_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv2_block3_1_relu (Activatio  (None, 56, 56, 64)  0           ['conv2_block3_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv2_block3_2_conv (Conv2D)   (None, 56, 56, 64)   36928       ['conv2_block3_1_relu[0][0]']    
+                                                                                                  
+ conv2_block3_2_bn (BatchNormal  (None, 56, 56, 64)  256         ['conv2_block3_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv2_block3_2_relu (Activatio  (None, 56, 56, 64)  0           ['conv2_block3_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv2_block3_3_conv (Conv2D)   (None, 56, 56, 256)  16640       ['conv2_block3_2_relu[0][0]']    
+                                                                                                  
+ conv2_block3_3_bn (BatchNormal  (None, 56, 56, 256)  1024       ['conv2_block3_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv2_block3_add (Add)         (None, 56, 56, 256)  0           ['conv2_block2_out[0][0]',       
+                                                                  'conv2_block3_3_bn[0][0]']      
+                                                                                                  
+ conv2_block3_out (Activation)  (None, 56, 56, 256)  0           ['conv2_block3_add[0][0]']       
+                                                                                                  
+ conv3_block1_1_conv (Conv2D)   (None, 28, 28, 128)  32896       ['conv2_block3_out[0][0]']       
+                                                                                                  
+ conv3_block1_1_bn (BatchNormal  (None, 28, 28, 128)  512        ['conv3_block1_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block1_1_relu (Activatio  (None, 28, 28, 128)  0          ['conv3_block1_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv3_block1_2_conv (Conv2D)   (None, 28, 28, 128)  147584      ['conv3_block1_1_relu[0][0]']    
+                                                                                                  
+ conv3_block1_2_bn (BatchNormal  (None, 28, 28, 128)  512        ['conv3_block1_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block1_2_relu (Activatio  (None, 28, 28, 128)  0          ['conv3_block1_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv3_block1_0_conv (Conv2D)   (None, 28, 28, 512)  131584      ['conv2_block3_out[0][0]']       
+                                                                                                  
+ conv3_block1_3_conv (Conv2D)   (None, 28, 28, 512)  66048       ['conv3_block1_2_relu[0][0]']    
+                                                                                                  
+ conv3_block1_0_bn (BatchNormal  (None, 28, 28, 512)  2048       ['conv3_block1_0_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block1_3_bn (BatchNormal  (None, 28, 28, 512)  2048       ['conv3_block1_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block1_add (Add)         (None, 28, 28, 512)  0           ['conv3_block1_0_bn[0][0]',      
+                                                                  'conv3_block1_3_bn[0][0]']      
+                                                                                                  
+ conv3_block1_out (Activation)  (None, 28, 28, 512)  0           ['conv3_block1_add[0][0]']       
+                                                                                                  
+ conv3_block2_1_conv (Conv2D)   (None, 28, 28, 128)  65664       ['conv3_block1_out[0][0]']       
+                                                                                                  
+ conv3_block2_1_bn (BatchNormal  (None, 28, 28, 128)  512        ['conv3_block2_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block2_1_relu (Activatio  (None, 28, 28, 128)  0          ['conv3_block2_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv3_block2_2_conv (Conv2D)   (None, 28, 28, 128)  147584      ['conv3_block2_1_relu[0][0]']    
+                                                                                                  
+ conv3_block2_2_bn (BatchNormal  (None, 28, 28, 128)  512        ['conv3_block2_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block2_2_relu (Activatio  (None, 28, 28, 128)  0          ['conv3_block2_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv3_block2_3_conv (Conv2D)   (None, 28, 28, 512)  66048       ['conv3_block2_2_relu[0][0]']    
+                                                                                                  
+ conv3_block2_3_bn (BatchNormal  (None, 28, 28, 512)  2048       ['conv3_block2_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block2_add (Add)         (None, 28, 28, 512)  0           ['conv3_block1_out[0][0]',       
+                                                                  'conv3_block2_3_bn[0][0]']      
+                                                                                                  
+ conv3_block2_out (Activation)  (None, 28, 28, 512)  0           ['conv3_block2_add[0][0]']       
+                                                                                                  
+ conv3_block3_1_conv (Conv2D)   (None, 28, 28, 128)  65664       ['conv3_block2_out[0][0]']       
+                                                                                                  
+ conv3_block3_1_bn (BatchNormal  (None, 28, 28, 128)  512        ['conv3_block3_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block3_1_relu (Activatio  (None, 28, 28, 128)  0          ['conv3_block3_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv3_block3_2_conv (Conv2D)   (None, 28, 28, 128)  147584      ['conv3_block3_1_relu[0][0]']    
+                                                                                                  
+ conv3_block3_2_bn (BatchNormal  (None, 28, 28, 128)  512        ['conv3_block3_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block3_2_relu (Activatio  (None, 28, 28, 128)  0          ['conv3_block3_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv3_block3_3_conv (Conv2D)   (None, 28, 28, 512)  66048       ['conv3_block3_2_relu[0][0]']    
+                                                                                                  
+ conv3_block3_3_bn (BatchNormal  (None, 28, 28, 512)  2048       ['conv3_block3_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block3_add (Add)         (None, 28, 28, 512)  0           ['conv3_block2_out[0][0]',       
+                                                                  'conv3_block3_3_bn[0][0]']      
+                                                                                                  
+ conv3_block3_out (Activation)  (None, 28, 28, 512)  0           ['conv3_block3_add[0][0]']       
+                                                                                                  
+ conv3_block4_1_conv (Conv2D)   (None, 28, 28, 128)  65664       ['conv3_block3_out[0][0]']       
+                                                                                                  
+ conv3_block4_1_bn (BatchNormal  (None, 28, 28, 128)  512        ['conv3_block4_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block4_1_relu (Activatio  (None, 28, 28, 128)  0          ['conv3_block4_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv3_block4_2_conv (Conv2D)   (None, 28, 28, 128)  147584      ['conv3_block4_1_relu[0][0]']    
+                                                                                                  
+ conv3_block4_2_bn (BatchNormal  (None, 28, 28, 128)  512        ['conv3_block4_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block4_2_relu (Activatio  (None, 28, 28, 128)  0          ['conv3_block4_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv3_block4_3_conv (Conv2D)   (None, 28, 28, 512)  66048       ['conv3_block4_2_relu[0][0]']    
+                                                                                                  
+ conv3_block4_3_bn (BatchNormal  (None, 28, 28, 512)  2048       ['conv3_block4_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv3_block4_add (Add)         (None, 28, 28, 512)  0           ['conv3_block3_out[0][0]',       
+                                                                  'conv3_block4_3_bn[0][0]']      
+                                                                                                  
+ conv3_block4_out (Activation)  (None, 28, 28, 512)  0           ['conv3_block4_add[0][0]']       
+                                                                                                  
+ conv4_block1_1_conv (Conv2D)   (None, 14, 14, 256)  131328      ['conv3_block4_out[0][0]']       
+                                                                                                  
+ conv4_block1_1_bn (BatchNormal  (None, 14, 14, 256)  1024       ['conv4_block1_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block1_1_relu (Activatio  (None, 14, 14, 256)  0          ['conv4_block1_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block1_2_conv (Conv2D)   (None, 14, 14, 256)  590080      ['conv4_block1_1_relu[0][0]']    
+                                                                                                  
+ conv4_block1_2_bn (BatchNormal  (None, 14, 14, 256)  1024       ['conv4_block1_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block1_2_relu (Activatio  (None, 14, 14, 256)  0          ['conv4_block1_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block1_0_conv (Conv2D)   (None, 14, 14, 1024  525312      ['conv3_block4_out[0][0]']       
+                                )                                                                 
+                                                                                                  
+ conv4_block1_3_conv (Conv2D)   (None, 14, 14, 1024  263168      ['conv4_block1_2_relu[0][0]']    
+                                )                                                                 
+                                                                                                  
+ conv4_block1_0_bn (BatchNormal  (None, 14, 14, 1024  4096       ['conv4_block1_0_conv[0][0]']    
+ ization)                       )                                                                 
+                                                                                                  
+ conv4_block1_3_bn (BatchNormal  (None, 14, 14, 1024  4096       ['conv4_block1_3_conv[0][0]']    
+ ization)                       )                                                                 
+                                                                                                  
+ conv4_block1_add (Add)         (None, 14, 14, 1024  0           ['conv4_block1_0_bn[0][0]',      
+                                )                                 'conv4_block1_3_bn[0][0]']      
+                                                                                                  
+ conv4_block1_out (Activation)  (None, 14, 14, 1024  0           ['conv4_block1_add[0][0]']       
+                                )                                                                 
+                                                                                                  
+ conv4_block2_1_conv (Conv2D)   (None, 14, 14, 256)  262400      ['conv4_block1_out[0][0]']       
+                                                                                                  
+ conv4_block2_1_bn (BatchNormal  (None, 14, 14, 256)  1024       ['conv4_block2_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block2_1_relu (Activatio  (None, 14, 14, 256)  0          ['conv4_block2_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block2_2_conv (Conv2D)   (None, 14, 14, 256)  590080      ['conv4_block2_1_relu[0][0]']    
+                                                                                                  
+ conv4_block2_2_bn (BatchNormal  (None, 14, 14, 256)  1024       ['conv4_block2_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block2_2_relu (Activatio  (None, 14, 14, 256)  0          ['conv4_block2_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block2_3_conv (Conv2D)   (None, 14, 14, 1024  263168      ['conv4_block2_2_relu[0][0]']    
+                                )                                                                 
+                                                                                                  
+ conv4_block2_3_bn (BatchNormal  (None, 14, 14, 1024  4096       ['conv4_block2_3_conv[0][0]']    
+ ization)                       )                                                                 
+                                                                                                  
+ conv4_block2_add (Add)         (None, 14, 14, 1024  0           ['conv4_block1_out[0][0]',       
+                                )                                 'conv4_block2_3_bn[0][0]']      
+                                                                                                  
+ conv4_block2_out (Activation)  (None, 14, 14, 1024  0           ['conv4_block2_add[0][0]']       
+                                )                                                                 
+                                                                                                  
+ conv4_block3_1_conv (Conv2D)   (None, 14, 14, 256)  262400      ['conv4_block2_out[0][0]']       
+                                                                                                  
+ conv4_block3_1_bn (BatchNormal  (None, 14, 14, 256)  1024       ['conv4_block3_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block3_1_relu (Activatio  (None, 14, 14, 256)  0          ['conv4_block3_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block3_2_conv (Conv2D)   (None, 14, 14, 256)  590080      ['conv4_block3_1_relu[0][0]']    
+                                                                                                  
+ conv4_block3_2_bn (BatchNormal  (None, 14, 14, 256)  1024       ['conv4_block3_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block3_2_relu (Activatio  (None, 14, 14, 256)  0          ['conv4_block3_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block3_3_conv (Conv2D)   (None, 14, 14, 1024  263168      ['conv4_block3_2_relu[0][0]']    
+                                )                                                                 
+                                                                                                  
+ conv4_block3_3_bn (BatchNormal  (None, 14, 14, 1024  4096       ['conv4_block3_3_conv[0][0]']    
+ ization)                       )                                                                 
+                                                                                                  
+ conv4_block3_add (Add)         (None, 14, 14, 1024  0           ['conv4_block2_out[0][0]',       
+                                )                                 'conv4_block3_3_bn[0][0]']      
+                                                                                                  
+ conv4_block3_out (Activation)  (None, 14, 14, 1024  0           ['conv4_block3_add[0][0]']       
+                                )                                                                 
+                                                                                                  
+ conv4_block4_1_conv (Conv2D)   (None, 14, 14, 256)  262400      ['conv4_block3_out[0][0]']       
+                                                                                                  
+ conv4_block4_1_bn (BatchNormal  (None, 14, 14, 256)  1024       ['conv4_block4_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block4_1_relu (Activatio  (None, 14, 14, 256)  0          ['conv4_block4_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block4_2_conv (Conv2D)   (None, 14, 14, 256)  590080      ['conv4_block4_1_relu[0][0]']    
+                                                                                                  
+ conv4_block4_2_bn (BatchNormal  (None, 14, 14, 256)  1024       ['conv4_block4_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block4_2_relu (Activatio  (None, 14, 14, 256)  0          ['conv4_block4_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block4_3_conv (Conv2D)   (None, 14, 14, 1024  263168      ['conv4_block4_2_relu[0][0]']    
+                                )                                                                 
+                                                                                                  
+ conv4_block4_3_bn (BatchNormal  (None, 14, 14, 1024  4096       ['conv4_block4_3_conv[0][0]']    
+ ization)                       )                                                                 
+                                                                                                  
+ conv4_block4_add (Add)         (None, 14, 14, 1024  0           ['conv4_block3_out[0][0]',       
+                                )                                 'conv4_block4_3_bn[0][0]']      
+                                                                                                  
+ conv4_block4_out (Activation)  (None, 14, 14, 1024  0           ['conv4_block4_add[0][0]']       
+                                )                                                                 
+                                                                                                  
+ conv4_block5_1_conv (Conv2D)   (None, 14, 14, 256)  262400      ['conv4_block4_out[0][0]']       
+                                                                                                  
+ conv4_block5_1_bn (BatchNormal  (None, 14, 14, 256)  1024       ['conv4_block5_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block5_1_relu (Activatio  (None, 14, 14, 256)  0          ['conv4_block5_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block5_2_conv (Conv2D)   (None, 14, 14, 256)  590080      ['conv4_block5_1_relu[0][0]']    
+                                                                                                  
+ conv4_block5_2_bn (BatchNormal  (None, 14, 14, 256)  1024       ['conv4_block5_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block5_2_relu (Activatio  (None, 14, 14, 256)  0          ['conv4_block5_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block5_3_conv (Conv2D)   (None, 14, 14, 1024  263168      ['conv4_block5_2_relu[0][0]']    
+                                )                                                                 
+                                                                                                  
+ conv4_block5_3_bn (BatchNormal  (None, 14, 14, 1024  4096       ['conv4_block5_3_conv[0][0]']    
+ ization)                       )                                                                 
+                                                                                                  
+ conv4_block5_add (Add)         (None, 14, 14, 1024  0           ['conv4_block4_out[0][0]',       
+                                )                                 'conv4_block5_3_bn[0][0]']      
+                                                                                                  
+ conv4_block5_out (Activation)  (None, 14, 14, 1024  0           ['conv4_block5_add[0][0]']       
+                                )                                                                 
+                                                                                                  
+ conv4_block6_1_conv (Conv2D)   (None, 14, 14, 256)  262400      ['conv4_block5_out[0][0]']       
+                                                                                                  
+ conv4_block6_1_bn (BatchNormal  (None, 14, 14, 256)  1024       ['conv4_block6_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block6_1_relu (Activatio  (None, 14, 14, 256)  0          ['conv4_block6_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block6_2_conv (Conv2D)   (None, 14, 14, 256)  590080      ['conv4_block6_1_relu[0][0]']    
+                                                                                                  
+ conv4_block6_2_bn (BatchNormal  (None, 14, 14, 256)  1024       ['conv4_block6_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv4_block6_2_relu (Activatio  (None, 14, 14, 256)  0          ['conv4_block6_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv4_block6_3_conv (Conv2D)   (None, 14, 14, 1024  263168      ['conv4_block6_2_relu[0][0]']    
+                                )                                                                 
+                                                                                                  
+ conv4_block6_3_bn (BatchNormal  (None, 14, 14, 1024  4096       ['conv4_block6_3_conv[0][0]']    
+ ization)                       )                                                                 
+                                                                                                  
+ conv4_block6_add (Add)         (None, 14, 14, 1024  0           ['conv4_block5_out[0][0]',       
+                                )                                 'conv4_block6_3_bn[0][0]']      
+                                                                                                  
+ conv4_block6_out (Activation)  (None, 14, 14, 1024  0           ['conv4_block6_add[0][0]']       
+                                )                                                                 
+                                                                                                  
+ conv5_block1_1_conv (Conv2D)   (None, 7, 7, 512)    524800      ['conv4_block6_out[0][0]']       
+                                                                                                  
+ conv5_block1_1_bn (BatchNormal  (None, 7, 7, 512)   2048        ['conv5_block1_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv5_block1_1_relu (Activatio  (None, 7, 7, 512)   0           ['conv5_block1_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv5_block1_2_conv (Conv2D)   (None, 7, 7, 512)    2359808     ['conv5_block1_1_relu[0][0]']    
+                                                                                                  
+ conv5_block1_2_bn (BatchNormal  (None, 7, 7, 512)   2048        ['conv5_block1_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv5_block1_2_relu (Activatio  (None, 7, 7, 512)   0           ['conv5_block1_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv5_block1_0_conv (Conv2D)   (None, 7, 7, 2048)   2099200     ['conv4_block6_out[0][0]']       
+                                                                                                  
+ conv5_block1_3_conv (Conv2D)   (None, 7, 7, 2048)   1050624     ['conv5_block1_2_relu[0][0]']    
+                                                                                                  
+ conv5_block1_0_bn (BatchNormal  (None, 7, 7, 2048)  8192        ['conv5_block1_0_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv5_block1_3_bn (BatchNormal  (None, 7, 7, 2048)  8192        ['conv5_block1_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv5_block1_add (Add)         (None, 7, 7, 2048)   0           ['conv5_block1_0_bn[0][0]',      
+                                                                  'conv5_block1_3_bn[0][0]']      
+                                                                                                  
+ conv5_block1_out (Activation)  (None, 7, 7, 2048)   0           ['conv5_block1_add[0][0]']       
+                                                                                                  
+ conv5_block2_1_conv (Conv2D)   (None, 7, 7, 512)    1049088     ['conv5_block1_out[0][0]']       
+                                                                                                  
+ conv5_block2_1_bn (BatchNormal  (None, 7, 7, 512)   2048        ['conv5_block2_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv5_block2_1_relu (Activatio  (None, 7, 7, 512)   0           ['conv5_block2_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv5_block2_2_conv (Conv2D)   (None, 7, 7, 512)    2359808     ['conv5_block2_1_relu[0][0]']    
+                                                                                                  
+ conv5_block2_2_bn (BatchNormal  (None, 7, 7, 512)   2048        ['conv5_block2_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv5_block2_2_relu (Activatio  (None, 7, 7, 512)   0           ['conv5_block2_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv5_block2_3_conv (Conv2D)   (None, 7, 7, 2048)   1050624     ['conv5_block2_2_relu[0][0]']    
+                                                                                                  
+ conv5_block2_3_bn (BatchNormal  (None, 7, 7, 2048)  8192        ['conv5_block2_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv5_block2_add (Add)         (None, 7, 7, 2048)   0           ['conv5_block1_out[0][0]',       
+                                                                  'conv5_block2_3_bn[0][0]']      
+                                                                                                  
+ conv5_block2_out (Activation)  (None, 7, 7, 2048)   0           ['conv5_block2_add[0][0]']       
+                                                                                                  
+ conv5_block3_1_conv (Conv2D)   (None, 7, 7, 512)    1049088     ['conv5_block2_out[0][0]']       
+                                                                                                  
+ conv5_block3_1_bn (BatchNormal  (None, 7, 7, 512)   2048        ['conv5_block3_1_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv5_block3_1_relu (Activatio  (None, 7, 7, 512)   0           ['conv5_block3_1_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv5_block3_2_conv (Conv2D)   (None, 7, 7, 512)    2359808     ['conv5_block3_1_relu[0][0]']    
+                                                                                                  
+ conv5_block3_2_bn (BatchNormal  (None, 7, 7, 512)   2048        ['conv5_block3_2_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv5_block3_2_relu (Activatio  (None, 7, 7, 512)   0           ['conv5_block3_2_bn[0][0]']      
+ n)                                                                                               
+                                                                                                  
+ conv5_block3_3_conv (Conv2D)   (None, 7, 7, 2048)   1050624     ['conv5_block3_2_relu[0][0]']    
+                                                                                                  
+ conv5_block3_3_bn (BatchNormal  (None, 7, 7, 2048)  8192        ['conv5_block3_3_conv[0][0]']    
+ ization)                                                                                         
+                                                                                                  
+ conv5_block3_add (Add)         (None, 7, 7, 2048)   0           ['conv5_block2_out[0][0]',       
+                                                                  'conv5_block3_3_bn[0][0]']      
+                                                                                                  
+ conv5_block3_out (Activation)  (None, 7, 7, 2048)   0           ['conv5_block3_add[0][0]']       
+                                                                                                  
+ avg_pool (GlobalAveragePooling  (None, 2048)        0           ['conv5_block3_out[0][0]']       
+ 2D)                                                                                              
+                                                                                                  
+ predictions (Dense)            (None, 1000)         2049000     ['avg_pool[0][0]']               
+                                                                                                  
+==================================================================================================
+Total params: 25,636,712
+Trainable params: 25,583,592
+Non-trainable params: 53,120
+__________________________________________________________________________________________________</code></pre>
+</div>
+</div>
+<p>Plot the model:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>tf.keras.utils.plot_model(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    model,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    to_file <span class="op">=</span> <span class="st">"model.png"</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    show_shapes <span class="op">=</span> <span class="va">True</span>,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    show_dtype <span class="op">=</span> <span class="va">False</span>,</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    show_layer_names <span class="op">=</span> <span class="va">True</span>,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    rankdir <span class="op">=</span> <span class="st">"TB"</span>,</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    expand_nested <span class="op">=</span> <span class="va">False</span>,</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    dpi <span class="op">=</span> <span class="dv">96</span>,</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    layer_range <span class="op">=</span> <span class="va">None</span>,</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    show_layer_activations <span class="op">=</span> <span class="va">False</span>,</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+</div>
+</div>
+<p align="center">
+<img src="./model.png" class="img-fluid" width="500">
+</p>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">application_resnet50</span>(<span class="at">weights =</span> <span class="st">"imagenet"</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Model: "resnet50"
+________________________________________________________________________________
+ Layer (type)         Output Shape   Param #  Connected to           Trainable  
+================================================================================
+ input_2 (InputLayer)  [(None, 224,   0       []                     Y          
+                      224, 3)]                                                  
+ conv1_pad (ZeroPaddi  (None, 230, 2  0       ['input_2[0][0]']      Y          
+ ng2D)                30, 3)                                                    
+ conv1_conv (Conv2D)  (None, 112, 1  9472     ['conv1_pad[0][0]']    Y          
+                      12, 64)                                                   
+ conv1_bn (BatchNorma  (None, 112, 1  256     ['conv1_conv[0][0]']   Y          
+ lization)            12, 64)                                                   
+ conv1_relu (Activati  (None, 112, 1  0       ['conv1_bn[0][0]']     Y          
+ on)                  12, 64)                                                   
+ pool1_pad (ZeroPaddi  (None, 114, 1  0       ['conv1_relu[0][0]']   Y          
+ ng2D)                14, 64)                                                   
+ pool1_pool (MaxPooli  (None, 56, 56  0       ['pool1_pad[0][0]']    Y          
+ ng2D)                , 64)                                                     
+ conv2_block1_1_conv   (None, 56, 56  4160    ['pool1_pool[0][0]']   Y          
+ (Conv2D)             , 64)                                                     
+ conv2_block1_1_bn (B  (None, 56, 56  256     ['conv2_block1_1_conv  Y          
+ atchNormalization)   , 64)                   [0][0]']                          
+ conv2_block1_1_relu   (None, 56, 56  0       ['conv2_block1_1_bn[0  Y          
+ (Activation)         , 64)                   ][0]']                            
+ conv2_block1_2_conv   (None, 56, 56  36928   ['conv2_block1_1_relu  Y          
+ (Conv2D)             , 64)                   [0][0]']                          
+ conv2_block1_2_bn (B  (None, 56, 56  256     ['conv2_block1_2_conv  Y          
+ atchNormalization)   , 64)                   [0][0]']                          
+ conv2_block1_2_relu   (None, 56, 56  0       ['conv2_block1_2_bn[0  Y          
+ (Activation)         , 64)                   ][0]']                            
+ conv2_block1_0_conv   (None, 56, 56  16640   ['pool1_pool[0][0]']   Y          
+ (Conv2D)             , 256)                                                    
+ conv2_block1_3_conv   (None, 56, 56  16640   ['conv2_block1_2_relu  Y          
+ (Conv2D)             , 256)                  [0][0]']                          
+ conv2_block1_0_bn (B  (None, 56, 56  1024    ['conv2_block1_0_conv  Y          
+ atchNormalization)   , 256)                  [0][0]']                          
+ conv2_block1_3_bn (B  (None, 56, 56  1024    ['conv2_block1_3_conv  Y          
+ atchNormalization)   , 256)                  [0][0]']                          
+ conv2_block1_add (Ad  (None, 56, 56  0       ['conv2_block1_0_bn[0  Y          
+ d)                   , 256)                  ][0]',                            
+                                               'conv2_block1_3_bn[0             
+                                              ][0]']                            
+ conv2_block1_out (Ac  (None, 56, 56  0       ['conv2_block1_add[0]  Y          
+ tivation)            , 256)                  [0]']                             
+ conv2_block2_1_conv   (None, 56, 56  16448   ['conv2_block1_out[0]  Y          
+ (Conv2D)             , 64)                   [0]']                             
+ conv2_block2_1_bn (B  (None, 56, 56  256     ['conv2_block2_1_conv  Y          
+ atchNormalization)   , 64)                   [0][0]']                          
+ conv2_block2_1_relu   (None, 56, 56  0       ['conv2_block2_1_bn[0  Y          
+ (Activation)         , 64)                   ][0]']                            
+ conv2_block2_2_conv   (None, 56, 56  36928   ['conv2_block2_1_relu  Y          
+ (Conv2D)             , 64)                   [0][0]']                          
+ conv2_block2_2_bn (B  (None, 56, 56  256     ['conv2_block2_2_conv  Y          
+ atchNormalization)   , 64)                   [0][0]']                          
+ conv2_block2_2_relu   (None, 56, 56  0       ['conv2_block2_2_bn[0  Y          
+ (Activation)         , 64)                   ][0]']                            
+ conv2_block2_3_conv   (None, 56, 56  16640   ['conv2_block2_2_relu  Y          
+ (Conv2D)             , 256)                  [0][0]']                          
+ conv2_block2_3_bn (B  (None, 56, 56  1024    ['conv2_block2_3_conv  Y          
+ atchNormalization)   , 256)                  [0][0]']                          
+ conv2_block2_add (Ad  (None, 56, 56  0       ['conv2_block1_out[0]  Y          
+ d)                   , 256)                  [0]',                             
+                                               'conv2_block2_3_bn[0             
+                                              ][0]']                            
+ conv2_block2_out (Ac  (None, 56, 56  0       ['conv2_block2_add[0]  Y          
+ tivation)            , 256)                  [0]']                             
+ conv2_block3_1_conv   (None, 56, 56  16448   ['conv2_block2_out[0]  Y          
+ (Conv2D)             , 64)                   [0]']                             
+ conv2_block3_1_bn (B  (None, 56, 56  256     ['conv2_block3_1_conv  Y          
+ atchNormalization)   , 64)                   [0][0]']                          
+ conv2_block3_1_relu   (None, 56, 56  0       ['conv2_block3_1_bn[0  Y          
+ (Activation)         , 64)                   ][0]']                            
+ conv2_block3_2_conv   (None, 56, 56  36928   ['conv2_block3_1_relu  Y          
+ (Conv2D)             , 64)                   [0][0]']                          
+ conv2_block3_2_bn (B  (None, 56, 56  256     ['conv2_block3_2_conv  Y          
+ atchNormalization)   , 64)                   [0][0]']                          
+ conv2_block3_2_relu   (None, 56, 56  0       ['conv2_block3_2_bn[0  Y          
+ (Activation)         , 64)                   ][0]']                            
+ conv2_block3_3_conv   (None, 56, 56  16640   ['conv2_block3_2_relu  Y          
+ (Conv2D)             , 256)                  [0][0]']                          
+ conv2_block3_3_bn (B  (None, 56, 56  1024    ['conv2_block3_3_conv  Y          
+ atchNormalization)   , 256)                  [0][0]']                          
+ conv2_block3_add (Ad  (None, 56, 56  0       ['conv2_block2_out[0]  Y          
+ d)                   , 256)                  [0]',                             
+                                               'conv2_block3_3_bn[0             
+                                              ][0]']                            
+ conv2_block3_out (Ac  (None, 56, 56  0       ['conv2_block3_add[0]  Y          
+ tivation)            , 256)                  [0]']                             
+ conv3_block1_1_conv   (None, 28, 28  32896   ['conv2_block3_out[0]  Y          
+ (Conv2D)             , 128)                  [0]']                             
+ conv3_block1_1_bn (B  (None, 28, 28  512     ['conv3_block1_1_conv  Y          
+ atchNormalization)   , 128)                  [0][0]']                          
+ conv3_block1_1_relu   (None, 28, 28  0       ['conv3_block1_1_bn[0  Y          
+ (Activation)         , 128)                  ][0]']                            
+ conv3_block1_2_conv   (None, 28, 28  147584  ['conv3_block1_1_relu  Y          
+ (Conv2D)             , 128)                  [0][0]']                          
+ conv3_block1_2_bn (B  (None, 28, 28  512     ['conv3_block1_2_conv  Y          
+ atchNormalization)   , 128)                  [0][0]']                          
+ conv3_block1_2_relu   (None, 28, 28  0       ['conv3_block1_2_bn[0  Y          
+ (Activation)         , 128)                  ][0]']                            
+ conv3_block1_0_conv   (None, 28, 28  131584  ['conv2_block3_out[0]  Y          
+ (Conv2D)             , 512)                  [0]']                             
+ conv3_block1_3_conv   (None, 28, 28  66048   ['conv3_block1_2_relu  Y          
+ (Conv2D)             , 512)                  [0][0]']                          
+ conv3_block1_0_bn (B  (None, 28, 28  2048    ['conv3_block1_0_conv  Y          
+ atchNormalization)   , 512)                  [0][0]']                          
+ conv3_block1_3_bn (B  (None, 28, 28  2048    ['conv3_block1_3_conv  Y          
+ atchNormalization)   , 512)                  [0][0]']                          
+ conv3_block1_add (Ad  (None, 28, 28  0       ['conv3_block1_0_bn[0  Y          
+ d)                   , 512)                  ][0]',                            
+                                               'conv3_block1_3_bn[0             
+                                              ][0]']                            
+ conv3_block1_out (Ac  (None, 28, 28  0       ['conv3_block1_add[0]  Y          
+ tivation)            , 512)                  [0]']                             
+ conv3_block2_1_conv   (None, 28, 28  65664   ['conv3_block1_out[0]  Y          
+ (Conv2D)             , 128)                  [0]']                             
+ conv3_block2_1_bn (B  (None, 28, 28  512     ['conv3_block2_1_conv  Y          
+ atchNormalization)   , 128)                  [0][0]']                          
+ conv3_block2_1_relu   (None, 28, 28  0       ['conv3_block2_1_bn[0  Y          
+ (Activation)         , 128)                  ][0]']                            
+ conv3_block2_2_conv   (None, 28, 28  147584  ['conv3_block2_1_relu  Y          
+ (Conv2D)             , 128)                  [0][0]']                          
+ conv3_block2_2_bn (B  (None, 28, 28  512     ['conv3_block2_2_conv  Y          
+ atchNormalization)   , 128)                  [0][0]']                          
+ conv3_block2_2_relu   (None, 28, 28  0       ['conv3_block2_2_bn[0  Y          
+ (Activation)         , 128)                  ][0]']                            
+ conv3_block2_3_conv   (None, 28, 28  66048   ['conv3_block2_2_relu  Y          
+ (Conv2D)             , 512)                  [0][0]']                          
+ conv3_block2_3_bn (B  (None, 28, 28  2048    ['conv3_block2_3_conv  Y          
+ atchNormalization)   , 512)                  [0][0]']                          
+ conv3_block2_add (Ad  (None, 28, 28  0       ['conv3_block1_out[0]  Y          
+ d)                   , 512)                  [0]',                             
+                                               'conv3_block2_3_bn[0             
+                                              ][0]']                            
+ conv3_block2_out (Ac  (None, 28, 28  0       ['conv3_block2_add[0]  Y          
+ tivation)            , 512)                  [0]']                             
+ conv3_block3_1_conv   (None, 28, 28  65664   ['conv3_block2_out[0]  Y          
+ (Conv2D)             , 128)                  [0]']                             
+ conv3_block3_1_bn (B  (None, 28, 28  512     ['conv3_block3_1_conv  Y          
+ atchNormalization)   , 128)                  [0][0]']                          
+ conv3_block3_1_relu   (None, 28, 28  0       ['conv3_block3_1_bn[0  Y          
+ (Activation)         , 128)                  ][0]']                            
+ conv3_block3_2_conv   (None, 28, 28  147584  ['conv3_block3_1_relu  Y          
+ (Conv2D)             , 128)                  [0][0]']                          
+ conv3_block3_2_bn (B  (None, 28, 28  512     ['conv3_block3_2_conv  Y          
+ atchNormalization)   , 128)                  [0][0]']                          
+ conv3_block3_2_relu   (None, 28, 28  0       ['conv3_block3_2_bn[0  Y          
+ (Activation)         , 128)                  ][0]']                            
+ conv3_block3_3_conv   (None, 28, 28  66048   ['conv3_block3_2_relu  Y          
+ (Conv2D)             , 512)                  [0][0]']                          
+ conv3_block3_3_bn (B  (None, 28, 28  2048    ['conv3_block3_3_conv  Y          
+ atchNormalization)   , 512)                  [0][0]']                          
+ conv3_block3_add (Ad  (None, 28, 28  0       ['conv3_block2_out[0]  Y          
+ d)                   , 512)                  [0]',                             
+                                               'conv3_block3_3_bn[0             
+                                              ][0]']                            
+ conv3_block3_out (Ac  (None, 28, 28  0       ['conv3_block3_add[0]  Y          
+ tivation)            , 512)                  [0]']                             
+ conv3_block4_1_conv   (None, 28, 28  65664   ['conv3_block3_out[0]  Y          
+ (Conv2D)             , 128)                  [0]']                             
+ conv3_block4_1_bn (B  (None, 28, 28  512     ['conv3_block4_1_conv  Y          
+ atchNormalization)   , 128)                  [0][0]']                          
+ conv3_block4_1_relu   (None, 28, 28  0       ['conv3_block4_1_bn[0  Y          
+ (Activation)         , 128)                  ][0]']                            
+ conv3_block4_2_conv   (None, 28, 28  147584  ['conv3_block4_1_relu  Y          
+ (Conv2D)             , 128)                  [0][0]']                          
+ conv3_block4_2_bn (B  (None, 28, 28  512     ['conv3_block4_2_conv  Y          
+ atchNormalization)   , 128)                  [0][0]']                          
+ conv3_block4_2_relu   (None, 28, 28  0       ['conv3_block4_2_bn[0  Y          
+ (Activation)         , 128)                  ][0]']                            
+ conv3_block4_3_conv   (None, 28, 28  66048   ['conv3_block4_2_relu  Y          
+ (Conv2D)             , 512)                  [0][0]']                          
+ conv3_block4_3_bn (B  (None, 28, 28  2048    ['conv3_block4_3_conv  Y          
+ atchNormalization)   , 512)                  [0][0]']                          
+ conv3_block4_add (Ad  (None, 28, 28  0       ['conv3_block3_out[0]  Y          
+ d)                   , 512)                  [0]',                             
+                                               'conv3_block4_3_bn[0             
+                                              ][0]']                            
+ conv3_block4_out (Ac  (None, 28, 28  0       ['conv3_block4_add[0]  Y          
+ tivation)            , 512)                  [0]']                             
+ conv4_block1_1_conv   (None, 14, 14  131328  ['conv3_block4_out[0]  Y          
+ (Conv2D)             , 256)                  [0]']                             
+ conv4_block1_1_bn (B  (None, 14, 14  1024    ['conv4_block1_1_conv  Y          
+ atchNormalization)   , 256)                  [0][0]']                          
+ conv4_block1_1_relu   (None, 14, 14  0       ['conv4_block1_1_bn[0  Y          
+ (Activation)         , 256)                  ][0]']                            
+ conv4_block1_2_conv   (None, 14, 14  590080  ['conv4_block1_1_relu  Y          
+ (Conv2D)             , 256)                  [0][0]']                          
+ conv4_block1_2_bn (B  (None, 14, 14  1024    ['conv4_block1_2_conv  Y          
+ atchNormalization)   , 256)                  [0][0]']                          
+ conv4_block1_2_relu   (None, 14, 14  0       ['conv4_block1_2_bn[0  Y          
+ (Activation)         , 256)                  ][0]']                            
+ conv4_block1_0_conv   (None, 14, 14  525312  ['conv3_block4_out[0]  Y          
+ (Conv2D)             , 1024)                 [0]']                             
+ conv4_block1_3_conv   (None, 14, 14  263168  ['conv4_block1_2_relu  Y          
+ (Conv2D)             , 1024)                 [0][0]']                          
+ conv4_block1_0_bn (B  (None, 14, 14  4096    ['conv4_block1_0_conv  Y          
+ atchNormalization)   , 1024)                 [0][0]']                          
+ conv4_block1_3_bn (B  (None, 14, 14  4096    ['conv4_block1_3_conv  Y          
+ atchNormalization)   , 1024)                 [0][0]']                          
+ conv4_block1_add (Ad  (None, 14, 14  0       ['conv4_block1_0_bn[0  Y          
+ d)                   , 1024)                 ][0]',                            
+                                               'conv4_block1_3_bn[0             
+                                              ][0]']                            
+ conv4_block1_out (Ac  (None, 14, 14  0       ['conv4_block1_add[0]  Y          
+ tivation)            , 1024)                 [0]']                             
+ conv4_block2_1_conv   (None, 14, 14  262400  ['conv4_block1_out[0]  Y          
+ (Conv2D)             , 256)                  [0]']                             
+ conv4_block2_1_bn (B  (None, 14, 14  1024    ['conv4_block2_1_conv  Y          
+ atchNormalization)   , 256)                  [0][0]']                          
+ conv4_block2_1_relu   (None, 14, 14  0       ['conv4_block2_1_bn[0  Y          
+ (Activation)         , 256)                  ][0]']                            
+ conv4_block2_2_conv   (None, 14, 14  590080  ['conv4_block2_1_relu  Y          
+ (Conv2D)             , 256)                  [0][0]']                          
+ conv4_block2_2_bn (B  (None, 14, 14  1024    ['conv4_block2_2_conv  Y          
+ atchNormalization)   , 256)                  [0][0]']                          
+ conv4_block2_2_relu   (None, 14, 14  0       ['conv4_block2_2_bn[0  Y          
+ (Activation)         , 256)                  ][0]']                            
+ conv4_block2_3_conv   (None, 14, 14  263168  ['conv4_block2_2_relu  Y          
+ (Conv2D)             , 1024)                 [0][0]']                          
+ conv4_block2_3_bn (B  (None, 14, 14  4096    ['conv4_block2_3_conv  Y          
+ atchNormalization)   , 1024)                 [0][0]']                          
+ conv4_block2_add (Ad  (None, 14, 14  0       ['conv4_block1_out[0]  Y          
+ d)                   , 1024)                 [0]',                             
+                                               'conv4_block2_3_bn[0             
+                                              ][0]']                            
+ conv4_block2_out (Ac  (None, 14, 14  0       ['conv4_block2_add[0]  Y          
+ tivation)            , 1024)                 [0]']                             
+ conv4_block3_1_conv   (None, 14, 14  262400  ['conv4_block2_out[0]  Y          
+ (Conv2D)             , 256)                  [0]']                             
+ conv4_block3_1_bn (B  (None, 14, 14  1024    ['conv4_block3_1_conv  Y          
+ atchNormalization)   , 256)                  [0][0]']                          
+ conv4_block3_1_relu   (None, 14, 14  0       ['conv4_block3_1_bn[0  Y          
+ (Activation)         , 256)                  ][0]']                            
+ conv4_block3_2_conv   (None, 14, 14  590080  ['conv4_block3_1_relu  Y          
+ (Conv2D)             , 256)                  [0][0]']                          
+ conv4_block3_2_bn (B  (None, 14, 14  1024    ['conv4_block3_2_conv  Y          
+ atchNormalization)   , 256)                  [0][0]']                          
+ conv4_block3_2_relu   (None, 14, 14  0       ['conv4_block3_2_bn[0  Y          
+ (Activation)         , 256)                  ][0]']                            
+ conv4_block3_3_conv   (None, 14, 14  263168  ['conv4_block3_2_relu  Y          
+ (Conv2D)             , 1024)                 [0][0]']                          
+ conv4_block3_3_bn (B  (None, 14, 14  4096    ['conv4_block3_3_conv  Y          
+ atchNormalization)   , 1024)                 [0][0]']                          
+ conv4_block3_add (Ad  (None, 14, 14  0       ['conv4_block2_out[0]  Y          
+ d)                   , 1024)                 [0]',                             
+                                               'conv4_block3_3_bn[0             
+                                              ][0]']                            
+ conv4_block3_out (Ac  (None, 14, 14  0       ['conv4_block3_add[0]  Y          
+ tivation)            , 1024)                 [0]']                             
+ conv4_block4_1_conv   (None, 14, 14  262400  ['conv4_block3_out[0]  Y          
+ (Conv2D)             , 256)                  [0]']                             
+ conv4_block4_1_bn (B  (None, 14, 14  1024    ['conv4_block4_1_conv  Y          
+ atchNormalization)   , 256)                  [0][0]']                          
+ conv4_block4_1_relu   (None, 14, 14  0       ['conv4_block4_1_bn[0  Y          
+ (Activation)         , 256)                  ][0]']                            
+ conv4_block4_2_conv   (None, 14, 14  590080  ['conv4_block4_1_relu  Y          
+ (Conv2D)             , 256)                  [0][0]']                          
+ conv4_block4_2_bn (B  (None, 14, 14  1024    ['conv4_block4_2_conv  Y          
+ atchNormalization)   , 256)                  [0][0]']                          
+ conv4_block4_2_relu   (None, 14, 14  0       ['conv4_block4_2_bn[0  Y          
+ (Activation)         , 256)                  ][0]']                            
+ conv4_block4_3_conv   (None, 14, 14  263168  ['conv4_block4_2_relu  Y          
+ (Conv2D)             , 1024)                 [0][0]']                          
+ conv4_block4_3_bn (B  (None, 14, 14  4096    ['conv4_block4_3_conv  Y          
+ atchNormalization)   , 1024)                 [0][0]']                          
+ conv4_block4_add (Ad  (None, 14, 14  0       ['conv4_block3_out[0]  Y          
+ d)                   , 1024)                 [0]',                             
+                                               'conv4_block4_3_bn[0             
+                                              ][0]']                            
+ conv4_block4_out (Ac  (None, 14, 14  0       ['conv4_block4_add[0]  Y          
+ tivation)            , 1024)                 [0]']                             
+ conv4_block5_1_conv   (None, 14, 14  262400  ['conv4_block4_out[0]  Y          
+ (Conv2D)             , 256)                  [0]']                             
+ conv4_block5_1_bn (B  (None, 14, 14  1024    ['conv4_block5_1_conv  Y          
+ atchNormalization)   , 256)                  [0][0]']                          
+ conv4_block5_1_relu   (None, 14, 14  0       ['conv4_block5_1_bn[0  Y          
+ (Activation)         , 256)                  ][0]']                            
+ conv4_block5_2_conv   (None, 14, 14  590080  ['conv4_block5_1_relu  Y          
+ (Conv2D)             , 256)                  [0][0]']                          
+ conv4_block5_2_bn (B  (None, 14, 14  1024    ['conv4_block5_2_conv  Y          
+ atchNormalization)   , 256)                  [0][0]']                          
+ conv4_block5_2_relu   (None, 14, 14  0       ['conv4_block5_2_bn[0  Y          
+ (Activation)         , 256)                  ][0]']                            
+ conv4_block5_3_conv   (None, 14, 14  263168  ['conv4_block5_2_relu  Y          
+ (Conv2D)             , 1024)                 [0][0]']                          
+ conv4_block5_3_bn (B  (None, 14, 14  4096    ['conv4_block5_3_conv  Y          
+ atchNormalization)   , 1024)                 [0][0]']                          
+ conv4_block5_add (Ad  (None, 14, 14  0       ['conv4_block4_out[0]  Y          
+ d)                   , 1024)                 [0]',                             
+                                               'conv4_block5_3_bn[0             
+                                              ][0]']                            
+ conv4_block5_out (Ac  (None, 14, 14  0       ['conv4_block5_add[0]  Y          
+ tivation)            , 1024)                 [0]']                             
+ conv4_block6_1_conv   (None, 14, 14  262400  ['conv4_block5_out[0]  Y          
+ (Conv2D)             , 256)                  [0]']                             
+ conv4_block6_1_bn (B  (None, 14, 14  1024    ['conv4_block6_1_conv  Y          
+ atchNormalization)   , 256)                  [0][0]']                          
+ conv4_block6_1_relu   (None, 14, 14  0       ['conv4_block6_1_bn[0  Y          
+ (Activation)         , 256)                  ][0]']                            
+ conv4_block6_2_conv   (None, 14, 14  590080  ['conv4_block6_1_relu  Y          
+ (Conv2D)             , 256)                  [0][0]']                          
+ conv4_block6_2_bn (B  (None, 14, 14  1024    ['conv4_block6_2_conv  Y          
+ atchNormalization)   , 256)                  [0][0]']                          
+ conv4_block6_2_relu   (None, 14, 14  0       ['conv4_block6_2_bn[0  Y          
+ (Activation)         , 256)                  ][0]']                            
+ conv4_block6_3_conv   (None, 14, 14  263168  ['conv4_block6_2_relu  Y          
+ (Conv2D)             , 1024)                 [0][0]']                          
+ conv4_block6_3_bn (B  (None, 14, 14  4096    ['conv4_block6_3_conv  Y          
+ atchNormalization)   , 1024)                 [0][0]']                          
+ conv4_block6_add (Ad  (None, 14, 14  0       ['conv4_block5_out[0]  Y          
+ d)                   , 1024)                 [0]',                             
+                                               'conv4_block6_3_bn[0             
+                                              ][0]']                            
+ conv4_block6_out (Ac  (None, 14, 14  0       ['conv4_block6_add[0]  Y          
+ tivation)            , 1024)                 [0]']                             
+ conv5_block1_1_conv   (None, 7, 7,   524800  ['conv4_block6_out[0]  Y          
+ (Conv2D)             512)                    [0]']                             
+ conv5_block1_1_bn (B  (None, 7, 7,   2048    ['conv5_block1_1_conv  Y          
+ atchNormalization)   512)                    [0][0]']                          
+ conv5_block1_1_relu   (None, 7, 7,   0       ['conv5_block1_1_bn[0  Y          
+ (Activation)         512)                    ][0]']                            
+ conv5_block1_2_conv   (None, 7, 7,   2359808  ['conv5_block1_1_relu  Y         
+ (Conv2D)             512)                    [0][0]']                          
+ conv5_block1_2_bn (B  (None, 7, 7,   2048    ['conv5_block1_2_conv  Y          
+ atchNormalization)   512)                    [0][0]']                          
+ conv5_block1_2_relu   (None, 7, 7,   0       ['conv5_block1_2_bn[0  Y          
+ (Activation)         512)                    ][0]']                            
+ conv5_block1_0_conv   (None, 7, 7,   2099200  ['conv4_block6_out[0]  Y         
+ (Conv2D)             2048)                   [0]']                             
+ conv5_block1_3_conv   (None, 7, 7,   1050624  ['conv5_block1_2_relu  Y         
+ (Conv2D)             2048)                   [0][0]']                          
+ conv5_block1_0_bn (B  (None, 7, 7,   8192    ['conv5_block1_0_conv  Y          
+ atchNormalization)   2048)                   [0][0]']                          
+ conv5_block1_3_bn (B  (None, 7, 7,   8192    ['conv5_block1_3_conv  Y          
+ atchNormalization)   2048)                   [0][0]']                          
+ conv5_block1_add (Ad  (None, 7, 7,   0       ['conv5_block1_0_bn[0  Y          
+ d)                   2048)                   ][0]',                            
+                                               'conv5_block1_3_bn[0             
+                                              ][0]']                            
+ conv5_block1_out (Ac  (None, 7, 7,   0       ['conv5_block1_add[0]  Y          
+ tivation)            2048)                   [0]']                             
+ conv5_block2_1_conv   (None, 7, 7,   1049088  ['conv5_block1_out[0]  Y         
+ (Conv2D)             512)                    [0]']                             
+ conv5_block2_1_bn (B  (None, 7, 7,   2048    ['conv5_block2_1_conv  Y          
+ atchNormalization)   512)                    [0][0]']                          
+ conv5_block2_1_relu   (None, 7, 7,   0       ['conv5_block2_1_bn[0  Y          
+ (Activation)         512)                    ][0]']                            
+ conv5_block2_2_conv   (None, 7, 7,   2359808  ['conv5_block2_1_relu  Y         
+ (Conv2D)             512)                    [0][0]']                          
+ conv5_block2_2_bn (B  (None, 7, 7,   2048    ['conv5_block2_2_conv  Y          
+ atchNormalization)   512)                    [0][0]']                          
+ conv5_block2_2_relu   (None, 7, 7,   0       ['conv5_block2_2_bn[0  Y          
+ (Activation)         512)                    ][0]']                            
+ conv5_block2_3_conv   (None, 7, 7,   1050624  ['conv5_block2_2_relu  Y         
+ (Conv2D)             2048)                   [0][0]']                          
+ conv5_block2_3_bn (B  (None, 7, 7,   8192    ['conv5_block2_3_conv  Y          
+ atchNormalization)   2048)                   [0][0]']                          
+ conv5_block2_add (Ad  (None, 7, 7,   0       ['conv5_block1_out[0]  Y          
+ d)                   2048)                   [0]',                             
+                                               'conv5_block2_3_bn[0             
+                                              ][0]']                            
+ conv5_block2_out (Ac  (None, 7, 7,   0       ['conv5_block2_add[0]  Y          
+ tivation)            2048)                   [0]']                             
+ conv5_block3_1_conv   (None, 7, 7,   1049088  ['conv5_block2_out[0]  Y         
+ (Conv2D)             512)                    [0]']                             
+ conv5_block3_1_bn (B  (None, 7, 7,   2048    ['conv5_block3_1_conv  Y          
+ atchNormalization)   512)                    [0][0]']                          
+ conv5_block3_1_relu   (None, 7, 7,   0       ['conv5_block3_1_bn[0  Y          
+ (Activation)         512)                    ][0]']                            
+ conv5_block3_2_conv   (None, 7, 7,   2359808  ['conv5_block3_1_relu  Y         
+ (Conv2D)             512)                    [0][0]']                          
+ conv5_block3_2_bn (B  (None, 7, 7,   2048    ['conv5_block3_2_conv  Y          
+ atchNormalization)   512)                    [0][0]']                          
+ conv5_block3_2_relu   (None, 7, 7,   0       ['conv5_block3_2_bn[0  Y          
+ (Activation)         512)                    ][0]']                            
+ conv5_block3_3_conv   (None, 7, 7,   1050624  ['conv5_block3_2_relu  Y         
+ (Conv2D)             2048)                   [0][0]']                          
+ conv5_block3_3_bn (B  (None, 7, 7,   8192    ['conv5_block3_3_conv  Y          
+ atchNormalization)   2048)                   [0][0]']                          
+ conv5_block3_add (Ad  (None, 7, 7,   0       ['conv5_block2_out[0]  Y          
+ d)                   2048)                   [0]',                             
+                                               'conv5_block3_3_bn[0             
+                                              ][0]']                            
+ conv5_block3_out (Ac  (None, 7, 7,   0       ['conv5_block3_add[0]  Y          
+ tivation)            2048)                   [0]']                             
+ avg_pool (GlobalAver  (None, 2048)  0        ['conv5_block3_out[0]  Y          
+ agePooling2D)                                [0]']                             
+ predictions (Dense)  (None, 1000)   2049000  ['avg_pool[0][0]']     Y          
+================================================================================
+Total params: 25,636,712
+Trainable params: 25,583,592
+Non-trainable params: 53,120
+________________________________________________________________________________</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="classify-images" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="classify-images"><span class="header-section-number">3</span> Classify images</h2>
+<p>Finally, we classify our six images, and return the top three class choices in terms of predicted probability for each.</p>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false" href="">R</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>pred6 <span class="op">=</span> keras.applications.imagenet_utils.decode_predictions(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  model.predict(x), </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  top <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+1/1 [==============================] - ETA: 0s
+1/1 [==============================] - 1s 1s/step</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_images):</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>(image_names[i])</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>(np.asarray(pred6[i]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>weaver.jpg
+[['n01843065' 'jacamar' '0.4865981']
+ ['n01818515' 'macaw' '0.23028952']
+ ['n02494079' 'squirrel_monkey' '0.044571042']]
+flamingo.jpg
+[['n02007558' 'flamingo' '0.93010914']
+ ['n02006656' 'spoonbill' '0.06801486']
+ ['n02002556' 'white_stork' '0.0011723748']]
+huey.jpg
+[['n02097474' 'Tibetan_terrier' '0.5246206']
+ ['n02098413' 'Lhasa' '0.40590215']
+ ['n02094114' 'Norfolk_terrier' '0.016995324']]
+hawk_cropped.jpeg
+[['n01608432' 'kite' '0.7243426']
+ ['n01622779' 'great_grey_owl' '0.086835146']
+ ['n01532829' 'house_finch' '0.039976425']]
+hawk.jpg
+[['n03388043' 'fountain' '0.27721697']
+ ['n03532672' 'hook' '0.17947067']
+ ['n03804744' 'nail' '0.1103583']]
+kitty.jpg
+[['n02105641' 'Old_English_sheepdog' '0.83900243']
+ ['n02086240' 'Shih-Tzu' '0.04235816']
+ ['n03223299' 'doormat' '0.032265782']]</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>pred6 <span class="ot">&lt;-</span> model <span class="sc">%&gt;%</span> </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(x) <span class="sc">%&gt;%</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">imagenet_decode_predictions</span>(<span class="at">top =</span> <span class="dv">3</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(pred6) <span class="ot">&lt;-</span> image_names</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>pred6</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$flamingo.jpg
+  class_name class_description       score
+1  n02007558          flamingo 0.930109143
+2  n02006656         spoonbill 0.068014860
+3  n02002556       white_stork 0.001172375
+
+$hawk_cropped.jpeg
+  class_name class_description      score
+1  n01608432              kite 0.72434247
+2  n01622779    great_grey_owl 0.08683521
+3  n01532829       house_finch 0.03997646
+
+$hawk.jpg
+  class_name class_description     score
+1  n03388043          fountain 0.2772168
+2  n03532672              hook 0.1794709
+3  n03804744              nail 0.1103582
+
+$huey.jpg
+  class_name class_description      score
+1  n02097474   Tibetan_terrier 0.52462149
+2  n02098413             Lhasa 0.40590131
+3  n02094114   Norfolk_terrier 0.01699529
+
+$kitty.jpg
+  class_name    class_description      score
+1  n02105641 Old_English_sheepdog 0.83900261
+2  n02086240             Shih-Tzu 0.04235817
+3  n03223299              doormat 0.03226573
+
+$weaver.jpg
+  class_name class_description      score
+1  n01843065           jacamar 0.48659873
+2  n01818515             macaw 0.23028916
+3  n02494079   squirrel_monkey 0.04457097</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

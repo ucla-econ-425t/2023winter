@@ -1,6 +1,6 @@
 ---
 title: "Neural Network and Deep Learning (Practice)"
-subtitle: "Econ 425T"
+subtitle: "Econ 425T / Biostat 203B"
 author: "Dr. Hua Zhou @ UCLA"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 format:
@@ -164,7 +164,11 @@ Source: <https://stanford.edu/~shervine/teaching/cs-229/cheatsheet-machine-learn
 
 [Rmd](https://raw.githubusercontent.com/ucla-econ-425t/2023winter/master/slides/10-nn/cifar100_cnn/cifar100_cnn.qmd), [html](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/cifar100_cnn/cifar100_cnn.html).
 
-## Example: IMDB review sentiment analysis - RNN LSTM
+## Example: Using Pretrained Resnet50 to classify natural images
+
+[Rmd](https://raw.githubusercontent.com/ucla-econ-425t/2023winter/master/slides/10-nn/pretrained_resnet50/pretrained_resnet50.qmd), [html](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/pretrained_resnet50/pretrained_resnet50.html).
+
+## Example: IMDB review sentiment analysis - RNN, LSTM
 
 TODO
 
