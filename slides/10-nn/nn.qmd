@@ -1,5 +1,5 @@
 ---
-title: "Neural Network and Deep Learning (ISL 10)"
+title: "Neural Network and Deep Learning (Introduction)"
 subtitle: "Econ 425T / Biostat 203B"
 author: "Dr. Hua Zhou @ UCLA"
 date: "`r format(Sys.time(), '%d %B, %Y')`"

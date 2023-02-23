@@ -158,19 +158,23 @@ Source: <https://stanford.edu/~shervine/teaching/cs-229/cheatsheet-machine-learn
 
 ## Example: MNIST - MLP
 
-[Rmd](https://raw.githubusercontent.com/ucla-econ-425t/2023winter/master/slides/10-nn/mnist_mlp/mnist_mlp.qmd), [html](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/mnist_mlp/mnist_mlp.html).
+[qmd](https://raw.githubusercontent.com/ucla-econ-425t/2023winter/master/slides/10-nn/mnist_mlp/mnist_mlp.qmd), [html](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/mnist_mlp/mnist_mlp.html).
 
 ## Example: CIFAR100 - CNN
 
-[Rmd](https://raw.githubusercontent.com/ucla-econ-425t/2023winter/master/slides/10-nn/cifar100_cnn/cifar100_cnn.qmd), [html](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/cifar100_cnn/cifar100_cnn.html).
+[qmd](https://raw.githubusercontent.com/ucla-econ-425t/2023winter/master/slides/10-nn/cifar100_cnn/cifar100_cnn.qmd), [html](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/cifar100_cnn/cifar100_cnn.html).
 
 ## Example: Using Pretrained Resnet50 to classify natural images
 
-[Rmd](https://raw.githubusercontent.com/ucla-econ-425t/2023winter/master/slides/10-nn/pretrained_resnet50/pretrained_resnet50.qmd), [html](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/pretrained_resnet50/pretrained_resnet50.html).
+[qmd](https://raw.githubusercontent.com/ucla-econ-425t/2023winter/master/slides/10-nn/pretrained_resnet50/pretrained_resnet50.qmd), [html](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/pretrained_resnet50/pretrained_resnet50.html).
 
-## Example: IMDB review sentiment analysis - RNN, LSTM
+## Example: IMDB review sentiment analysis - Lasso, RNN, LSTM
 
-TODO
+[Lasso](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/imdb/imdb_lasso.html).
+
+[RNN]() TODO
+
+[LSTM]() TODO
 
 ## Example: Generate text from Nietzsche’s writings - RNN LSTM
 
