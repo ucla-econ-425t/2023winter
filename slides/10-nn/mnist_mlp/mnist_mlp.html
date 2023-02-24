@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.269">
+<meta name="generator" content="quarto-1.2.280">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Dr.&nbsp;Hua Zhou @ UCLA">
-<meta name="dcterms.date" content="2023-02-21">
+<meta name="dcterms.date" content="2023-02-23">
 
 <title>MLP on the MNIST Digit Data</title>
 <style>
@@ -126,7 +126,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
 <h1 class="title">MLP on the MNIST Digit Data</h1>
-<p class="subtitle lead">Econ 425T</p>
+<p class="subtitle lead">Econ 425T / Biostat 203B</p>
 </div>
 
 
@@ -143,7 +143,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">February 21, 2023</p>
+      <p class="date">February 23, 2023</p>
     </div>
   </div>
   
@@ -165,14 +165,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre><code>{'commit_hash': 'add5877a4',
  'commit_source': 'installation',
  'default_encoding': 'utf-8',
- 'ipython_path': '/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/IPython',
+ 'ipython_path': '/Users/huazhou/opt/anaconda3/lib/python3.9/site-packages/IPython',
  'ipython_version': '8.8.0',
  'os_name': 'posix',
  'platform': 'macOS-10.16-x86_64-i386-64bit',
- 'sys_executable': '/Library/Frameworks/Python.framework/Versions/3.10/bin/python3',
+ 'sys_executable': '/Users/huazhou/opt/anaconda3/bin/python3',
  'sys_platform': 'darwin',
- 'sys_version': '3.10.9 (v3.10.9:1dd9be6584, Dec  6 2022, 14:37:36) [Clang '
-                '13.0.0 (clang-1300.0.29.30)]'}</code></pre>
+ 'sys_version': '3.9.12 (main, Apr  5 2022, 01:56:13) \n[Clang 12.0.0 ]'}</code></pre>
 </div>
 </div>
 </div>
@@ -195,12 +194,13 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.10       here_1.0.1        lattice_0.20-45   png_0.1-8        
- [5] rprojroot_2.0.3   digest_0.6.31     grid_4.2.2        jsonlite_1.8.4   
- [9] evaluate_0.20     rlang_1.0.6       cli_3.6.0         rstudioapi_0.14  
-[13] Matrix_1.5-3      reticulate_1.28   rmarkdown_2.20    tools_4.2.2      
-[17] htmlwidgets_1.6.1 xfun_0.37         yaml_2.3.7        fastmap_1.1.0    
-[21] compiler_4.2.2    htmltools_0.5.4   knitr_1.42       </code></pre>
+ [1] Rcpp_1.0.9        here_1.0.1        lattice_0.20-45   png_0.1-8        
+ [5] withr_2.5.0       rprojroot_2.0.3   digest_0.6.29     grid_4.2.2       
+ [9] jsonlite_1.8.0    magrittr_2.0.3    evaluate_0.15     rlang_1.0.6      
+[13] stringi_1.7.8     cli_3.4.1         rstudioapi_0.13   Matrix_1.5-1     
+[17] reticulate_1.27   rmarkdown_2.14    tools_4.2.2       stringr_1.4.0    
+[21] htmlwidgets_1.6.1 xfun_0.31         yaml_2.3.5        fastmap_1.1.0    
+[25] compiler_4.2.2    htmltools_0.5.4   knitr_1.39       </code></pre>
 </div>
 </div>
 </div>
@@ -490,7 +490,7 @@ _________________________________________________________________</code></pre>
 <div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>tf.keras.utils.plot_model(</span>
 <span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>    model,</span>
 <span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>    to_file <span class="op">=</span> <span class="st">"model.png"</span>,</span>
-<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>    show_shapes <span class="op">=</span> <span class="va">False</span>,</span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>    show_shapes <span class="op">=</span> <span class="va">True</span>,</span>
 <span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>    show_dtype <span class="op">=</span> <span class="va">False</span>,</span>
 <span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>    show_layer_names <span class="op">=</span> <span class="va">True</span>,</span>
 <span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>    rankdir <span class="op">=</span> <span class="st">"TB"</span>,</span>
@@ -499,21 +499,24 @@ _________________________________________________________________</code></pre>
 <span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a>    layer_range <span class="op">=</span> <span class="va">None</span>,</span>
 <span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a>    show_layer_activations <span class="op">=</span> <span class="va">False</span>,</span>
 <span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>You must install pydot (`pip install pydot`) and install graphviz (see instructions at https://graphviz.gitlab.io/download/) for plot_model to work.</code></pre>
+<div class="cell-output-display">
+
 </div>
 </div>
+<p align="center">
+<img src="./model.png" class="img-fluid" width="500">
+</p>
 </div>
 <div id="tabset-6-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-2-tab">
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">keras_model_sequential</span>() </span>
-<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>model <span class="sc">%&gt;%</span> </span>
-<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layer_dense</span>(<span class="at">units =</span> <span class="dv">256</span>, <span class="at">activation =</span> <span class="st">'relu'</span>, <span class="at">input_shape =</span> <span class="fu">c</span>(<span class="dv">784</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layer_dropout</span>(<span class="at">rate =</span> <span class="fl">0.4</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layer_dense</span>(<span class="at">units =</span> <span class="dv">128</span>, <span class="at">activation =</span> <span class="st">'relu'</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layer_dropout</span>(<span class="at">rate =</span> <span class="fl">0.3</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layer_dense</span>(<span class="at">units =</span> <span class="dv">10</span>, <span class="at">activation =</span> <span class="st">'softmax'</span>)</span>
-<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">keras_model_sequential</span>() </span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>model <span class="sc">%&gt;%</span> </span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layer_dense</span>(<span class="at">units =</span> <span class="dv">256</span>, <span class="at">activation =</span> <span class="st">'relu'</span>, <span class="at">input_shape =</span> <span class="fu">c</span>(<span class="dv">784</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layer_dropout</span>(<span class="at">rate =</span> <span class="fl">0.4</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layer_dense</span>(<span class="at">units =</span> <span class="dv">128</span>, <span class="at">activation =</span> <span class="st">'relu'</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layer_dropout</span>(<span class="at">rate =</span> <span class="fl">0.3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layer_dense</span>(<span class="at">units =</span> <span class="dv">10</span>, <span class="at">activation =</span> <span class="st">'softmax'</span>)</span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Model: "sequential_1"
 ________________________________________________________________________________
@@ -540,20 +543,20 @@ ________________________________________________________________________________
 <div class="tab-content">
 <div id="tabset-7-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-7-1-tab">
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(</span>
-<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>  loss <span class="op">=</span> <span class="st">"categorical_crossentropy"</span>,</span>
-<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>  optimizer <span class="op">=</span> <span class="st">"rmsprop"</span>,</span>
-<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>  metrics <span class="op">=</span> [<span class="st">"accuracy"</span>]</span>
-<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>  loss <span class="op">=</span> <span class="st">"categorical_crossentropy"</span>,</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>  optimizer <span class="op">=</span> <span class="st">"rmsprop"</span>,</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>  metrics <span class="op">=</span> [<span class="st">"accuracy"</span>]</span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <div id="tabset-7-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-2-tab">
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>model <span class="sc">%&gt;%</span> <span class="fu">compile</span>(</span>
-<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">loss =</span> <span class="st">'categorical_crossentropy'</span>,</span>
-<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">optimizer =</span> <span class="fu">optimizer_rmsprop</span>(),</span>
-<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrics =</span> <span class="fu">c</span>(<span class="st">'accuracy'</span>)</span>
-<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>model <span class="sc">%&gt;%</span> <span class="fu">compile</span>(</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">loss =</span> <span class="st">'categorical_crossentropy'</span>,</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">optimizer =</span> <span class="fu">optimizer_rmsprop</span>(),</span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrics =</span> <span class="fu">c</span>(<span class="st">'accuracy'</span>)</span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </div>
@@ -567,47 +570,47 @@ ________________________________________________________________________________
 <div class="tab-content">
 <div id="tabset-8-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-8-1-tab">
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">128</span></span>
-<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>epochs <span class="op">=</span> <span class="dv">30</span></span>
-<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>history <span class="op">=</span> model.fit(</span>
-<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>  x_train,</span>
-<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>  y_train,</span>
-<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>  batch_size <span class="op">=</span> batch_size,</span>
-<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a>  epochs <span class="op">=</span> epochs,</span>
-<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a>  validation_split <span class="op">=</span> <span class="fl">0.2</span></span>
-<span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">128</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>epochs <span class="op">=</span> <span class="dv">30</span></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>history <span class="op">=</span> model.fit(</span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>  x_train,</span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>  y_train,</span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>  batch_size <span class="op">=</span> batch_size,</span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a>  epochs <span class="op">=</span> epochs,</span>
+<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a>  validation_split <span class="op">=</span> <span class="fl">0.2</span></span>
+<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Plot training history:</p>
 <div class="cell" data-layout-align="center">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>hist <span class="op">=</span> pd.DataFrame(history.history)</span>
-<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>hist[<span class="st">'epoch'</span>] <span class="op">=</span> np.arange(<span class="dv">1</span>, epochs <span class="op">+</span> <span class="dv">1</span>)</span>
-<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>hist <span class="op">=</span> hist.melt(</span>
-<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>  id_vars <span class="op">=</span> [<span class="st">'epoch'</span>],</span>
-<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>  value_vars <span class="op">=</span> [<span class="st">'loss'</span>, <span class="st">'accuracy'</span>, <span class="st">'val_loss'</span>, <span class="st">'val_accuracy'</span>],</span>
-<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>  var_name <span class="op">=</span> <span class="st">'type'</span>,</span>
-<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>  value_name <span class="op">=</span> <span class="st">'value'</span></span>
-<span id="cb59-8"><a href="#cb59-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb59-9"><a href="#cb59-9" aria-hidden="true" tabindex="-1"></a>hist[<span class="st">'split'</span>] <span class="op">=</span> np.where([<span class="st">'val'</span> <span class="kw">in</span> s <span class="cf">for</span> s <span class="kw">in</span> hist[<span class="st">'type'</span>]], <span class="st">'validation'</span>, <span class="st">'train'</span>)</span>
-<span id="cb59-10"><a href="#cb59-10" aria-hidden="true" tabindex="-1"></a>hist[<span class="st">'metric'</span>] <span class="op">=</span> np.where([<span class="st">'loss'</span> <span class="kw">in</span> s <span class="cf">for</span> s <span class="kw">in</span> hist[<span class="st">'type'</span>]], <span class="st">'loss'</span>, <span class="st">'accuracy'</span>)</span>
-<span id="cb59-11"><a href="#cb59-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-12"><a href="#cb59-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Accuracy trace plot</span></span>
-<span id="cb59-13"><a href="#cb59-13" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
-<span id="cb59-14"><a href="#cb59-14" aria-hidden="true" tabindex="-1"></a>sns.relplot(</span>
-<span id="cb59-15"><a href="#cb59-15" aria-hidden="true" tabindex="-1"></a>  data <span class="op">=</span> hist[hist[<span class="st">'metric'</span>] <span class="op">==</span> <span class="st">'accuracy'</span>],</span>
-<span id="cb59-16"><a href="#cb59-16" aria-hidden="true" tabindex="-1"></a>  kind <span class="op">=</span> <span class="st">'scatter'</span>,</span>
-<span id="cb59-17"><a href="#cb59-17" aria-hidden="true" tabindex="-1"></a>  x <span class="op">=</span> <span class="st">'epoch'</span>,</span>
-<span id="cb59-18"><a href="#cb59-18" aria-hidden="true" tabindex="-1"></a>  y <span class="op">=</span> <span class="st">'value'</span>,</span>
-<span id="cb59-19"><a href="#cb59-19" aria-hidden="true" tabindex="-1"></a>  hue <span class="op">=</span> <span class="st">'split'</span></span>
-<span id="cb59-20"><a href="#cb59-20" aria-hidden="true" tabindex="-1"></a>).<span class="bu">set</span>(</span>
-<span id="cb59-21"><a href="#cb59-21" aria-hidden="true" tabindex="-1"></a>  xlabel <span class="op">=</span> <span class="st">'Epoch'</span>,</span>
-<span id="cb59-22"><a href="#cb59-22" aria-hidden="true" tabindex="-1"></a>  ylabel <span class="op">=</span> <span class="st">'Accuracy'</span></span>
-<span id="cb59-23"><a href="#cb59-23" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span>
-<span id="cb59-24"><a href="#cb59-24" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
-<span id="cb59-25"><a href="#cb59-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-26"><a href="#cb59-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Loss trace plot</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>hist <span class="op">=</span> pd.DataFrame(history.history)</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>hist[<span class="st">'epoch'</span>] <span class="op">=</span> np.arange(<span class="dv">1</span>, epochs <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>hist <span class="op">=</span> hist.melt(</span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>  id_vars <span class="op">=</span> [<span class="st">'epoch'</span>],</span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>  value_vars <span class="op">=</span> [<span class="st">'loss'</span>, <span class="st">'accuracy'</span>, <span class="st">'val_loss'</span>, <span class="st">'val_accuracy'</span>],</span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>  var_name <span class="op">=</span> <span class="st">'type'</span>,</span>
+<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>  value_name <span class="op">=</span> <span class="st">'value'</span></span>
+<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a>hist[<span class="st">'split'</span>] <span class="op">=</span> np.where([<span class="st">'val'</span> <span class="kw">in</span> s <span class="cf">for</span> s <span class="kw">in</span> hist[<span class="st">'type'</span>]], <span class="st">'validation'</span>, <span class="st">'train'</span>)</span>
+<span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a>hist[<span class="st">'metric'</span>] <span class="op">=</span> np.where([<span class="st">'loss'</span> <span class="kw">in</span> s <span class="cf">for</span> s <span class="kw">in</span> hist[<span class="st">'type'</span>]], <span class="st">'loss'</span>, <span class="st">'accuracy'</span>)</span>
+<span id="cb58-11"><a href="#cb58-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-12"><a href="#cb58-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Accuracy trace plot</span></span>
+<span id="cb58-13"><a href="#cb58-13" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
+<span id="cb58-14"><a href="#cb58-14" aria-hidden="true" tabindex="-1"></a>sns.relplot(</span>
+<span id="cb58-15"><a href="#cb58-15" aria-hidden="true" tabindex="-1"></a>  data <span class="op">=</span> hist[hist[<span class="st">'metric'</span>] <span class="op">==</span> <span class="st">'accuracy'</span>],</span>
+<span id="cb58-16"><a href="#cb58-16" aria-hidden="true" tabindex="-1"></a>  kind <span class="op">=</span> <span class="st">'scatter'</span>,</span>
+<span id="cb58-17"><a href="#cb58-17" aria-hidden="true" tabindex="-1"></a>  x <span class="op">=</span> <span class="st">'epoch'</span>,</span>
+<span id="cb58-18"><a href="#cb58-18" aria-hidden="true" tabindex="-1"></a>  y <span class="op">=</span> <span class="st">'value'</span>,</span>
+<span id="cb58-19"><a href="#cb58-19" aria-hidden="true" tabindex="-1"></a>  hue <span class="op">=</span> <span class="st">'split'</span></span>
+<span id="cb58-20"><a href="#cb58-20" aria-hidden="true" tabindex="-1"></a>).<span class="bu">set</span>(</span>
+<span id="cb58-21"><a href="#cb58-21" aria-hidden="true" tabindex="-1"></a>  xlabel <span class="op">=</span> <span class="st">'Epoch'</span>,</span>
+<span id="cb58-22"><a href="#cb58-22" aria-hidden="true" tabindex="-1"></a>  ylabel <span class="op">=</span> <span class="st">'Accuracy'</span></span>
+<span id="cb58-23"><a href="#cb58-23" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span>
+<span id="cb58-24"><a href="#cb58-24" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb58-25"><a href="#cb58-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-26"><a href="#cb58-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Loss trace plot</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -618,18 +621,18 @@ ________________________________________________________________________________
 </div>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
-<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>sns.relplot(</span>
-<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>  data <span class="op">=</span> hist[hist[<span class="st">'metric'</span>] <span class="op">==</span> <span class="st">'loss'</span>],</span>
-<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>  kind <span class="op">=</span> <span class="st">'scatter'</span>,</span>
-<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>  x <span class="op">=</span> <span class="st">'epoch'</span>,</span>
-<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>  y <span class="op">=</span> <span class="st">'value'</span>,</span>
-<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>  hue <span class="op">=</span> <span class="st">'split'</span></span>
-<span id="cb60-8"><a href="#cb60-8" aria-hidden="true" tabindex="-1"></a>).<span class="bu">set</span>(</span>
-<span id="cb60-9"><a href="#cb60-9" aria-hidden="true" tabindex="-1"></a>  xlabel <span class="op">=</span> <span class="st">'Epoch'</span>,</span>
-<span id="cb60-10"><a href="#cb60-10" aria-hidden="true" tabindex="-1"></a>  ylabel <span class="op">=</span> <span class="st">'Loss'</span></span>
-<span id="cb60-11"><a href="#cb60-11" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span>
-<span id="cb60-12"><a href="#cb60-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>sns.relplot(</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>  data <span class="op">=</span> hist[hist[<span class="st">'metric'</span>] <span class="op">==</span> <span class="st">'loss'</span>],</span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>  kind <span class="op">=</span> <span class="st">'scatter'</span>,</span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>  x <span class="op">=</span> <span class="st">'epoch'</span>,</span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a>  y <span class="op">=</span> <span class="st">'value'</span>,</span>
+<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>  hue <span class="op">=</span> <span class="st">'split'</span></span>
+<span id="cb59-8"><a href="#cb59-8" aria-hidden="true" tabindex="-1"></a>).<span class="bu">set</span>(</span>
+<span id="cb59-9"><a href="#cb59-9" aria-hidden="true" tabindex="-1"></a>  xlabel <span class="op">=</span> <span class="st">'Epoch'</span>,</span>
+<span id="cb59-10"><a href="#cb59-10" aria-hidden="true" tabindex="-1"></a>  ylabel <span class="op">=</span> <span class="st">'Loss'</span></span>
+<span id="cb59-11"><a href="#cb59-11" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span>
+<span id="cb59-12"><a href="#cb59-12" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -642,18 +645,18 @@ ________________________________________________________________________________
 </div>
 <div id="tabset-8-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-2-tab">
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>({</span>
-<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>history <span class="ot">&lt;-</span> model <span class="sc">%&gt;%</span> <span class="fu">fit</span>(</span>
-<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>  x_train, y_train, </span>
-<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">epochs =</span> <span class="dv">30</span>, <span class="at">batch_size =</span> <span class="dv">128</span>, </span>
-<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">validation_split =</span> <span class="fl">0.2</span></span>
-<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>({</span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>history <span class="ot">&lt;-</span> model <span class="sc">%&gt;%</span> <span class="fu">fit</span>(</span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a>  x_train, y_train, </span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">epochs =</span> <span class="dv">30</span>, <span class="at">batch_size =</span> <span class="dv">128</span>, </span>
+<span id="cb60-5"><a href="#cb60-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">validation_split =</span> <span class="fl">0.2</span></span>
+<span id="cb60-6"><a href="#cb60-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb60-7"><a href="#cb60-7" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   user  system elapsed 
-157.888  22.366  71.234 </code></pre>
+113.963  38.164  34.649 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(history)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(history)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -674,28 +677,28 @@ ________________________________________________________________________________
 <div class="tab-content">
 <div id="tabset-9-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-9-1-tab">
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>score <span class="op">=</span> model.evaluate(x_test, y_test, verbose <span class="op">=</span> <span class="dv">0</span>)</span>
-<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Test loss:"</span>, score[<span class="dv">0</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>score <span class="op">=</span> model.evaluate(x_test, y_test, verbose <span class="op">=</span> <span class="dv">0</span>)</span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Test loss:"</span>, score[<span class="dv">0</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Test loss: 0.08897886425256729</code></pre>
+<pre><code>Test loss: 0.08525163680315018</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Test accuracy:"</span>, score[<span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Test accuracy:"</span>, score[<span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Test accuracy: 0.9830999970436096</code></pre>
+<pre><code>Test accuracy: 0.9824000000953674</code></pre>
 </div>
 </div>
 </div>
 <div id="tabset-9-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-9-2-tab">
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>model <span class="sc">%&gt;%</span> <span class="fu">evaluate</span>(x_test, y_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>model <span class="sc">%&gt;%</span> <span class="fu">evaluate</span>(x_test, y_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      loss   accuracy 
-0.08625312 0.98299998 </code></pre>
+0.08609481 0.98229998 </code></pre>
 </div>
 </div>
 <p>Generate predictions on new data:</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>model <span class="sc">%&gt;%</span> <span class="fu">predict</span>(x_test) <span class="sc">%&gt;%</span> <span class="fu">k_argmax</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>model <span class="sc">%&gt;%</span> <span class="fu">predict</span>(x_test) <span class="sc">%&gt;%</span> <span class="fu">k_argmax</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>tf.Tensor([7 2 1 ... 4 5 6], shape=(10000), dtype=int64)</code></pre>
 </div>
@@ -715,14 +718,14 @@ ________________________________________________________________________________
 </div>
 <div id="tabset-10-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-10-2-tab">
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set up model</span></span>
-<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(keras)</span>
-<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a>mlogit <span class="ot">&lt;-</span> <span class="fu">keras_model_sequential</span>() </span>
-<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a>mlogit <span class="sc">%&gt;%</span> </span>
-<span id="cb72-5"><a href="#cb72-5" aria-hidden="true" tabindex="-1"></a><span class="co">#  layer_dense(units = 256, activation = 'linear', input_shape = c(784)) %&gt;% </span></span>
-<span id="cb72-6"><a href="#cb72-6" aria-hidden="true" tabindex="-1"></a><span class="co">#  layer_dropout(rate = 0.4) %&gt;% </span></span>
-<span id="cb72-7"><a href="#cb72-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layer_dense</span>(<span class="at">units =</span> <span class="dv">10</span>, <span class="at">activation =</span> <span class="st">'softmax'</span>, <span class="at">input_shape =</span> <span class="fu">c</span>(<span class="dv">784</span>))</span>
-<span id="cb72-8"><a href="#cb72-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mlogit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="co"># set up model</span></span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(keras)</span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>mlogit <span class="ot">&lt;-</span> <span class="fu">keras_model_sequential</span>() </span>
+<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a>mlogit <span class="sc">%&gt;%</span> </span>
+<span id="cb71-5"><a href="#cb71-5" aria-hidden="true" tabindex="-1"></a><span class="co">#  layer_dense(units = 256, activation = 'linear', input_shape = c(784)) %&gt;% </span></span>
+<span id="cb71-6"><a href="#cb71-6" aria-hidden="true" tabindex="-1"></a><span class="co">#  layer_dropout(rate = 0.4) %&gt;% </span></span>
+<span id="cb71-7"><a href="#cb71-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layer_dense</span>(<span class="at">units =</span> <span class="dv">10</span>, <span class="at">activation =</span> <span class="st">'softmax'</span>, <span class="at">input_shape =</span> <span class="fu">c</span>(<span class="dv">784</span>))</span>
+<span id="cb71-8"><a href="#cb71-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mlogit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Model: "sequential_2"
 ________________________________________________________________________________
@@ -737,13 +740,13 @@ ________________________________________________________________________________
 </div>
 </div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compile model</span></span>
-<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>mlogit <span class="sc">%&gt;%</span> <span class="fu">compile</span>(</span>
-<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">loss =</span> <span class="st">'categorical_crossentropy'</span>,</span>
-<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">optimizer =</span> <span class="fu">optimizer_rmsprop</span>(),</span>
-<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrics =</span> <span class="fu">c</span>(<span class="st">'accuracy'</span>)</span>
-<span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb74-7"><a href="#cb74-7" aria-hidden="true" tabindex="-1"></a>mlogit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="co"># compile model</span></span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a>mlogit <span class="sc">%&gt;%</span> <span class="fu">compile</span>(</span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">loss =</span> <span class="st">'categorical_crossentropy'</span>,</span>
+<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">optimizer =</span> <span class="fu">optimizer_rmsprop</span>(),</span>
+<span id="cb73-5"><a href="#cb73-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrics =</span> <span class="fu">c</span>(<span class="st">'accuracy'</span>)</span>
+<span id="cb73-6"><a href="#cb73-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb73-7"><a href="#cb73-7" aria-hidden="true" tabindex="-1"></a>mlogit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Model: "sequential_2"
 ________________________________________________________________________________
@@ -758,27 +761,27 @@ ________________________________________________________________________________
 </div>
 </div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit model</span></span>
-<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a>mlogit_history <span class="ot">&lt;-</span> mlogit <span class="sc">%&gt;%</span> </span>
-<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(</span>
-<span id="cb76-4"><a href="#cb76-4" aria-hidden="true" tabindex="-1"></a>    x_train, </span>
-<span id="cb76-5"><a href="#cb76-5" aria-hidden="true" tabindex="-1"></a>    y_train, </span>
-<span id="cb76-6"><a href="#cb76-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">epochs =</span> <span class="dv">20</span>, </span>
-<span id="cb76-7"><a href="#cb76-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">batch_size =</span> <span class="dv">128</span>, </span>
-<span id="cb76-8"><a href="#cb76-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">validation_split =</span> <span class="fl">0.2</span></span>
-<span id="cb76-9"><a href="#cb76-9" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fit model</span></span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a>mlogit_history <span class="ot">&lt;-</span> mlogit <span class="sc">%&gt;%</span> </span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(</span>
+<span id="cb75-4"><a href="#cb75-4" aria-hidden="true" tabindex="-1"></a>    x_train, </span>
+<span id="cb75-5"><a href="#cb75-5" aria-hidden="true" tabindex="-1"></a>    y_train, </span>
+<span id="cb75-6"><a href="#cb75-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">epochs =</span> <span class="dv">20</span>, </span>
+<span id="cb75-7"><a href="#cb75-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">batch_size =</span> <span class="dv">128</span>, </span>
+<span id="cb75-8"><a href="#cb75-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">validation_split =</span> <span class="fl">0.2</span></span>
+<span id="cb75-9"><a href="#cb75-9" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Evaluate model performance on the test data:</span></span>
-<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>mlogit <span class="sc">%&gt;%</span> <span class="fu">evaluate</span>(x_test, y_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Evaluate model performance on the test data:</span></span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a>mlogit <span class="sc">%&gt;%</span> <span class="fu">evaluate</span>(x_test, y_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     loss  accuracy 
-0.2672635 0.9271000 </code></pre>
+0.2697336 0.9279000 </code></pre>
 </div>
 </div>
 <p>Generate predictions on new data:</p>
 <div class="cell" data-layout-align="center">
-<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>mlogit <span class="sc">%&gt;%</span> <span class="fu">predict</span>(x_test) <span class="sc">%&gt;%</span> <span class="fu">k_argmax</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>mlogit <span class="sc">%&gt;%</span> <span class="fu">predict</span>(x_test) <span class="sc">%&gt;%</span> <span class="fu">k_argmax</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>tf.Tensor([7 2 1 ... 4 5 6], shape=(10000), dtype=int64)</code></pre>
 </div>
