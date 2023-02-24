@@ -170,11 +170,11 @@ Source: <https://stanford.edu/~shervine/teaching/cs-229/cheatsheet-machine-learn
 
 ## Example: IMDB review sentiment analysis - Lasso, RNN, LSTM
 
-[Lasso](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/imdb/imdb_lasso.html).
+- [Lasso penalized logistic regression](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/imdb/imdb_lasso.html)
 
-[RNN]() TODO
+- [RNN]() TODO
 
-[LSTM]() TODO
+- [LSTM](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/imdb/imdb_lstm.html)
 
 ## Example: Generate text from Nietzsche’s writings - RNN LSTM
 
