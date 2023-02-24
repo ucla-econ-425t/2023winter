@@ -306,7 +306,7 @@ loaded via a namespace (and not attached):
 </div>
 </div>
 </div>
-<p>Vectorize <span class="math inline">\(28 \times 28\)</span> images into <span class="math inline">\(784\)</span>-vectors and scale entries to [0, 1]:</p>
+<p>For CNN, we keep the <span class="math inline">\(32 \times 32 \times 3\)</span> tensor structure, instead of vectorizing into a long vector.</p>
 <div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">R</a></li></ul>
 <div class="tab-content">
@@ -898,7 +898,7 @@ ________________________________________________________________________________
 <span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    user   system  elapsed 
-6007.114 3219.508  917.691 </code></pre>
+6049.688 3113.319  930.251 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(history)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -924,11 +924,11 @@ ________________________________________________________________________________
 <div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>score <span class="op">=</span> model.evaluate(x_test, y_test, verbose <span class="op">=</span> <span class="dv">0</span>)</span>
 <span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Test loss:"</span>, score[<span class="dv">0</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Test loss: 2.4657680988311768</code></pre>
+<pre><code>Test loss: 2.571018934249878</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb60"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Test accuracy:"</span>, score[<span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Test accuracy: 0.4530999958515167</code></pre>
+<pre><code>Test accuracy: 0.4447999894618988</code></pre>
 </div>
 </div>
 </div>
@@ -937,14 +937,14 @@ ________________________________________________________________________________
 <div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>model <span class="sc">%&gt;%</span> <span class="fu">evaluate</span>(x_test, y_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    loss accuracy 
-2.407828 0.453700 </code></pre>
+2.532882 0.431200 </code></pre>
 </div>
 </div>
 <p>Generate predictions on new data:</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>model <span class="sc">%&gt;%</span> <span class="fu">predict</span>(x_test) <span class="sc">%&gt;%</span> <span class="fu">k_argmax</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>tf.Tensor([30 80 55 ... 51 42 70], shape=(10000), dtype=int64)</code></pre>
+<pre><code>tf.Tensor([49 33 55 ... 51 42 92], shape=(10000), dtype=int64)</code></pre>
 </div>
 </div>
 </div>

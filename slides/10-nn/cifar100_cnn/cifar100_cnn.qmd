@@ -127,7 +127,7 @@ dim(y_test)
 
 :::
 
-Vectorize $28 \times 28$ images into $784$-vectors and scale entries to [0, 1]:
+For CNN, we keep the $32 \times 32 \times 3$ tensor structure, instead of vectorizing into a long vector.
 
 ::: {.panel-tabset}
 
