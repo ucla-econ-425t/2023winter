@@ -172,8 +172,6 @@ Source: <https://stanford.edu/~shervine/teaching/cs-229/cheatsheet-machine-learn
 
 - [Lasso penalized logistic regression](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/imdb/imdb_lasso.html)
 
-- [RNN]() TODO
-
 - [LSTM](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/imdb/imdb_lstm.html)
 
 ## Example: Generate text from Nietzsche’s writings - RNN LSTM
