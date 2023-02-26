@@ -47,6 +47,8 @@ Load libraries.
 #### Python
 
 ```{python}
+# Plotting tool
+import matplotlib.pyplot as plt
 # Load Tensorflow and Keras
 import tensorflow as tf
 from tensorflow import keras
@@ -191,13 +193,31 @@ model.compile(
 
 ```{python}
 print('Train...')
-model.fit(
+history = model.fit(
   x_train, y_train,
   batch_size = batch_size,
   epochs = 15,
   validation_data=(x_test, y_test), 
   verbose = 2 # one line per epoch
 )
+```
+Visualize training process:
+```{python}
+plt.figure()
+plt.ylabel("Loss (training and validation)")
+plt.xlabel("Training Steps")
+plt.ylim([0, 2])
+plt.plot(history.history["loss"])
+plt.plot(history.history["val_loss"])
+plt.show()
+
+plt.figure()
+plt.ylabel("Accuracy (training and validation)")
+plt.xlabel("Training Steps")
+plt.ylim([0, 1])
+plt.plot(history.history["accuracy"])
+plt.plot(history.history["val_accuracy"])
+plt.show()
 ```
 
 #### R
@@ -207,7 +227,7 @@ batch_size <- 32
 
 cat('Train...\n')
 system.time({
-model %>% fit(
+history <- model %>% fit(
   x_train, y_train,
   batch_size = batch_size,
   epochs = 10,
@@ -215,6 +235,11 @@ model %>% fit(
   verbose = 2
 )
 })
+```
+
+Visualize training process:
+```{r}
+plot(history)
 ```
 
 :::
