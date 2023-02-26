@@ -47,19 +47,6 @@ Load libraries.
 #### Python
 
 ```{python}
-# Load the pandas library
-import pandas as pd
-# Load numpy for array manipulation
-import numpy as np
-# Load seaborn plotting library
-import seaborn as sns
-import matplotlib.pyplot as plt
-
-# Set font sizes in plots
-sns.set(font_scale = 1.2)
-# Display all columns
-pd.set_option('display.max_columns', None)
-
 # Load Tensorflow and Keras
 import tensorflow as tf
 from tensorflow import keras
@@ -208,7 +195,8 @@ model.fit(
   x_train, y_train,
   batch_size = batch_size,
   epochs = 15,
-  validation_data=(x_test, y_test)
+  validation_data=(x_test, y_test), 
+  verbose = 2 # one line per epoch
 )
 ```
 
@@ -223,7 +211,8 @@ model %>% fit(
   x_train, y_train,
   batch_size = batch_size,
   epochs = 10,
-  validation_data = list(x_test, y_test)
+  validation_data = list(x_test, y_test),
+  verbose = 2
 )
 })
 ```
@@ -239,7 +228,8 @@ model %>% fit(
 ```{python}
 score, acc = model.evaluate(
   x_test, y_test,
-  batch_size = batch_size
+  batch_size = batch_size,
+  verbose = 2
 )
 print('Test score:', score)
 print('Test accuracy:', acc)
