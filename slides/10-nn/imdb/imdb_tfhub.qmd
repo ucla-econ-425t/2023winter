@@ -1,5 +1,5 @@
 ---
-title: "IMDB Sentiment Analysis Using Pretrained Embedding"
+title: "IMDB Sentiment Analysis (Warm-Start From Pretrained Embedding)"
 subtitle: "Econ 425T / Biostat 203B"
 author: "Dr. Hua Zhou @ UCLA"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
@@ -47,6 +47,8 @@ Load libraries.
 #### Python
 
 ```{python}
+# Plotting tool
+import matplotlib.pyplot as plt
 # Load Tensorflow and Keras
 import tensorflow as tf
 from tensorflow import keras
@@ -190,7 +192,12 @@ Let’s first create a Keras layer that uses a TensorFlow Hub model to embed the
 
 ```{python}
 embedding = "https://tfhub.dev/google/nnlm-en-dim50/2"
-hub_layer = hub.KerasLayer(handle = embedding, trainable = True)
+hub_layer = hub.KerasLayer(
+  handle = embedding, 
+  # Enable fine-tuning (takes longer)
+  trainable = True
+  )
+# Embed the first training texts
 hub_layer(batch[0][0:1])
 ```
 
@@ -198,7 +205,12 @@ hub_layer(batch[0][0:1])
 
 ```{r}
 embedding <- "https://tfhub.dev/google/nnlm-en-dim50/2"
-hub_layer <- tfhub::layer_hub(handle = embedding, trainable = TRUE)
+hub_layer <- tfhub::layer_hub(
+  handle = embedding, 
+  # Enable fine-tuning (takes longer)
+  trainable = TRUE
+  )
+# Embed the first training texts
 hub_layer(batch[[1]][1:2])
 ```
 
@@ -260,25 +272,47 @@ model %>% compile(
 history = model.fit(
   train_data,
   epochs = 10,
-  validation_data = validation_data
+  validation_data = validation_data,
+  verbose = 2
 )
 
 model.summary()
+```
+Visualize training process:
+```{python}
+plt.figure()
+plt.ylabel("Loss (training and validation)")
+plt.xlabel("Training Epoches")
+plt.ylim([0, 1])
+plt.plot(history.history["loss"])
+plt.plot(history.history["val_loss"])
+plt.show()
+
+plt.figure()
+plt.ylabel("Accuracy (training and validation)")
+plt.xlabel("Training Epoches")
+plt.ylim([0, 1])
+plt.plot(history.history["accuracy"])
+plt.plot(history.history["val_accuracy"])
+plt.show()
 ```
 
 #### R
 
 ```{r}
+system.time({
 history <- model %>% fit(
   train_data,
   epochs = 10,
   validation_data = validation_data,
-  verbose <- 1
+  verbose = 2
 )
+})
 
 summary(model)
 ```
 
+Visualize training process:
 ```{r}
 plot(history)
 ```
@@ -292,7 +326,7 @@ plot(history)
 #### Python
 
 ```{python}
-results = model.evaluate(test_data)
+results = model.evaluate(test_data, verbose = 2)
 results
 ```
 
