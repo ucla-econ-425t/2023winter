@@ -176,6 +176,6 @@ Source: <https://stanford.edu/~shervine/teaching/cs-229/cheatsheet-machine-learn
 
 - [Warm-start using pre-trained embedding in TF Hub](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/imdb/imdb_tfhub.html)
 
-## Example: Generate Artifical Faces with GAN
+## Example: Generate Artificial Faces with GAN
 
-- [Generate Artifical Faces with CelebA Progressive GAN Model](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/progan/progan.html)
+- [Generate Artificial Faces with CelebA Progressive GAN Model](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/progan/progan.html)

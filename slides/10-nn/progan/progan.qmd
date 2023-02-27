@@ -1,5 +1,5 @@
 ---
-title: "Generate Artifical Faces with CelebA Progressive GAN Model"
+title: "Generate Artificial Faces with CelebA Progressive GAN Model"
 subtitle: "Econ 425T / Biostat 203B"
 author: "Dr. Hua Zhou @ UCLA"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
