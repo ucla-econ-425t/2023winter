@@ -176,10 +176,6 @@ Source: <https://stanford.edu/~shervine/teaching/cs-229/cheatsheet-machine-learn
 
 - [Warm-start using pre-trained embedding in TF Hub](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/imdb/imdb_tfhub.html)
 
-## Example: Generate text from Nietzsche’s writings - RNN LSTM
+## Example: Generate Artifical Faces with GAN
 
-TODO
-
-## Example: Generate handwritten digits from MNIST - GAN
-
-TODO
+- [Generate Artifical Faces with CelebA Progressive GAN Model](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/progan/progan.html)
