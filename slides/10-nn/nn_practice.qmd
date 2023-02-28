@@ -156,6 +156,10 @@ Source: <https://stanford.edu/~shervine/teaching/cs-229/cheatsheet-machine-learn
 ![](./cross_validation.png){width=750px}
 </p>
 
+## Keras examples
+
+Following are selected examples from the collection of [Keras code examples](https://keras.io/examples/).
+
 ## Example: MNIST - MLP
 
 [qmd](https://raw.githubusercontent.com/ucla-econ-425t/2023winter/master/slides/10-nn/mnist_mlp/mnist_mlp.qmd), [html](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/mnist_mlp/mnist_mlp.html).
@@ -168,9 +172,11 @@ Source: <https://stanford.edu/~shervine/teaching/cs-229/cheatsheet-machine-learn
 
 [qmd](https://raw.githubusercontent.com/ucla-econ-425t/2023winter/master/slides/10-nn/pretrained_resnet50/pretrained_resnet50.qmd), [html](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/pretrained_resnet50/pretrained_resnet50.html).
 
-## Example: IMDB review sentiment analysis - Lasso, RNN, LSTM
+## Example: IMDB review sentiment analysis - Lasso, MLP, RNN, LSTM
 
 - [Lasso penalized logistic regression](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/imdb/imdb_lasso.html)
+
+- [MLP](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/imdb/imdb_mlp.html)
 
 - [LSTM](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/imdb/imdb_lstm.html)
 
