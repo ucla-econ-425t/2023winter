@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.269">
+<meta name="generator" content="quarto-1.2.280">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Dr.&nbsp;Hua Zhou @ UCLA">
-<meta name="dcterms.date" content="2023-02-23">
+<meta name="dcterms.date" content="2023-02-28">
 
 <title>Neural Network and Deep Learning (Introduction)</title>
 <style>
@@ -87,18 +87,22 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#autoregression-forecaster" id="toc-autoregression-forecaster" class="nav-link" data-scroll-target="#autoregression-forecaster"><span class="toc-section-number">14.2</span>  Autoregression forecaster</a></li>
   <li><a href="#summary-of-rnns" id="toc-summary-of-rnns" class="nav-link" data-scroll-target="#summary-of-rnns"><span class="toc-section-number">14.3</span>  Summary of RNNs</a></li>
   </ul></li>
-  <li><a href="#when-to-use-deep-learning" id="toc-when-to-use-deep-learning" class="nav-link" data-scroll-target="#when-to-use-deep-learning"><span class="toc-section-number">15</span>  When to use deep learning</a></li>
-  <li><a href="#fitting-neural-networks" id="toc-fitting-neural-networks" class="nav-link" data-scroll-target="#fitting-neural-networks"><span class="toc-section-number">16</span>  Fitting neural networks</a>
+  <li><a href="#generative-deep-learning" id="toc-generative-deep-learning" class="nav-link" data-scroll-target="#generative-deep-learning"><span class="toc-section-number">15</span>  Generative deep learning</a>
   <ul>
-  <li><a href="#gradient-descent" id="toc-gradient-descent" class="nav-link" data-scroll-target="#gradient-descent"><span class="toc-section-number">16.1</span>  Gradient descent</a></li>
-  <li><a href="#droptout-learning" id="toc-droptout-learning" class="nav-link" data-scroll-target="#droptout-learning"><span class="toc-section-number">16.2</span>  Droptout learning</a></li>
-  <li><a href="#ridge-and-data-augmentation" id="toc-ridge-and-data-augmentation" class="nav-link" data-scroll-target="#ridge-and-data-augmentation"><span class="toc-section-number">16.3</span>  Ridge and data augmentation</a></li>
+  <li><a href="#variational-autoencoder-vae" id="toc-variational-autoencoder-vae" class="nav-link" data-scroll-target="#variational-autoencoder-vae"><span class="toc-section-number">15.1</span>  Variational autoencoder (VAE)</a></li>
+  <li><a href="#generative-adversarial-networks-gans" id="toc-generative-adversarial-networks-gans" class="nav-link" data-scroll-target="#generative-adversarial-networks-gans"><span class="toc-section-number">15.2</span>  Generative Adversarial Networks (GANs)</a></li>
   </ul></li>
-  <li><a href="#double-descent" id="toc-double-descent" class="nav-link" data-scroll-target="#double-descent"><span class="toc-section-number">17</span>  Double descent</a>
+  <li><a href="#when-to-use-deep-learning" id="toc-when-to-use-deep-learning" class="nav-link" data-scroll-target="#when-to-use-deep-learning"><span class="toc-section-number">16</span>  When to use deep learning</a></li>
+  <li><a href="#fitting-neural-networks" id="toc-fitting-neural-networks" class="nav-link" data-scroll-target="#fitting-neural-networks"><span class="toc-section-number">17</span>  Fitting neural networks</a>
   <ul>
-  <li><a href="#simulation-study" id="toc-simulation-study" class="nav-link" data-scroll-target="#simulation-study"><span class="toc-section-number">17.1</span>  Simulation study</a></li>
+  <li><a href="#gradient-descent" id="toc-gradient-descent" class="nav-link" data-scroll-target="#gradient-descent"><span class="toc-section-number">17.1</span>  Gradient descent</a></li>
+  <li><a href="#dropout-learning" id="toc-dropout-learning" class="nav-link" data-scroll-target="#dropout-learning"><span class="toc-section-number">17.2</span>  Dropout learning</a></li>
+  <li><a href="#ridge-and-data-augmentation" id="toc-ridge-and-data-augmentation" class="nav-link" data-scroll-target="#ridge-and-data-augmentation"><span class="toc-section-number">17.3</span>  Ridge and data augmentation</a></li>
   </ul></li>
-  <li><a href="#generative-adversarial-networks-gans" id="toc-generative-adversarial-networks-gans" class="nav-link" data-scroll-target="#generative-adversarial-networks-gans"><span class="toc-section-number">18</span>  Generative Adversarial Networks (GANs)</a></li>
+  <li><a href="#double-descent" id="toc-double-descent" class="nav-link" data-scroll-target="#double-descent"><span class="toc-section-number">18</span>  Double descent</a>
+  <ul>
+  <li><a href="#simulation-study" id="toc-simulation-study" class="nav-link" data-scroll-target="#simulation-study"><span class="toc-section-number">18.1</span>  Simulation study</a></li>
+  </ul></li>
   </ul>
 </nav>
 </div>
@@ -126,7 +130,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">February 23, 2023</p>
+      <p class="date">February 28, 2023</p>
     </div>
   </div>
   
@@ -615,19 +619,19 @@ g \alpha + h \beta + j \gamma + k \delta &amp; h \alpha + i \beta + k \gamma + l
 <li><p>From a dictionary, identify the 10K most frequently occurring words.</p></li>
 <li><p>Create a binary vector of length <span class="math inline">\(p = 10K\)</span> for each document, and score a 1 in every position that the corresponding word occurred.</p></li>
 <li><p>With <span class="math inline">\(n\)</span> documents, we now have an <span class="math inline">\(n \times p\)</span> sparse feature matrix <span class="math inline">\(X\)</span>.</p></li>
-<li><p>We compare a lasso logistic regression model to a two-hidden-layer neural network on the next slide. (No convolutions here!)</p></li>
-<li><p>Bag-of-words are <strong>unigrams</strong>. We can instead use <strong>bigrams</strong> (occurrences of adjacent word pairs), and in general <strong><span class="math inline">\(m\)</span>-grams</strong>.</p></li>
+<li><p><strong>Bag-of-n-grams</strong> model. Bag-of-words are <strong>unigrams</strong>. We can instead use <strong>bigrams</strong> (occurrences of adjacent word pairs), and in general <strong><span class="math inline">\(m\)</span>-grams</strong>.</p></li>
 <li><p>For more complicated feature extraction from text data, see the book <a href="https://www.tidytextmining.com/"><em>Text Mining with R: A Tidy Approach</em></a></p></li>
 </ul>
 </section>
 <section id="lasso-versus-neural-network-imdb-reviews" class="level3" data-number="10.2">
 <h3 data-number="10.2" class="anchored" data-anchor-id="lasso-versus-neural-network-imdb-reviews"><span class="header-section-number">10.2</span> Lasso versus neural network: IMDB reviews</h3>
+<p>ISL textbook compares a lasso logistic regression model to a two-hidden-layer neural network. (No convolutions here!)</p>
 <div id="fig-cnn-arch" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p align="center">
 <embed src="ISL_fig_10_11.pdf" width="600" height="450">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;10: Accuracy of the lasso and a two-hidden-layer neural network on the IMDb data. For the lasso, the x-axis displays <span class="math inline">\(−\log(\lambda)\)</span>, while for the neural network it displays <strong>epochs</strong> (number of times the fitting algorithm passes through the training set). Both show a tendency to overfit, and achieve approximately the same test accuracy.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;10: Accuracy of the lasso and a two-hidden-layer neural network on the IMDB data. For the lasso, the x-axis displays <span class="math inline">\(−\log(\lambda)\)</span>, while for the neural network it displays <strong>epochs</strong> (number of times the fitting algorithm passes through the training set). Both show a tendency to overfit, and achieve approximately the same test accuracy.</figcaption><p></p>
 </figure>
 </div>
 </section>
@@ -635,7 +639,7 @@ g \alpha + h \beta + j \gamma + k \delta &amp; h \alpha + i \beta + k \gamma + l
 <section id="recurrent-neural-network-rnn" class="level2" data-number="11">
 <h2 data-number="11" class="anchored" data-anchor-id="recurrent-neural-network-rnn"><span class="header-section-number">11</span> Recurrent neural network (RNN)</h2>
 <ul>
-<li><p>Often data arise as sequences:</p>
+<li><p>Data often arise as sequences:</p>
 <ul>
 <li><p>Documents are sequences of words, and their relative positions have meaning.</p></li>
 <li><p>Time-series such as weather data or financial indices.</p></li>
@@ -666,7 +670,7 @@ O_\ell &amp;=&amp; \beta_0 + \sum_{k=1}^K \beta_k A_{\ell k}.
 \]</span></p></li>
 <li><p>RNN and IMDB reviews.</p>
 <ul>
-<li><p>The document feature is a sequence of words <span class="math inline">\(\{\mathcal{W}_\ell\}_1^L\)</span>. We typically truncate/pad the documents to the same number <span class="math inline">\(L\)</span> of words (we use <span class="math inline">\(L = 500\)</span>).</p></li>
+<li><p>The document feature is a sequence of words <span class="math inline">\(\{\mathcal{W}_\ell\}_1^L\)</span>. We typically truncate/pad the documents to the same number <span class="math inline">\(L\)</span> of words (we use <span class="math inline">\(L = 80\)</span>).</p></li>
 <li><p>Each word <span class="math inline">\(\mathcal{W}_\ell\)</span> is represented as a one-hot encoded binary vector <span class="math inline">\(X_\ell\)</span> (dummy variable) of length 10K, with all zeros and a single one in the position for that word in the dictionary.</p></li>
 <li><p>This results in an extremely sparse feature representation, and would not work well.</p></li>
 <li><p>Instead we use a lower-dimensional pretrained word embedding matrix <span class="math inline">\(E\)</span> (<span class="math inline">\(m \times 10K\)</span>).</p></li>
@@ -816,8 +820,67 @@ y = \begin{pmatrix} v_{L+1} \\ v_{L+2} \\ v_{L+3} \\ \vdots \\ v_T \end{pmatrix}
 </ul>
 </section>
 </section>
-<section id="when-to-use-deep-learning" class="level2" data-number="15">
-<h2 data-number="15" class="anchored" data-anchor-id="when-to-use-deep-learning"><span class="header-section-number">15</span> When to use deep learning</h2>
+<section id="generative-deep-learning" class="level2" data-number="15">
+<h2 data-number="15" class="anchored" data-anchor-id="generative-deep-learning"><span class="header-section-number">15</span> Generative deep learning</h2>
+<section id="variational-autoencoder-vae" class="level3" data-number="15.1">
+<h3 data-number="15.1" class="anchored" data-anchor-id="variational-autoencoder-vae"><span class="header-section-number">15.1</span> Variational autoencoder (VAE)</h3>
+</section>
+<section id="generative-adversarial-networks-gans" class="level3" data-number="15.2">
+<h3 data-number="15.2" class="anchored" data-anchor-id="generative-adversarial-networks-gans"><span class="header-section-number">15.2</span> Generative Adversarial Networks (GANs)</h3>
+<p align="center">
+<img src="./ian_goodfellow.png" class="img-fluid" width="400">
+</p>
+<blockquote class="blockquote">
+<p>The coolest idea in deep learning in the last 20 years.<br>
+- Yann LeCun on GANs.</p>
+</blockquote>
+<ul>
+<li><p>Sources:</p>
+<ul>
+<li><a href="https://sites.google.com/view/cvpr2018tutorialongans/" class="uri">https://sites.google.com/view/cvpr2018tutorialongans/</a><br>
+</li>
+<li><a href="https://medium.com/ai-society/gans-from-scratch-1-a-deep-introduction-with-code-in-pytorch-and-tensorflow-cb03cdcdba0f" class="uri">https://medium.com/ai-society/gans-from-scratch-1-a-deep-introduction-with-code-in-pytorch-and-tensorflow-cb03cdcdba0f</a><br>
+</li>
+<li><a href="https://skymind.ai/wiki/generative-adversarial-network-gan" class="uri">https://skymind.ai/wiki/generative-adversarial-network-gan</a></li>
+</ul></li>
+<li><p>Applications:</p>
+<ul>
+<li><p>AI-generated celebrity photos: <a href="https://www.youtube.com/watch?v=G06dEcZ-QTg" class="uri">https://www.youtube.com/watch?v=G06dEcZ-QTg</a></p></li>
+<li><p>Digital art: <a href="https://en.wikipedia.org/wiki/Edmond_de_Belamy">Edmond de Belamy</a></p></li>
+<li><p>Image-to-image translation</p></li>
+</ul>
+<p align="center">
+</p><p><img src="./image-to-image-translation.jpg" class="img-fluid" width="600"></p>
+<p></p>
+<ul>
+<li>Self play</li>
+</ul></li>
+</ul>
+<p align="center">
+<img src="./alpha-go.png" class="img-fluid" width="600">
+</p>
+<ul>
+<li>GAN:</li>
+</ul>
+<p align="center">
+<img src="./gan.jpg" class="img-fluid" width="600">
+</p>
+<p align="center">
+<img src="./gan_illustration.png" class="img-fluid" width="600">
+</p>
+<ul>
+<li><p>Value function of GAN <span class="math display">\[
+\min_G \max_D V(D, G) = \mathbb{E}_{x \sim p_{\text{data}}(x)} [\log D(x)] + \mathbb{E}_{z \sim p_z(z)} [\log (1 - D(G(z)))].
+\]</span></p></li>
+<li><p>Training GAN</p></li>
+</ul>
+<p align="center">
+<img src="./training-gan.png" class="img-fluid" width="600">
+</p>
+</section>
+</section>
+<section id="when-to-use-deep-learning" class="level2" data-number="16">
+<h2 data-number="16" class="anchored" data-anchor-id="when-to-use-deep-learning"><span class="header-section-number">16</span> When to use deep learning</h2>
 <ul>
 <li><p>CNNs have had enormous successes in image classification and modeling, and are starting to be used in medical diagnosis. Examples include digital mammography, ophthalmology, MRI scans, and digital X-rays.</p></li>
 <li><p>RNNs have had big wins in speech modeling, language translation, and forecasting.</p></li>
@@ -830,8 +893,8 @@ y = \begin{pmatrix} v_{L+1} \\ v_{L+2} \\ v_{L+3} \\ \vdots \\ v_T \end{pmatrix}
 <li><p>We endorse the <strong>Occam’s razor</strong> principal. We prefer simpler models if they work as well. More interpretable!</p></li>
 </ul>
 </section>
-<section id="fitting-neural-networks" class="level2" data-number="16">
-<h2 data-number="16" class="anchored" data-anchor-id="fitting-neural-networks"><span class="header-section-number">16</span> Fitting neural networks</h2>
+<section id="fitting-neural-networks" class="level2" data-number="17">
+<h2 data-number="17" class="anchored" data-anchor-id="fitting-neural-networks"><span class="header-section-number">17</span> Fitting neural networks</h2>
 <p align="center">
 <img src="ISL_fig_10_1.png" width="400" height="400">
 </p>
@@ -844,8 +907,8 @@ f(x_i) = \beta_0 + \sum_{k=1}^K \beta_k g(w_{k0} + \sum_{j=1}^p w_{kj} x_{ij}).
 <li><p>This problem is difficult because the objective is <strong>non-convex</strong>.</p></li>
 <li><p>Despite this, effective algorithms have evolved that can optimize complex neural network problems efficiently.</p></li>
 </ul>
-<section id="gradient-descent" class="level3" data-number="16.1">
-<h3 data-number="16.1" class="anchored" data-anchor-id="gradient-descent"><span class="header-section-number">16.1</span> Gradient descent</h3>
+<section id="gradient-descent" class="level3" data-number="17.1">
+<h3 data-number="17.1" class="anchored" data-anchor-id="gradient-descent"><span class="header-section-number">17.1</span> Gradient descent</h3>
 <div id="fig-gd" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p align="center">
@@ -897,8 +960,8 @@ z_{ik} = w_{k0} + \sum_{j=1}^p w_{kj} x_{ij}.
 </ul></li>
 </ul>
 </section>
-<section id="droptout-learning" class="level3" data-number="16.2">
-<h3 data-number="16.2" class="anchored" data-anchor-id="droptout-learning"><span class="header-section-number">16.2</span> Droptout learning</h3>
+<section id="dropout-learning" class="level3" data-number="17.2">
+<h3 data-number="17.2" class="anchored" data-anchor-id="dropout-learning"><span class="header-section-number">17.2</span> Dropout learning</h3>
 <div id="fig-dropout" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
 <p align="center">
@@ -914,25 +977,22 @@ z_{ik} = w_{k0} + \sum_{j=1}^p w_{kj} x_{ij}.
 <li><p>Similar to randomly omitting variables when growing trees in random forests.</p></li>
 </ul>
 </section>
-<section id="ridge-and-data-augmentation" class="level3" data-number="16.3">
-<h3 data-number="16.3" class="anchored" data-anchor-id="ridge-and-data-augmentation"><span class="header-section-number">16.3</span> Ridge and data augmentation</h3>
+<section id="ridge-and-data-augmentation" class="level3" data-number="17.3">
+<h3 data-number="17.3" class="anchored" data-anchor-id="ridge-and-data-augmentation"><span class="header-section-number">17.3</span> Ridge and data augmentation</h3>
 <ul>
 <li><p>Make many copies of each <span class="math inline">\((x_i, y_i)\)</span> and add a small amount of Gaussian noise to the <span class="math inline">\(x_i\)</span>, a little cloud around each observation, but leave the copies of <span class="math inline">\(y_i\)</span> alone!</p></li>
 <li><p>This makes the fit robust to small perturbations in <span class="math inline">\(x_i\)</span>, and is equivalent to ridge regularization in an OLS setting.</p></li>
-<li><p>Data augmentation is especially effective with SGD, here demonstrated for a CNN and image classification.</p></li>
-<li><p>Natural transformations are made of each training image when it is sampled by SGD, thus ultimately making a cloud of images around each original training image.</p></li>
+<li><p>Data augmentation is especially effective with SGD. Natural transformations are made of each training image when it is sampled by SGD, thus ultimately making a cloud of images around each original training image.</p></li>
 <li><p>The label is left unchanged, in each case still <code>tiger</code>.</p></li>
 <li><p>Improves performance of CNN and is similar to ridge.</p></li>
 </ul>
-<!-- ::: {#fig-data-aug-tiger} -->
 <p align="center">
 <img src="ISL_fig_10_9.jpg" class="img-fluid" width="600">
 </p>
-<!-- ::: -->
 </section>
 </section>
-<section id="double-descent" class="level2" data-number="17">
-<h2 data-number="17" class="anchored" data-anchor-id="double-descent"><span class="header-section-number">17</span> Double descent</h2>
+<section id="double-descent" class="level2" data-number="18">
+<h2 data-number="18" class="anchored" data-anchor-id="double-descent"><span class="header-section-number">18</span> Double descent</h2>
 <ul>
 <li><p>With neural networks, it seems better to have too many hidden units than too few.</p></li>
 <li><p>Likewise more hidden layers better than few.</p></li>
@@ -941,8 +1001,8 @@ z_{ik} = w_{k0} + \sum_{j=1}^p w_{kj} x_{ij}.
 <li><p>What happened to overfitting and the usual bias-variance trade-off?</p></li>
 </ul>
 <p>Belkin, Hsu, Ma and Mandal (2018) <em>Reconciling Modern Machine Learning and the Bias-Variance Trade-off</em>. <a href="https://arxiv.org/abs/1812.11118">arXiv</a></p>
-<section id="simulation-study" class="level3" data-number="17.1">
-<h3 data-number="17.1" class="anchored" data-anchor-id="simulation-study"><span class="header-section-number">17.1</span> Simulation study</h3>
+<section id="simulation-study" class="level3" data-number="18.1">
+<h3 data-number="18.1" class="anchored" data-anchor-id="simulation-study"><span class="header-section-number">18.1</span> Simulation study</h3>
 <ul>
 <li><p>Model: <span class="math display">\[
 y= \sin(x) + \epsilon
@@ -984,59 +1044,6 @@ y= \sin(x) + \epsilon
 </ul></li>
 </ul>
 </section>
-</section>
-<section id="generative-adversarial-networks-gans" class="level2" data-number="18">
-<h2 data-number="18" class="anchored" data-anchor-id="generative-adversarial-networks-gans"><span class="header-section-number">18</span> Generative Adversarial Networks (GANs)</h2>
-<p align="center">
-<img src="./ian_goodfellow.png" class="img-fluid" width="400">
-</p>
-<blockquote class="blockquote">
-<p>The coolest idea in deep learning in the last 20 years.<br>
-- Yann LeCun on GANs.</p>
-</blockquote>
-<ul>
-<li><p>Sources:</p>
-<ul>
-<li><a href="https://sites.google.com/view/cvpr2018tutorialongans/" class="uri">https://sites.google.com/view/cvpr2018tutorialongans/</a><br>
-</li>
-<li><a href="https://medium.com/ai-society/gans-from-scratch-1-a-deep-introduction-with-code-in-pytorch-and-tensorflow-cb03cdcdba0f" class="uri">https://medium.com/ai-society/gans-from-scratch-1-a-deep-introduction-with-code-in-pytorch-and-tensorflow-cb03cdcdba0f</a><br>
-</li>
-<li><a href="https://skymind.ai/wiki/generative-adversarial-network-gan" class="uri">https://skymind.ai/wiki/generative-adversarial-network-gan</a></li>
-</ul></li>
-<li><p>Applications:</p>
-<ul>
-<li><p>AI-generated celebrity photos: <a href="https://www.youtube.com/watch?v=G06dEcZ-QTg" class="uri">https://www.youtube.com/watch?v=G06dEcZ-QTg</a></p></li>
-<li><p>Digital art: <a href="https://en.wikipedia.org/wiki/Edmond_de_Belamy">Edmond de Belamy</a></p></li>
-<li><p>Image-to-image translation</p></li>
-</ul>
-<p align="center">
-</p><p><img src="./image-to-image-translation.jpg" class="img-fluid" width="600"></p>
-<p></p>
-<ul>
-<li>Self play</li>
-</ul></li>
-</ul>
-<p align="center">
-<img src="./alpha-go.png" class="img-fluid" width="600">
-</p>
-<ul>
-<li>GAN:</li>
-</ul>
-<p align="center">
-<img src="./gan.jpg" class="img-fluid" width="600">
-</p>
-<p align="center">
-<img src="./gan_illustration.png" class="img-fluid" width="600">
-</p>
-<ul>
-<li><p>Value function of GAN <span class="math display">\[
-\min_G \max_D V(D, G) = \mathbb{E}_{x \sim p_{\text{data}}(x)} [\log D(x)] + \mathbb{E}_{z \sim p_z(z)} [\log (1 - D(G(z)))].
-\]</span></p></li>
-<li><p>Training GAN</p></li>
-</ul>
-<p align="center">
-<img src="./training-gan.png" class="img-fluid" width="600">
-</p>
 </section>
 
 </main>

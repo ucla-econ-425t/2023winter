@@ -555,13 +555,13 @@ Inception-v3 with 144 crops and 4 models ensembled, the top-5 error rate of 3.58
 
 - With $n$ documents, we now have an $n \times p$ sparse feature matrix $X$.
 
-- We compare a lasso logistic regression model to a two-hidden-layer neural network on the next slide. (No convolutions here!)
-
-- Bag-of-words are **unigrams**. We can instead use **bigrams** (occurrences of adjacent word pairs), and in general **$m$-grams**.
+- **Bag-of-n-grams** model. Bag-of-words are **unigrams**. We can instead use **bigrams** (occurrences of adjacent word pairs), and in general **$m$-grams**.
 
 - For more complicated feature extraction from text data, see the book [_Text Mining with R: A Tidy Approach_](https://www.tidytextmining.com/)
 
 ### Lasso versus neural network: IMDB reviews
+
+ISL textbook compares a lasso logistic regression model to a two-hidden-layer neural network. (No convolutions here!)
 
 ::: {#fig-cnn-arch}
 
@@ -569,13 +569,13 @@ Inception-v3 with 144 crops and 4 models ensembled, the top-5 error rate of 3.58
 ![](ISL_fig_10_11.pdf){width=600px height=450px}
 </p>
 
-Accuracy of the lasso and a two-hidden-layer neural network on the IMDb data. For the lasso, the x-axis displays $−\log(\lambda)$, while for the neural network it displays **epochs** (number of times the fitting algorithm passes through the training set). Both show a tendency to overfit, and achieve approximately the same test accuracy.
+Accuracy of the lasso and a two-hidden-layer neural network on the IMDB data. For the lasso, the x-axis displays $−\log(\lambda)$, while for the neural network it displays **epochs** (number of times the fitting algorithm passes through the training set). Both show a tendency to overfit, and achieve approximately the same test accuracy.
 
 :::
 
 ## Recurrent neural network (RNN)
 
-- Often data arise as sequences:
+- Data often arise as sequences:
 
     - Documents are sequences of words, and their relative positions have meaning.
     
@@ -620,7 +620,7 @@ $$
 
 - RNN and IMDB reviews.
 
-    - The document feature is a sequence of words $\{\mathcal{W}_\ell\}_1^L$. We typically truncate/pad the documents to the same number $L$ of words (we use $L = 500$). 
+    - The document feature is a sequence of words $\{\mathcal{W}_\ell\}_1^L$. We typically truncate/pad the documents to the same number $L$ of words (we use $L = 80$).
     
     - Each word $\mathcal{W}_\ell$ is represented as a one-hot encoded binary vector $X_\ell$ (dummy variable) of length 10K, with all zeros and a single one in the position for that word in the dictionary.
     
@@ -642,7 +642,7 @@ $$
 
 Depiction of a sequence of 20 words representing a single document: one-hot encoded using a dictionary of 16 words (top panel) and embedded in an $m$-dimensional space with $m = 5$ (bottom panel). Embeddings are pretrained on very large corpora of documents, using methods similar to principal components. `word2vec` and `GloVe` are popular.
 
-:::    
+:::
 
 - After a lot of work, the results are a disappointing 76% accuracy.
 
@@ -790,6 +790,65 @@ known as an **order-$L$ autoregression** model or AR($L$).
 
 - Can have output also be a sequence, and input and output share the hidden units. So called `seq2seq` learning are used for language translation.
 
+## Generative deep learning
+
+### Variational autoencoder (VAE)
+
+### Generative Adversarial Networks (GANs)
+
+<p align="center">
+![](./ian_goodfellow.png){width=400px}
+</p>
+
+> The coolest idea in deep learning in the last 20 years.  
+> - Yann LeCun on GANs.
+
+- Sources: 
+    - <https://sites.google.com/view/cvpr2018tutorialongans/>   
+    - <https://medium.com/ai-society/gans-from-scratch-1-a-deep-introduction-with-code-in-pytorch-and-tensorflow-cb03cdcdba0f>    
+    - <https://skymind.ai/wiki/generative-adversarial-network-gan>   
+
+- Applications:
+
+    * AI-generated celebrity photos: <https://www.youtube.com/watch?v=G06dEcZ-QTg>
+    
+    * Digital art: [Edmond de Belamy](https://en.wikipedia.org/wiki/Edmond_de_Belamy)
+    
+    * Image-to-image translation 
+    
+    <p align="center">
+    ![](./image-to-image-translation.jpg){width=600px}
+    </p>
+    
+    * Self play
+
+<p align="center">
+![](./alpha-go.png){width=600px}
+</p>
+
+* GAN:
+
+<p align="center">
+![](./gan.jpg){width=600px}
+</p>
+
+<p align="center">
+![](./gan_illustration.png){width=600px}
+</p>
+
+* Value function of GAN
+$$
+\min_G \max_D V(D, G) = \mathbb{E}_{x \sim p_{\text{data}}(x)} [\log D(x)] + \mathbb{E}_{z \sim p_z(z)} [\log (1 - D(G(z)))].
+$$
+
+* Training GAN
+
+<p align="center">
+![](./training-gan.png){width=600px}
+</p>
+
+
+
 ## When to use deep learning
 
 - CNNs have had enormous successes in image classification and modeling, and are starting to be used in medical diagnosis. Examples include digital mammography, ophthalmology, MRI scans, and digital X-rays.
@@ -901,7 +960,7 @@ $$
     
     - **Regularization**. Ridge and lasso regularization can be used to shrink the weights at each layer. Two other popular forms of regularization are **dropout** and **augmentation**.
     
-### Droptout learning
+### Dropout learning
 
 ::: {#fig-dropout}
 
@@ -928,21 +987,15 @@ observation, but leave the copies of $y_i$ alone!
 
 - This makes the fit robust to small perturbations in $x_i$, and is equivalent to ridge regularization in an OLS setting.
 
-- Data augmentation is especially effective with SGD, here demonstrated for a CNN and image classification.
-
-- Natural transformations are made of each training image when it is sampled by SGD, thus ultimately making a cloud of images around each original training image.
+- Data augmentation is especially effective with SGD. Natural transformations are made of each training image when it is sampled by SGD, thus ultimately making a cloud of images around each original training image.
 
 - The label is left unchanged, in each case still `tiger`.
 
 - Improves performance of CNN and is similar to ridge.
 
-<!-- ::: {#fig-data-aug-tiger} -->
-
 <p align="center">
 ![](ISL_fig_10_9.jpg){width=600px}
 </p>
-
-<!-- ::: -->
 
 ## Double descent
 
@@ -1011,56 +1064,3 @@ To achieve a zero-residual solution with $d = 20$ is a real stretch! Easier for 
     
     - In particular cases with high **signal-to-noise ratio**, e.g., image recognition, are less prone to overfitting; the zero-error solution is mostly signal!
     
-## Generative Adversarial Networks (GANs)
-
-<p align="center">
-![](./ian_goodfellow.png){width=400px}
-</p>
-
-> The coolest idea in deep learning in the last 20 years.  
-> - Yann LeCun on GANs.
-
-- Sources: 
-    - <https://sites.google.com/view/cvpr2018tutorialongans/>   
-    - <https://medium.com/ai-society/gans-from-scratch-1-a-deep-introduction-with-code-in-pytorch-and-tensorflow-cb03cdcdba0f>    
-    - <https://skymind.ai/wiki/generative-adversarial-network-gan>   
-
-- Applications:
-
-    * AI-generated celebrity photos: <https://www.youtube.com/watch?v=G06dEcZ-QTg>
-    
-    * Digital art: [Edmond de Belamy](https://en.wikipedia.org/wiki/Edmond_de_Belamy)
-    
-    * Image-to-image translation 
-    
-    <p align="center">
-    ![](./image-to-image-translation.jpg){width=600px}
-    </p>
-    
-    * Self play
-
-<p align="center">
-![](./alpha-go.png){width=600px}
-</p>
-
-* GAN:
-
-<p align="center">
-![](./gan.jpg){width=600px}
-</p>
-
-<p align="center">
-![](./gan_illustration.png){width=600px}
-</p>
-
-* Value function of GAN
-$$
-\min_G \max_D V(D, G) = \mathbb{E}_{x \sim p_{\text{data}}(x)} [\log D(x)] + \mathbb{E}_{z \sim p_z(z)} [\log (1 - D(G(z)))].
-$$
-
-* Training GAN
-
-<p align="center">
-![](./training-gan.png){width=600px}
-</p>
-
