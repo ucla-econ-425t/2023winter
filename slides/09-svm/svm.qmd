@@ -335,7 +335,9 @@ Left: An SVM with a polynomial kernel of degree 3. Right: An SVM with a radial k
 
 ## `Heart` data example
 
-[Workflow: SVM](https://ucla-econ-425t.github.io/2023winter/slides/09-svm/workflow_svm_heart.html)
+[Workflow: SVM with polynomial kernel](https://ucla-econ-425t.github.io/2023winter/slides/09-svm/workflow_svm_poly.html)
+
+[Workflow: SVM with radial kernel](https://ucla-econ-425t.github.io/2023winter/slides/09-svm/workflow_svm_rbf.html)
 
 ## SVM for more than 2 classes
 

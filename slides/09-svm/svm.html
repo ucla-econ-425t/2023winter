@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.269">
+<meta name="generator" content="quarto-1.2.280">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Dr.&nbsp;Hua Zhou @ UCLA">
-<meta name="dcterms.date" content="2023-02-20">
+<meta name="dcterms.date" content="2023-02-28">
 
 <title>Support Vector Machines (ISL 9)</title>
 <style>
@@ -147,7 +147,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">February 20, 2023</p>
+      <p class="date">February 28, 2023</p>
     </div>
   </div>
   
@@ -170,14 +170,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre><code>{'commit_hash': 'add5877a4',
  'commit_source': 'installation',
  'default_encoding': 'utf-8',
- 'ipython_path': '/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/site-packages/IPython',
+ 'ipython_path': '/Users/huazhou/opt/anaconda3/lib/python3.9/site-packages/IPython',
  'ipython_version': '8.8.0',
  'os_name': 'posix',
  'platform': 'macOS-10.16-x86_64-i386-64bit',
- 'sys_executable': '/Library/Frameworks/Python.framework/Versions/3.10/bin/python3',
+ 'sys_executable': '/Users/huazhou/opt/anaconda3/bin/python3',
  'sys_platform': 'darwin',
- 'sys_version': '3.10.9 (v3.10.9:1dd9be6584, Dec  6 2022, 14:37:36) [Clang '
-                '13.0.0 (clang-1300.0.29.30)]'}</code></pre>
+ 'sys_version': '3.9.12 (main, Apr  5 2022, 01:56:13) \n[Clang 12.0.0 ]'}</code></pre>
 </div>
 </div>
 </div>
@@ -200,12 +199,13 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.10       here_1.0.1        lattice_0.20-45   png_0.1-8        
- [5] rprojroot_2.0.3   digest_0.6.31     grid_4.2.2        jsonlite_1.8.4   
- [9] evaluate_0.20     rlang_1.0.6       cli_3.6.0         rstudioapi_0.14  
-[13] Matrix_1.5-3      reticulate_1.28   rmarkdown_2.20    tools_4.2.2      
-[17] htmlwidgets_1.6.1 xfun_0.37         yaml_2.3.7        fastmap_1.1.0    
-[21] compiler_4.2.2    htmltools_0.5.4   knitr_1.42       </code></pre>
+ [1] Rcpp_1.0.9        here_1.0.1        lattice_0.20-45   png_0.1-8        
+ [5] withr_2.5.0       rprojroot_2.0.3   digest_0.6.29     grid_4.2.2       
+ [9] jsonlite_1.8.0    magrittr_2.0.3    evaluate_0.15     rlang_1.0.6      
+[13] stringi_1.7.8     cli_3.4.1         rstudioapi_0.13   Matrix_1.5-1     
+[17] reticulate_1.27   rmarkdown_2.14    tools_4.2.2       stringr_1.4.0    
+[21] htmlwidgets_1.6.1 xfun_0.31         yaml_2.3.5        fastmap_1.1.0    
+[25] compiler_4.2.2    htmltools_0.5.4   knitr_1.39       </code></pre>
 </div>
 </div>
 </div>
@@ -446,7 +446,8 @@ K(x_i, x_{i'}) = \exp \left( - \gamma \sum_{j=1}^p (x_{ij} - x_{i'j})^2 \right).
 </section>
 <section id="heart-data-example" class="level2" data-number="7">
 <h2 data-number="7" class="anchored" data-anchor-id="heart-data-example"><span class="header-section-number">7</span> <code>Heart</code> data example</h2>
-<p><a href="https://ucla-econ-425t.github.io/2023winter/slides/09-svm/workflow_svm_heart.html">Workflow: SVM</a></p>
+<p><a href="https://ucla-econ-425t.github.io/2023winter/slides/09-svm/workflow_svm_poly.html">Workflow: SVM with polynomial kernel</a></p>
+<p><a href="https://ucla-econ-425t.github.io/2023winter/slides/09-svm/workflow_svm_rbf.html">Workflow: SVM with radial kernel</a></p>
 </section>
 <section id="svm-for-more-than-2-classes" class="level2" data-number="8">
 <h2 data-number="8" class="anchored" data-anchor-id="svm-for-more-than-2-classes"><span class="header-section-number">8</span> SVM for more than 2 classes</h2>
