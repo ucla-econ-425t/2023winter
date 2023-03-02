@@ -9,7 +9,7 @@
 <meta name="author" content="Dr.&nbsp;Hua Zhou @ UCLA">
 <meta name="dcterms.date" content="2023-03-02">
 
-<title>IMDB Sentiment Analysis (LSTM)</title>
+<title>IMDB Sentiment Analysis (Simple RNN)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -88,16 +88,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </style>
 
 
-<script src="imdb_lstm_files/libs/clipboard/clipboard.min.js"></script>
-<script src="imdb_lstm_files/libs/quarto-html/quarto.js"></script>
-<script src="imdb_lstm_files/libs/quarto-html/popper.min.js"></script>
-<script src="imdb_lstm_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="imdb_lstm_files/libs/quarto-html/anchor.min.js"></script>
-<link href="imdb_lstm_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="imdb_lstm_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="imdb_lstm_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="imdb_lstm_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="imdb_lstm_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="imdb_rnn_files/libs/clipboard/clipboard.min.js"></script>
+<script src="imdb_rnn_files/libs/quarto-html/quarto.js"></script>
+<script src="imdb_rnn_files/libs/quarto-html/popper.min.js"></script>
+<script src="imdb_rnn_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="imdb_rnn_files/libs/quarto-html/anchor.min.js"></script>
+<link href="imdb_rnn_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="imdb_rnn_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="imdb_rnn_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="imdb_rnn_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="imdb_rnn_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 
 
 </head>
@@ -123,7 +123,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">IMDB Sentiment Analysis (LSTM)</h1>
+<h1 class="title">IMDB Sentiment Analysis (Simple RNN)</h1>
 <p class="subtitle lead">Econ 425T / Biostat 203B</p>
 </div>
 
@@ -360,7 +360,7 @@ loaded via a namespace (and not attached):
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> keras.Sequential([</span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  layers.Embedding(max_features, <span class="dv">128</span>),</span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  layers.LSTM(units <span class="op">=</span> <span class="dv">64</span>, dropout <span class="op">=</span> <span class="fl">0.5</span>, recurrent_dropout <span class="op">=</span> <span class="fl">0.5</span>),</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  layers.SimpleRNN(units <span class="op">=</span> <span class="dv">64</span>),</span>
 <span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  layers.Dense(units <span class="op">=</span> <span class="dv">1</span>, activation <span class="op">=</span> <span class="st">'sigmoid'</span>)</span>
 <span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>])</span>
 <span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
@@ -379,13 +379,13 @@ _________________________________________________________________
 =================================================================
  embedding (Embedding)       (None, None, 128)         1280000   
                                                                  
- lstm (LSTM)                 (None, 64)                49408     
+ simple_rnn (SimpleRNN)      (None, 64)                12352     
                                                                  
  dense (Dense)               (None, 1)                 65        
                                                                  
 =================================================================
-Total params: 1,329,473
-Trainable params: 1,329,473
+Total params: 1,292,417
+Trainable params: 1,292,417
 Non-trainable params: 0
 _________________________________________________________________</code></pre>
 </div>
@@ -396,7 +396,7 @@ _________________________________________________________________</code></pre>
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">keras_model_sequential</span>()</span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>model <span class="sc">%&gt;%</span></span>
 <span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layer_embedding</span>(<span class="at">input_dim =</span> max_features, <span class="at">output_dim =</span> <span class="dv">128</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layer_lstm</span>(<span class="at">units =</span> <span class="dv">64</span>, <span class="at">dropout =</span> <span class="fl">0.5</span>, <span class="at">recurrent_dropout =</span> <span class="fl">0.5</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layer_simple_rnn</span>(<span class="at">units =</span> <span class="dv">64</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">layer_dense</span>(<span class="at">units =</span> <span class="dv">1</span>, <span class="at">activation =</span> <span class="st">'sigmoid'</span>)</span>
 <span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Try using different optimizers and different optimizer configs</span></span>
@@ -413,11 +413,11 @@ ________________________________________________________________________________
  Layer (type)                       Output Shape                    Param #     
 ================================================================================
  embedding_1 (Embedding)            (None, None, 128)               1280000     
- lstm_1 (LSTM)                      (None, 64)                      49408       
+ simple_rnn_1 (SimpleRNN)           (None, 64)                      12352       
  dense_1 (Dense)                    (None, 1)                       65          
 ================================================================================
-Total params: 1,329,473
-Trainable params: 1,329,473
+Total params: 1,292,417
+Trainable params: 1,292,417
 Non-trainable params: 0
 ________________________________________________________________________________</code></pre>
 </div>
@@ -446,42 +446,42 @@ ________________________________________________________________________________
 <span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Epoch 1/15
-625/625 - 23s - loss: 0.4517 - accuracy: 0.7808 - val_loss: 0.3812 - val_accuracy: 0.8408 - 23s/epoch - 37ms/step
+625/625 - 10s - loss: 0.6023 - accuracy: 0.6636 - val_loss: 0.5142 - val_accuracy: 0.7592 - 10s/epoch - 16ms/step
 Epoch 2/15
-625/625 - 20s - loss: 0.3010 - accuracy: 0.8778 - val_loss: 0.3745 - val_accuracy: 0.8406 - 20s/epoch - 32ms/step
+625/625 - 9s - loss: 0.4032 - accuracy: 0.8206 - val_loss: 0.4833 - val_accuracy: 0.7916 - 9s/epoch - 15ms/step
 Epoch 3/15
-625/625 - 20s - loss: 0.2362 - accuracy: 0.9069 - val_loss: 0.3917 - val_accuracy: 0.8326 - 20s/epoch - 33ms/step
+625/625 - 9s - loss: 0.1895 - accuracy: 0.9292 - val_loss: 0.5974 - val_accuracy: 0.7650 - 9s/epoch - 15ms/step
 Epoch 4/15
-625/625 - 20s - loss: 0.1845 - accuracy: 0.9281 - val_loss: 0.4435 - val_accuracy: 0.8236 - 20s/epoch - 33ms/step
+625/625 - 9s - loss: 0.0654 - accuracy: 0.9793 - val_loss: 0.8400 - val_accuracy: 0.7280 - 9s/epoch - 14ms/step
 Epoch 5/15
-625/625 - 20s - loss: 0.1441 - accuracy: 0.9471 - val_loss: 0.5354 - val_accuracy: 0.8252 - 20s/epoch - 33ms/step
+625/625 - 9s - loss: 0.0273 - accuracy: 0.9918 - val_loss: 0.9126 - val_accuracy: 0.7650 - 9s/epoch - 14ms/step
 Epoch 6/15
-625/625 - 20s - loss: 0.1194 - accuracy: 0.9561 - val_loss: 0.5923 - val_accuracy: 0.8220 - 20s/epoch - 33ms/step
+625/625 - 9s - loss: 0.0334 - accuracy: 0.9887 - val_loss: 1.1902 - val_accuracy: 0.6968 - 9s/epoch - 14ms/step
 Epoch 7/15
-625/625 - 20s - loss: 0.0987 - accuracy: 0.9639 - val_loss: 0.6342 - val_accuracy: 0.8230 - 20s/epoch - 33ms/step
+625/625 - 9s - loss: 0.0427 - accuracy: 0.9852 - val_loss: 0.9505 - val_accuracy: 0.7426 - 9s/epoch - 14ms/step
 Epoch 8/15
-625/625 - 21s - loss: 0.0834 - accuracy: 0.9686 - val_loss: 0.6878 - val_accuracy: 0.8192 - 21s/epoch - 33ms/step
+625/625 - 9s - loss: 0.0309 - accuracy: 0.9901 - val_loss: 1.1198 - val_accuracy: 0.7332 - 9s/epoch - 15ms/step
 Epoch 9/15
-625/625 - 21s - loss: 0.0680 - accuracy: 0.9772 - val_loss: 0.7257 - val_accuracy: 0.8154 - 21s/epoch - 33ms/step
+625/625 - 9s - loss: 0.0147 - accuracy: 0.9952 - val_loss: 1.1105 - val_accuracy: 0.7756 - 9s/epoch - 14ms/step
 Epoch 10/15
-625/625 - 20s - loss: 0.0594 - accuracy: 0.9787 - val_loss: 0.7523 - val_accuracy: 0.8116 - 20s/epoch - 33ms/step
+625/625 - 9s - loss: 0.0326 - accuracy: 0.9886 - val_loss: 1.3681 - val_accuracy: 0.6656 - 9s/epoch - 14ms/step
 Epoch 11/15
-625/625 - 20s - loss: 0.0554 - accuracy: 0.9815 - val_loss: 0.7326 - val_accuracy: 0.8164 - 20s/epoch - 33ms/step
+625/625 - 9s - loss: 0.0403 - accuracy: 0.9863 - val_loss: 1.0803 - val_accuracy: 0.7236 - 9s/epoch - 14ms/step
 Epoch 12/15
-625/625 - 21s - loss: 0.0479 - accuracy: 0.9833 - val_loss: 0.8445 - val_accuracy: 0.8172 - 21s/epoch - 33ms/step
+625/625 - 9s - loss: 0.0191 - accuracy: 0.9945 - val_loss: 1.1680 - val_accuracy: 0.7624 - 9s/epoch - 14ms/step
 Epoch 13/15
-625/625 - 21s - loss: 0.0364 - accuracy: 0.9883 - val_loss: 1.0975 - val_accuracy: 0.8090 - 21s/epoch - 33ms/step
+625/625 - 9s - loss: 0.0071 - accuracy: 0.9978 - val_loss: 1.4750 - val_accuracy: 0.7036 - 9s/epoch - 14ms/step
 Epoch 14/15
-625/625 - 21s - loss: 0.0338 - accuracy: 0.9896 - val_loss: 0.9780 - val_accuracy: 0.8134 - 21s/epoch - 33ms/step
+625/625 - 9s - loss: 0.0338 - accuracy: 0.9875 - val_loss: 1.3892 - val_accuracy: 0.6512 - 9s/epoch - 14ms/step
 Epoch 15/15
-625/625 - 20s - loss: 0.0286 - accuracy: 0.9912 - val_loss: 1.1186 - val_accuracy: 0.8188 - 20s/epoch - 33ms/step</code></pre>
+625/625 - 9s - loss: 0.0387 - accuracy: 0.9859 - val_loss: 1.2856 - val_accuracy: 0.7468 - 9s/epoch - 14ms/step</code></pre>
 </div>
 </div>
 <p>Visualize training process:</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
 <span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Loss (training and validation)"</span>)</span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Training Steps"</span>)</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Training Epochs"</span>)</span>
 <span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>plt.ylim([<span class="dv">0</span>, <span class="dv">2</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(0.0, 2.0)</code></pre>
@@ -492,13 +492,13 @@ Epoch 15/15
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="imdb_lstm_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="imdb_rnn_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>plt.figure()</span>
 <span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Accuracy (training and validation)"</span>)</span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Training Steps"</span>)</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Training Epochs"</span>)</span>
 <span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>plt.ylim([<span class="dv">0</span>, <span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(0.0, 1.0)</code></pre>
@@ -509,7 +509,7 @@ Epoch 15/15
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="imdb_lstm_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="imdb_rnn_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -533,8 +533,8 @@ Epoch 15/15
 <span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>    user   system  elapsed 
-2052.154  543.898  313.404 </code></pre>
+<pre><code>   user  system elapsed 
+666.241 140.813 137.249 </code></pre>
 </div>
 </div>
 <p>Visualize training process:</p>
@@ -543,7 +543,7 @@ Epoch 15/15
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="imdb_lstm_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="imdb_rnn_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -565,15 +565,15 @@ Epoch 15/15
 <span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>  verbose <span class="op">=</span> <span class="dv">2</span></span>
 <span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>782/782 - 5s - loss: 1.1192 - accuracy: 0.8134 - 5s/epoch - 6ms/step</code></pre>
+<pre><code>782/782 - 2s - loss: 1.3076 - accuracy: 0.7447 - 2s/epoch - 3ms/step</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb57"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Test score:'</span>, score)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Test score: 1.11924409866333</code></pre>
+<pre><code>Test score: 1.307623028755188</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Test accuracy:'</span>, acc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Test accuracy: 0.8133599758148193</code></pre>
+<pre><code>Test accuracy: 0.7446799874305725</code></pre>
 </div>
 </div>
 </div>
@@ -587,11 +587,11 @@ Epoch 15/15
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">'Test score:'</span>, scores[[<span class="dv">1</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Test score: 1.058914</code></pre>
+<pre><code>Test score: 1.300084</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">'Test accuracy'</span>, scores[[<span class="dv">2</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Test accuracy 0.80016</code></pre>
+<pre><code>Test accuracy 0.74172</code></pre>
 </div>
 </div>
 </div>
