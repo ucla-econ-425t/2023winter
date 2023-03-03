@@ -178,6 +178,8 @@ Following are selected examples from the collection of [Keras code examples](htt
 
 - [MLP](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/imdb/imdb_mlp.html)
 
+- [RNN](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/imdb/imdb_rnn.html)
+
 - [LSTM](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/imdb/imdb_lstm.html)
 
 - [Warm-start using pre-trained embedding in TF Hub](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/imdb/imdb_tfhub.html)

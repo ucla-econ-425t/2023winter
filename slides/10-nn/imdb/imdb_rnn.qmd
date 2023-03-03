@@ -1,5 +1,5 @@
 ---
-title: "IMDB Sentiment Analysis (LSTM)"
+title: "IMDB Sentiment Analysis (Simple RNN)"
 subtitle: "Econ 425T / Biostat 203B"
 author: "Dr. Hua Zhou @ UCLA"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
@@ -148,7 +148,7 @@ cat('x_test shape:', dim(x_test), '\n')
 ```{python}
 model = keras.Sequential([
   layers.Embedding(max_features, 128),
-  layers.LSTM(units = 64, dropout = 0.5, recurrent_dropout = 0.5),
+  layers.SimpleRNN(units = 64),
   layers.Dense(units = 1, activation = 'sigmoid')
 ])
 
@@ -168,7 +168,7 @@ model.summary()
 model <- keras_model_sequential()
 model %>%
   layer_embedding(input_dim = max_features, output_dim = 128) %>% 
-  layer_lstm(units = 64, dropout = 0.5, recurrent_dropout = 0.5) %>% 
+  layer_simple_rnn(units = 64) %>% 
   layer_dense(units = 1, activation = 'sigmoid')
 
 # Try using different optimizers and different optimizer configs
@@ -180,6 +180,7 @@ model %>% compile(
 
 summary(model)
 ```
+
 
 :::
 
@@ -199,12 +200,11 @@ history = model.fit(
   verbose = 2 # one line per epoch
 )
 ```
-
 Visualize training process:
 ```{python}
 plt.figure()
 plt.ylabel("Loss (training and validation)")
-plt.xlabel("Training Steps")
+plt.xlabel("Training Epochs")
 plt.ylim([0, 2])
 plt.plot(history.history["loss"])
 plt.plot(history.history["val_loss"])
@@ -212,7 +212,7 @@ plt.show()
 
 plt.figure()
 plt.ylabel("Accuracy (training and validation)")
-plt.xlabel("Training Steps")
+plt.xlabel("Training Epochs")
 plt.ylim([0, 1])
 plt.plot(history.history["accuracy"])
 plt.plot(history.history["val_accuracy"])
