@@ -6,6 +6,7 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 format:
   html:
     theme: cosmo
+    embed-resources: true
     number-sections: true
     toc: true
     toc-depth: 4
@@ -172,7 +173,7 @@ Following are selected examples from the collection of [Keras code examples](htt
 
 [qmd](https://raw.githubusercontent.com/ucla-econ-425t/2023winter/master/slides/10-nn/pretrained_resnet50/pretrained_resnet50.qmd), [html](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/pretrained_resnet50/pretrained_resnet50.html).
 
-## Example: IMDB review sentiment analysis - Lasso, MLP, RNN, LSTM
+## Example: IMDB review sentiment analysis - Lasso, MLP, RNN, LSTM, fransformer
 
 - [Lasso penalized logistic regression](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/imdb/imdb_lasso.html)
 
@@ -181,6 +182,8 @@ Following are selected examples from the collection of [Keras code examples](htt
 - [RNN](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/imdb/imdb_rnn.html)
 
 - [LSTM](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/imdb/imdb_lstm.html)
+
+- [Trasnformer](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/imdb/imdb_transformer.html)
 
 - [Warm-start using pre-trained embedding in TF Hub](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/imdb/imdb_tfhub.html)
 
