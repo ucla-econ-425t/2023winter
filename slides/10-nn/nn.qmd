@@ -798,8 +798,6 @@ known as an **order-$L$ autoregression** model or AR($L$).
 
 ## Generative deep learning
 
-### Variational autoencoder (VAE)
-
 ### Generative Adversarial Networks (GANs)
 
 <p align="center">
