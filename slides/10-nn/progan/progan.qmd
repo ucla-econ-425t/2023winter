@@ -6,6 +6,7 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 format:
   html:
     theme: cosmo
+    embed-resources: true
     number-sections: true
     toc: true
     toc-depth: 4
