@@ -1,0 +1,395 @@
+---
+title: "Machine Learning Workflow: Multi-Layer Perceptron (Heart Data) Using Keras Tuner"
+subtitle: "Econ 425T"
+author: "Dr. Hua Zhou @ UCLA"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+format:
+  html:
+    theme: cosmo
+    embed-resources: true
+    number-sections: true
+    toc: true
+    toc-depth: 4
+    toc-location: left
+    code-fold: false
+engine: knitr
+knitr:
+  opts_chunk: 
+    fig.align: 'center'
+    # fig.width: 6
+    # fig.height: 4
+    message: FALSE
+    cache: false
+---
+
+Source (structured data): <https://keras.io/examples/structured_data/structured_data_classification_from_scratch/>. 
+
+Source (KerasTuner): <https://keras.io/guides/keras_tuner/getting_started/>
+
+Display system information for reproducibility.
+
+::: {.panel-tabset}
+
+#### Python
+
+```{python}
+import IPython
+print(IPython.sys_info())
+```
+
+:::
+
+## Overview
+
+![](https://www.tidymodels.org/start/resampling/img/resampling.svg)
+
+
+We illustrate the typical machine learning workflow for multi-layer perceptron (MLP) using the `Heart` data set from R `ISLR2` package. 
+
+1. Initial splitting to test and non-test sets.
+
+2. Pre-processing of data: not much is needed for regression trees.
+
+3. Tune the cost complexity pruning hyper-parameter(s) using 10-fold cross-validation (CV) on the non-test data.
+
+4. Choose the best model by validation.
+
+5. Final prediction on the test data.
+
+## Heart data
+
+The goal is to predict the binary outcome `AHD` (`Yes` or `No`) of patients.
+
+::: {.panel-tabset}
+
+#### Python
+
+```{python}
+# Load the pandas library
+import pandas as pd
+# Load numpy for array manipulation
+import numpy as np
+# Load seaborn plotting library
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+
+# Set font sizes in plots
+sns.set(font_scale = 1.2)
+# Display all columns
+pd.set_option('display.max_columns', None)
+
+# Drop rows with NaNs (not consistent as other workflows!!!)
+Heart = pd.read_csv("../../data/Heart.csv").drop(['Unnamed: 0'], axis = 1).dropna()
+Heart['AHD'] = Heart['AHD'] == 'Yes'
+Heart
+```
+
+```{python}
+# Numerical summaries
+Heart.describe(include = 'all')
+```
+
+Graphical summary:
+```{python}
+#| eval: false
+# Graphical summaries
+plt.figure()
+sns.pairplot(data = Heart);
+plt.show()
+```
+
+:::
+
+
+## Initial split into test and non-test sets
+
+We randomly split the data into 25% test data and 75% non-test data. Stratify on `AHD`.
+
+For the non-test data, we further split into 80% training data and 20% validation data.
+
+::: {.panel-tabset}
+
+#### Python
+
+```{python}
+from sklearn.model_selection import train_test_split
+
+# Initial test, non-test split
+Heart_other, Heart_test = train_test_split(
+  Heart, 
+  train_size = 0.75,
+  random_state = 425, # seed
+  stratify = Heart.AHD
+  )
+  
+# Train, validation split
+Heart_train, Heart_val = train_test_split(
+  Heart_other, 
+  train_size = 0.8,
+  random_state = 425, # seed
+  stratify = Heart_other.AHD
+  ) 
+  
+Heart_test.shape
+Heart_train.shape
+Heart_val.shape
+```
+
+Let's generate `tf.data.Dataset` objects for each dataframe:
+```{python}
+def dataframe_to_dataset(dataframe):
+    dataframe = dataframe.copy()
+    labels = dataframe.pop("AHD")
+    ds = tf.data.Dataset.from_tensor_slices((dict(dataframe), labels))
+    ds = ds.shuffle(buffer_size = len(dataframe))
+    return ds
+
+train_ds = dataframe_to_dataset(Heart_train)
+val_ds = dataframe_to_dataset(Heart_val)
+test_ds = dataframe_to_dataset(Heart_test)
+```
+
+Each `Dataset` yields a tuple `(input, target)` where `input` is a dictionary of features and `target` is the value `0` or `1`:
+```{python}
+for x, y in train_ds.take(1):
+    print("Input:", x)
+    print("Target:", y)
+```    
+
+Let's batch the datasets:
+```{python}
+train_ds = train_ds.batch(32)
+val_ds = val_ds.batch(32)
+test_ds = test_ds.batch(32)
+```
+
+## Feature preprocessing with Keras layers
+
+Below, we define 3 utility functions to do the operations:
+
+- `encode_numerical_feature` to apply featurewise normalization to numerical features.
+
+- `encode_string_categorical_feature` to first turn string inputs into integer indices, then one-hot encode these integer indices.
+
+- `encode_integer_categorical_feature` to one-hot encode integer categorical features.
+
+```{python}
+from tensorflow.keras.layers import IntegerLookup
+from tensorflow.keras.layers import Normalization
+from tensorflow.keras.layers import StringLookup
+
+def encode_numerical_feature(feature, name, dataset):
+    # Create a Normalization layer for our feature
+    normalizer = Normalization()
+
+    # Prepare a Dataset that only yields our feature
+    feature_ds = dataset.map(lambda x, y: x[name])
+    feature_ds = feature_ds.map(lambda x: tf.expand_dims(x, -1))
+
+    # Learn the statistics of the data
+    normalizer.adapt(feature_ds)
+
+    # Normalize the input feature
+    encoded_feature = normalizer(feature)
+    return encoded_feature
+
+def encode_categorical_feature(feature, name, dataset, is_string):
+    lookup_class = StringLookup if is_string else IntegerLookup
+    # Create a lookup layer which will turn strings into integer indices
+    lookup = lookup_class(output_mode="binary")
+
+    # Prepare a Dataset that only yields our feature
+    feature_ds = dataset.map(lambda x, y: x[name])
+    feature_ds = feature_ds.map(lambda x: tf.expand_dims(x, -1))
+
+    # Learn the set of possible string values and assign them a fixed integer index
+    lookup.adapt(feature_ds)
+
+    # Turn the string input into integer indices
+    encoded_feature = lookup(feature)
+    return encoded_feature
+```
+
+## Build a model
+
+```{python}
+# Categorical features encoded as integers
+Sex = keras.Input(shape = (1,), name = "Sex", dtype = "int64")
+Fbs = keras.Input(shape = (1,), name = "Fbs", dtype = "int64")
+RestECG = keras.Input(shape = (1,), name = "RestECG", dtype = "int64")
+ExAng = keras.Input(shape = (1,), name = "ExAng", dtype="int64")
+Ca = keras.Input(shape = (1,), name = "Ca", dtype = "int64")
+
+# Categorical feature encoded as string
+ChestPain = keras.Input(shape = (1,), name = "ChestPain", dtype = "string")
+Thal = keras.Input(shape = (1,), name = "Thal", dtype = "string")
+
+# Numerical features
+Age = keras.Input(shape = (1,), name = "Age")
+RestBP = keras.Input(shape = (1,), name = "RestBP")
+Chol = keras.Input(shape = (1,), name = "Chol")
+MaxHR = keras.Input(shape = (1,), name = "MaxHR")
+Oldpeak = keras.Input(shape = (1,), name = "Oldpeak")
+Slope = keras.Input(shape = (1,), name = "Slope")
+
+all_inputs = [
+    Sex,
+    Fbs,
+    RestECG,
+    ExAng,
+    Ca,
+    ChestPain,
+    Thal,
+    Age,
+    RestBP,
+    Chol,
+    MaxHR,
+    Oldpeak,
+    Slope,
+]
+
+# Integer categorical features
+Sex_encoded = encode_categorical_feature(Sex, "Sex", train_ds, False)
+Fbs_encoded = encode_categorical_feature(Fbs, "Fbs", train_ds, False)
+RestECG_encoded = encode_categorical_feature(RestECG, "RestECG", train_ds, False)
+ExAng_encoded = encode_categorical_feature(ExAng, "ExAng", train_ds, False)
+Ca_encoded = encode_categorical_feature(Ca, "Ca", train_ds, False)
+
+# String categorical features
+ChestPain_encoded = encode_categorical_feature(ChestPain, "ChestPain", train_ds, True)
+Thal_encoded = encode_categorical_feature(Thal, "Thal", train_ds, True)
+
+# Numerical features
+Age_encoded = encode_numerical_feature(Age, "Age", train_ds)
+RestBP_encoded = encode_numerical_feature(RestBP, "RestBP", train_ds)
+Chol_encoded = encode_numerical_feature(Chol, "Chol", train_ds)
+MaxHR_encoded = encode_numerical_feature(MaxHR, "MaxHR", train_ds)
+Oldpeak_encoded = encode_numerical_feature(Oldpeak, "Oldpeak", train_ds)
+Slope_encoded = encode_numerical_feature(Slope, "Slope", train_ds)
+
+all_features = layers.concatenate(
+    [
+        Sex_encoded,
+        Fbs_encoded,
+        RestECG_encoded,
+        ExAng_encoded,
+        Ca_encoded,
+        ChestPain_encoded,
+        Thal_encoded,
+        Age_encoded,
+        RestBP_encoded,
+        Chol_encoded,
+        MaxHR_encoded,
+        Oldpeak_encoded,
+        Slope_encoded
+    ]
+)
+```
+
+## Set up Keras Tuner
+
+```{python}
+import keras_tuner
+
+def build_model(hp):
+    x = layers.Dense(
+      # Tune number of units.
+      units = hp.Int("units", min_value = 16, max_value = 48, step=16),
+      # Tune the activation function to use.
+      activation = hp.Choice("activation", ["relu", "tanh"])
+      )(all_features)
+    # Tune whether to use dropout
+    if hp.Boolean("dropout"):  
+      x = layers.Dropout(0.5)(x)
+    output = layers.Dense(1, activation = "sigmoid")(x)
+    model = keras.Model(all_inputs, output)
+    model.compile(
+        optimizer = keras.optimizers.Adam(
+          learning_rate = hp.Float("lr", min_value = 1e-4, max_value = 1e-2, sampling="log")
+          ),
+        loss = "binary_crossentropy",
+        metrics = ["accuracy"],
+    )
+    return model
+
+build_model(keras_tuner.HyperParameters())
+```
+
+## Start the search
+
+After defining the search space, we need to select a tuner class to run the search. We may choose from `RandomSearch`, `BayesianOptimization` and `Hyperband`, which correspond to different tuning algorithms. Here we use `RandomSearch` as an example.
+
+To initialize the tuner, we need to specify several arguments in the initializer.
+
+- `hypermodel`. The model-building function, which is `build_model` in our case.
+
+- `objective`. The name of the objective to optimize (whether to minimize or maximize is automatically inferred for built-in metrics). We will introduce how to use custom metrics later in this tutorial.
+
+- `max_trials`. The total number of trials to run during the search.
+
+- `executions_per_trial`. The number of models that should be built and fit for each trial. Different trials have different hyperparameter values. The executions within the same trial have the same hyperparameter values. The purpose of having multiple executions per trial is to reduce results variance and therefore be able to more accurately assess the performance of a model. If you want to get results faster, you could set `executions_per_trial=1` (single round of training for each model configuration).
+
+- `overwrite`. Control whether to overwrite the previous results in the same directory or resume the previous search instead. Here we set `overwrite=True` to start a new search and ignore any previous results.
+
+- `directory`. A path to a directory for storing the search results.
+
+- `project_name`. The name of the sub-directory in the directory.
+
+```{python}
+tuner = keras_tuner.RandomSearch(
+    hypermodel = build_model,
+    objective = "val_accuracy",
+    max_trials = 10,
+    executions_per_trial= 2,
+    overwrite = True,
+    directory = "keras_tuner",
+    project_name = "heart_mlp",
+)
+```
+
+We can print a summary of the search space:
+```{python}
+tuner.search_space_summary()
+```
+
+Start the search
+```{python}
+tuner.search(train_ds, epochs = 50, validation_data = val_ds, verbose = 0)
+```
+
+## Query the result
+
+```{python}
+# Get the top 2 models.
+models = tuner.get_best_models(num_models = 2)
+best_model = models[0]
+# Build the model.
+# Needed for `Sequential` without specified `input_shape`.
+best_model.build(input_shape = (None, 13,))
+best_model.summary()
+```
+
+We can also print a summary of the search results.
+```{python}
+tuner.results_summary()
+```
+
+## Retrain the model
+
+If we want to train the model with the entire dataset, we may retrieve the best hyperparameters and retrain the model by ourself.
+```{python}
+other_ds = dataframe_to_dataset(Heart_other).batch(32)
+best_model.fit(other_ds, epochs = 50, verbose = 2)
+```
+
+## Final test evaluation
+
+```{python}
+score, acc = best_model.evaluate(test_ds, verbose = 2)
+print('Test score:', score)
+print('Test accuracy:', acc)
+```
