@@ -190,3 +190,7 @@ Following are selected examples from the collection of [Keras code examples](htt
 ## Example: Generate Artificial Faces with GAN
 
 - [Generate Artificial Faces with CelebA Progressive GAN Model](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/progan/progan.html)
+
+## Example: Neural style transfer
+
+- [Neural style transfer](https://ucla-econ-425t.github.io/2023winter/slides/10-nn/style_transfer/style_transfer.html)
