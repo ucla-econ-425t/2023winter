@@ -6,6 +6,7 @@ date: "`r format(Sys.time(), '%d %B, %Y')`"
 format:
   html:
     theme: cosmo
+    embed-resources: true
     number-sections: true
     toc: true
     toc-depth: 4
@@ -687,9 +688,14 @@ Depiction of a sequence of 20 words representing a single document: one-hot enco
 
 More recent large language models (LMMs) such at ChatGPT3 extensively use transformers, which are capable of capturing even longer memory than LSTM.
 
-[Transformer Models 101 (Towards Data Science)](https://towardsdatascience.com/transformer-models-101-getting-started-part-1-b3a77ccfa14d)
+- Visual Guide to Transformer Neural Networks (Youtube)  
+    - [Episode 1: Position Embeddings](https://youtu.be/dichIcUZfOw)  
+    - [Episode 2: Multi-Head & Self-Attention](https://youtu.be/mMa2PmYJlCo)  
+    - [Episode 3: Decoder’s Masked Attention](https://youtu.be/gJ9kaJsE78k)  
 
-[LSTM is dead. Long live Transformers! (Youtube)](https://youtu.be/S27pHKBEp30)
+- [Transformer Models 101 (Towards Data Science)](https://towardsdatascience.com/transformer-models-101-getting-started-part-1-b3a77ccfa14d)
+
+- [LSTM is dead. Long live Transformers! (Youtube)](https://youtu.be/S27pHKBEp30)
 
 ## Summary of RNNs
 
@@ -702,8 +708,6 @@ More recent large language models (LMMs) such at ChatGPT3 extensively use transf
 - Can have output also be a sequence, and input and output share the hidden units. So called `seq2seq` learning are used for language translation.
 
 ## Generative deep learning
-
-### Variational autoencoder (VAE)
 
 ### Generative Adversarial Networks (GANs)
 
