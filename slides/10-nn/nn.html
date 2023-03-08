@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.280">
+<meta name="generator" content="quarto-1.2.269">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Dr.&nbsp;Hua Zhou @ UCLA">
-<meta name="dcterms.date" content="2023-02-28">
+<meta name="dcterms.date" content="2023-03-07">
 
 <title>Neural Network and Deep Learning (Introduction)</title>
 <style>
@@ -81,12 +81,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#recurrent-neural-network-rnn" id="toc-recurrent-neural-network-rnn" class="nav-link" data-scroll-target="#recurrent-neural-network-rnn"><span class="toc-section-number">11</span>  Recurrent neural network (RNN)</a></li>
   <li><a href="#lstm" id="toc-lstm" class="nav-link" data-scroll-target="#lstm"><span class="toc-section-number">12</span>  LSTM</a></li>
   <li><a href="#transformers" id="toc-transformers" class="nav-link" data-scroll-target="#transformers"><span class="toc-section-number">13</span>  Transformers</a></li>
-  <li><a href="#nyse-new-york-stock-exchange-data" id="toc-nyse-new-york-stock-exchange-data" class="nav-link" data-scroll-target="#nyse-new-york-stock-exchange-data"><span class="toc-section-number">14</span>  NYSE (New York Stock Exchange) data</a>
-  <ul>
-  <li><a href="#rnn-forecaster" id="toc-rnn-forecaster" class="nav-link" data-scroll-target="#rnn-forecaster"><span class="toc-section-number">14.1</span>  RNN forecaster</a></li>
-  <li><a href="#autoregression-forecaster" id="toc-autoregression-forecaster" class="nav-link" data-scroll-target="#autoregression-forecaster"><span class="toc-section-number">14.2</span>  Autoregression forecaster</a></li>
-  <li><a href="#summary-of-rnns" id="toc-summary-of-rnns" class="nav-link" data-scroll-target="#summary-of-rnns"><span class="toc-section-number">14.3</span>  Summary of RNNs</a></li>
-  </ul></li>
+  <li><a href="#summary-of-rnns" id="toc-summary-of-rnns" class="nav-link" data-scroll-target="#summary-of-rnns"><span class="toc-section-number">14</span>  Summary of RNNs</a></li>
   <li><a href="#generative-deep-learning" id="toc-generative-deep-learning" class="nav-link" data-scroll-target="#generative-deep-learning"><span class="toc-section-number">15</span>  Generative deep learning</a>
   <ul>
   <li><a href="#variational-autoencoder-vae" id="toc-variational-autoencoder-vae" class="nav-link" data-scroll-target="#variational-autoencoder-vae"><span class="toc-section-number">15.1</span>  Variational autoencoder (VAE)</a></li>
@@ -130,7 +125,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">February 28, 2023</p>
+      <p class="date">March 7, 2023</p>
     </div>
   </div>
   
@@ -729,96 +724,14 @@ The <strong>gates</strong> give the ability to remove or add information to the 
 <p><a href="https://towardsdatascience.com/transformer-models-101-getting-started-part-1-b3a77ccfa14d">Transformer Models 101 (Towards Data Science)</a></p>
 <p><a href="https://youtu.be/S27pHKBEp30">LSTM is dead. Long live Transformers! (Youtube)</a></p>
 </section>
-<section id="nyse-new-york-stock-exchange-data" class="level2" data-number="14">
-<h2 data-number="14" class="anchored" data-anchor-id="nyse-new-york-stock-exchange-data"><span class="header-section-number">14</span> NYSE (New York Stock Exchange) data</h2>
-<div id="fig-nyse" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p align="center">
-<embed src="ISL_fig_10_14.pdf" width="600" height="600">
-</p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;13: Historical trading statistics from the New York Stock Exchange. Daily values of the normalized log trading volume, DJIA return, and log volatility are shown for a 24-year period from 1962-1986. We wish to predict trading volume on any day, given the history on all earlier days. To the left of the red bar (January 2, 1980) is training data, and to the right test data.</figcaption><p></p>
-</figure>
-</div>
-<ul>
-<li><p>Three daily time series for the period Dec 3, 1962-Dec 31, 1986 (6,051 trading days).</p>
-<ul>
-<li><p><code>Log trading volume</code>: This is the fraction of all outstanding shares that are traded on that day, relative to a 100-day moving average of past turnover, on the log scale.</p></li>
-<li><p><code>Dow Jones return</code>: This is the difference between the log of the Dow Jones Industrial Index on consecutive trading days.</p></li>
-<li><p><code>Log volatility</code>: This is based on the absolute values of daily price movements.</p></li>
-</ul></li>
-</ul>
-<div id="fig-autocor" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p align="center">
-<embed src="ISL_fig_10_15.pdf" width="600" height="400">
-</p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;14: The autocorrelation function for log volume. We see that nearby values are fairly strongly correlated, with correlations above 0.2 as far as 20 days apart.</figcaption><p></p>
-</figure>
-</div>
-<ul>
-<li><p>The <strong>autocorrelation</strong> at lag <span class="math inline">\(\ell\)</span> is the correlation of all pairs <span class="math inline">\((v_t, v_{t-\ell})\)</span> that are <span class="math inline">\(\ell\)</span> trading days apart.</p></li>
-<li><p>These sizable correlations give us confidence that past values will be helpful in predicting the future.</p></li>
-</ul>
-<section id="rnn-forecaster" class="level3" data-number="14.1">
-<h3 data-number="14.1" class="anchored" data-anchor-id="rnn-forecaster"><span class="header-section-number">14.1</span> RNN forecaster</h3>
-<ul>
-<li><p>We extract many short mini-series of input sequences <span class="math inline">\(X=\{X_1,X_2,\ldots,X_L\}\)</span> with a predefied length <span class="math inline">\(L\)</span> known as the <code>lag</code>: <span class="math display">\[\begin{eqnarray*}
-X_1 &amp;=&amp; \begin{pmatrix} v_{t-L} \\ r_{t-L} \\ z_{t-L} \end{pmatrix}, \\
-X_2 &amp;=&amp; \begin{pmatrix} v_{t-L+1} \\ r_{t-L+1} \\ z_{t-L+1} \end{pmatrix}, \\
-&amp;\vdots&amp; \\
-X_L &amp;=&amp; \begin{pmatrix} v_{t-1} \\ r_{t-1} \\ z_{t-1} \end{pmatrix},
-\end{eqnarray*}\]</span> and <span class="math display">\[
-Y = v_t.
-\]</span></p></li>
-<li><p>Since <span class="math inline">\(T=6,051\)</span>, with <span class="math inline">\(L=5\)</span> we can create <span class="math inline">\(6,046\)</span> such <span class="math inline">\((X,Y)\)</span> pairs.</p>
-<p>We use the first 4,281 as training data, and the following 1,770 as test data. We fit an RNN with 12 hidden units per lag step (i.e.&nbsp;per <span class="math inline">\(A_\ell\)</span>.)</p></li>
-</ul>
-<div id="fig-" class="quarto-figure quarto-figure-center anchored">
-<figure class="figure">
-<p align="center">
-<embed src="ISL_fig_10_16.pdf" width="600" height="400">
-</p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;15: RNN forecast of log volume on the NYSE test data. The black lines are the true volumes, and the superimposed orange the forecasts. The forecasted series accounts for 42% of the variance of log volume.</figcaption><p></p>
-</figure>
-</div>
-<ul>
-<li><span class="math inline">\(R^2=0.42\)</span> for RNN, <span class="math inline">\(R^2=0.18\)</span> for straw man (use yesterday’s value of <code>log trading volume</code> to predict that of today).</li>
-</ul>
-</section>
-<section id="autoregression-forecaster" class="level3" data-number="14.2">
-<h3 data-number="14.2" class="anchored" data-anchor-id="autoregression-forecaster"><span class="header-section-number">14.2</span> Autoregression forecaster</h3>
-<ul>
-<li><p>The RNN forecaster is similar in structure to a traditional <strong>autoregression</strong> procedure. <span class="math display">\[
-y = \begin{pmatrix} v_{L+1} \\ v_{L+2} \\ v_{L+3} \\ \vdots \\ v_T \end{pmatrix}, M = \begin{pmatrix}
-1 &amp; v_L &amp; v_{L-1} &amp; \cdots &amp; v_1 \\
-1 &amp; v_{L+1} &amp; v_{L} &amp; \cdots &amp; v_2 \\
-\vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
-1 &amp; v_{T-1} &amp; v_{T-2} &amp; \cdots &amp; v_{T-L}
-\end{pmatrix}.
-\]</span></p></li>
-<li><p>Fit an OLS regression of <span class="math inline">\(y\)</span> on <span class="math inline">\(M\)</span>, giving <span class="math display">\[
-\hat v_t = \hat \beta_0 + \hat \beta_1 v_{t-1} + \hat \beta_2 v_{t-2} + \cdots + \hat \beta_L v_{t-L},
-\]</span> known as an <strong>order-<span class="math inline">\(L\)</span> autoregression</strong> model or AR(<span class="math inline">\(L\)</span>).</p></li>
-<li><p>For the NYSE data we can include lagged versions of <code>DJ_return</code> and <code>log_volatility</code> in matrix <span class="math inline">\(M\)</span>, resulting in <span class="math inline">\(3L+1\)</span> columns.</p>
-<ul>
-<li><span class="math inline">\(R^2=0.41\)</span> for AR(5) model (16 parameters)</li>
-<li><span class="math inline">\(R^2=0.42\)</span> for RNN model (205 parameter)<br>
-</li>
-<li><span class="math inline">\(R^2=0.42\)</span> for AR(5) model fit by neural network<br>
-</li>
-<li><span class="math inline">\(R^2=0.46\)</span> for all models if we include <code>day_of_week</code> of the day being predicted.</li>
-</ul></li>
-</ul>
-</section>
-<section id="summary-of-rnns" class="level3" data-number="14.3">
-<h3 data-number="14.3" class="anchored" data-anchor-id="summary-of-rnns"><span class="header-section-number">14.3</span> Summary of RNNs</h3>
+<section id="summary-of-rnns" class="level2" data-number="14">
+<h2 data-number="14" class="anchored" data-anchor-id="summary-of-rnns"><span class="header-section-number">14</span> Summary of RNNs</h2>
 <ul>
 <li><p>We have presented the simplest of RNNs. Many more complex variations exist.</p></li>
 <li><p>One variation treats the sequence as a one-dimensional image, and uses CNNs for fitting. For example, a sequence of words using an embedding representation can be viewed as an image, and the CNN convolves by sliding a convolutional filter along the sequence.</p></li>
 <li><p>Can have additional hidden layers, where each hidden layer is a sequence, and treats the previous hidden layer as an input sequence.</p></li>
 <li><p>Can have output also be a sequence, and input and output share the hidden units. So called <code>seq2seq</code> learning are used for language translation.</p></li>
 </ul>
-</section>
 </section>
 <section id="generative-deep-learning" class="level2" data-number="15">
 <h2 data-number="15" class="anchored" data-anchor-id="generative-deep-learning"><span class="header-section-number">15</span> Generative deep learning</h2>
@@ -914,7 +827,7 @@ f(x_i) = \beta_0 + \sum_{k=1}^K \beta_k g(w_{k0} + \sum_{j=1}^p w_{kj} x_{ij}).
 <p align="center">
 <embed src="ISL_fig_10_17.pdf" width="600" height="450">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;16: Illustration of gradient descent for one-dimensional <span class="math inline">\(\theta\)</span>. The objective function <span class="math inline">\(R(\theta)\)</span> is not convex, and has two minima, one at <span class="math inline">\(\theta = −0.46\)</span> (local), the other at <span class="math inline">\(\theta = 1.02\)</span> (global). Starting at some value <span class="math inline">\(\theta^0\)</span> (typically randomly chosen), each step in <span class="math inline">\(\theta\)</span> moves downhill - against the gradient - until it cannot go down any further. Here gradient descent reached the global minimum in 7 steps.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;13: Illustration of gradient descent for one-dimensional <span class="math inline">\(\theta\)</span>. The objective function <span class="math inline">\(R(\theta)\)</span> is not convex, and has two minima, one at <span class="math inline">\(\theta = −0.46\)</span> (local), the other at <span class="math inline">\(\theta = 1.02\)</span> (global). Starting at some value <span class="math inline">\(\theta^0\)</span> (typically randomly chosen), each step in <span class="math inline">\(\theta\)</span> moves downhill - against the gradient - until it cannot go down any further. Here gradient descent reached the global minimum in 7 steps.</figcaption><p></p>
 </figure>
 </div>
 <ul>
@@ -967,7 +880,7 @@ z_{ik} = w_{k0} + \sum_{j=1}^p w_{kj} x_{ij}.
 <p align="center">
 <img src="ISL_fig_10_19.png" class="img-fluid figure-img" width="600">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;17: Dropout Learning. Left: a fully connected network. Right: network with dropout in the input and hidden layer. The nodes in grey are selected at random, and ignored in an instance of training.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;14: Dropout Learning. Left: a fully connected network. Right: network with dropout in the input and hidden layer. The nodes in grey are selected at random, and ignored in an instance of training.</figcaption><p></p>
 </figure>
 </div>
 <ul>
@@ -1019,7 +932,7 @@ y= \sin(x) + \epsilon
 <p align="center">
 <embed src="ISL_fig_10_20.pdf" width="600" height="400">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;18: Double descent phenomenon, illustrated using error plots for a one-dimensional natural spline example. The horizontal axis refers to the number of spline basis functions on the log scale. The training error hits zero when the degrees of freedom coincides with the sample size <span class="math inline">\(n = 20\)</span>, the “interpolation threshold”, and remains zero thereafter. The test error increases dramatically at this threshold, but then descends again to a reasonable value before finally increasing again.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;15: Double descent phenomenon, illustrated using error plots for a one-dimensional natural spline example. The horizontal axis refers to the number of spline basis functions on the log scale. The training error hits zero when the degrees of freedom coincides with the sample size <span class="math inline">\(n = 20\)</span>, the “interpolation threshold”, and remains zero thereafter. The test error increases dramatically at this threshold, but then descends again to a reasonable value before finally increasing again.</figcaption><p></p>
 </figure>
 </div>
 <ul>
@@ -1031,7 +944,7 @@ y= \sin(x) + \epsilon
 <p align="center">
 <embed src="ISL_fig_10_21.pdf" width="600" height="400">
 </p>
-<p></p><figcaption class="figure-caption">Figure&nbsp;19: To achieve a zero-residual solution with <span class="math inline">\(d = 20\)</span> is a real stretch! Easier for larger <span class="math inline">\(d\)</span>.</figcaption><p></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;16: To achieve a zero-residual solution with <span class="math inline">\(d = 20\)</span> is a real stretch! Easier for larger <span class="math inline">\(d\)</span>.</figcaption><p></p>
 </figure>
 </div>
 <ul>
