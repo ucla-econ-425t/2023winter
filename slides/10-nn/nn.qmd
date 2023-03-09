@@ -28,6 +28,8 @@ Credit: This note heavily uses material from
 
 - [_Elements of Statistical Learning: Data Mining, Inference, and Prediction_](https://hastie.su.domains/ElemStatLearn/) (ESL2).
 
+- [_Deep Learning with Python_](https://www.manning.com/books/deep-learning-with-python) by Francois Chollet.
+
 - UFLDL: <http://ufldl.stanford.edu/tutorial/>.
 
 - Stanford CS231n: <http://cs231n.github.io>.

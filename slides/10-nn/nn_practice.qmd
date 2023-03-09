@@ -32,6 +32,8 @@ sessionInfo()
 
 This lecture draws heavily on following sources.
 
+- [_Deep Learning with Python_](https://www.manning.com/books/deep-learning-with-python) by Francois Chollet.
+
 - _Learning Deep Learning_ lectures by Dr. Qiyang Hu (UCLA Office of Advanced Research Computing): <https://github.com/huqy/deep_learning_workshops>
 
 ## Software
