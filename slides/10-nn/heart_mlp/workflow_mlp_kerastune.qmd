@@ -111,10 +111,6 @@ We randomly split the data into 25% test data and 75% non-test data. Stratify on
 
 For the non-test data, we further split into 80% training data and 20% validation data.
 
-::: {.panel-tabset}
-
-#### Python
-
 ```{python}
 from sklearn.model_selection import train_test_split
 
@@ -342,7 +338,8 @@ To initialize the tuner, we need to specify several arguments in the initializer
 ```{python}
 tuner = keras_tuner.RandomSearch(
     hypermodel = build_model,
-    objective = "val_accuracy",
+    # validation criterion
+    objective = "val_auc_score", # val_accuracy
     max_trials = 10,
     executions_per_trial= 2,
     overwrite = True,
