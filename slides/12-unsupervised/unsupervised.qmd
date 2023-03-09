@@ -1,0 +1,249 @@
+---
+title: "Unsupervised Learning (ISL 12)"
+subtitle: "Econ 425T"
+author: "Dr. Hua Zhou @ UCLA"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+format:
+  html:
+    theme: cosmo
+    embed-resources: true
+    number-sections: true
+    toc: true
+    toc-depth: 4
+    toc-location: left
+    code-fold: false
+engine: knitr
+knitr:
+  opts_chunk: 
+    fig.align: 'center'
+    # fig.width: 6
+    # fig.height: 4
+    message: FALSE
+    cache: false
+---
+
+Credit: This note heavily uses material from the books [_An Introduction to Statistical Learning: with Applications in R_](https://www.statlearning.com/) (ISL2) and [_Elements of Statistical Learning: Data Mining, Inference, and Prediction_](https://hastie.su.domains/ElemStatLearn/) (ESL2).
+
+Display system information for reproducibility.
+
+::: {.panel-tabset}
+
+## Python
+
+```{python}
+import IPython
+print(IPython.sys_info())
+```
+
+## R
+
+```{r}
+sessionInfo()
+```
+
+:::
+
+## Overview
+
+- Most of this course focuses on **supervised learning** methods such as regression and classification.
+
+- In that setting we observe both a set of features $X_1,X_2,...,X_p$ for each object, as well as a response or outcome variable $Y$ . The goal is then to predict $Y$ using $X_1,X_2,...,X_p$.
+
+- In this lecture we instead focus on **unsupervised learning**, we where observe only the features $X_1,X_2,...,X_p$. We are not interested in prediction, because we do not have an associated response variable $Y$.
+
+### Goals of unsupervised learning
+
+- The goal is to discover interesting things about the measurements: is there an informative way to visualize the data? Can we discover subgroups among the variables or among the observations?
+
+- We discuss two methods:
+
+    - **principal components analysis**, a tool used for data visualization or data pre-processing before supervised techniques are applied, and  
+    - **clusterng**, a broad class of methods for discovering unknown subgroups in data.
+    
+### Challenge of unsupervised learning
+
+- Unsupervised learning is more subjective than supervised learning, as there is no simple goal for the analysis, such as prediction of a response.
+
+- But techniques for unsupervised learning are of growing importance in a number of fields:
+
+    - subgroups of breast cancer patients grouped by their gene expression measurements,
+    
+    - groups of shoppers characterized by their browsing and purchase histories,
+    
+    - movies grouped by the ratings assigned by movie viewers.
+    
+### Another advantage
+
+- It is often easier to obtain **unlabeled data** — from a lab instrument or a computer — than **labeled data**, which can require human intervention.
+
+- For example it is difficult to automatically assess the overall sentiment of a movie review: is it favorable or not?
+
+## Principal Components Analysis (PCA)
+
+- PCA produces a low-dimensional representation of a dataset. It finds a sequence of linear combinations of the variables that have maximal variance, and are mutually uncorrelated.
+
+- Apart from producing derived variables for use in supervised learning problems, PCA also serves as a tool for data visualization.
+
+- The first **principal component** of a set of features $X_1,X_2,...,X_p$ is the normalized linear combination of the features
+$$
+Z_1 = \phi_{11} X_1 + \phi_{21} X_2 + \cdots + \phi_{p1} X_p
+$$
+that has the largest variance. By **normalized**, we mean that $\sum_{j=1}^p \phi_{j1}^2 = 1$.
+
+- We refer to the elements $\phi_{11}, \ldots, \phi_{p1}$ as the **loadings** of the first principal component; together, the loadings make up the principal component loading vector, $\phi_1 = (\phi_{11}, \ldots, \phi_{p1})$.
+
+- We constrain the loadings so that their sum of squares is equal to one, since otherwise setting these elements to be arbitrarily large in absolute value could result in an arbitrarily large variance.
+
+::: {#fig-advertising-pc-1}
+
+<p align="center">
+![](ISL_fig_6_14.pdf){width=500px height=400px}
+</p>
+
+The population size (`pop`) and ad spending (`ad`) for 100 different cities are shown as purple circles. The green solid line indicates the first principal component, and the blue dashed line indicates the second principal component.
+
+:::
+
+### Computation of PCs
+
+- Suppose we have an $n \times p$ data set $\boldsymbol{X}$. Since we are only interested in variance, we assume that each of the variables in $\boldsymbol{X}$ has been centered to have mean zero (that is, the column means of $\boldsymbol{X}$ are zero).
+
+- We then look for the linear combination of the sample feature values of the form
+$$
+z_{i1} = \phi_{11} x_{i1} + \phi_{21} x_{i2} + \cdots + \phi_{p1} x_{ip}
+$$ {#eq-pc-1}
+for $i=1,\ldots,n$ that has largest sample variance, subject to the constraint that $\sum_{j=1}^p \phi_{j1}^2 = 1$.
+
+- Since each of the $x_{ij}$ has mean zero, then so does $z_{i1}$ (for any values of $\phi_{j1}$). Hence the sample variance of the $z_{i1}$ can be written as $\frac{1}{n} \sum_{i=1}^n z_{i1}^2$.
+
+- Plugging in (@eq-pc-1) the first principal component loading vector solves the optimization problem
+$$
+\max_{\phi_{11},\ldots,\phi_{p1}} \frac{1}{n} \sum_{i=1}^n \left( \sum_{j=1}^p \phi_{j1} x_{ij} \right)^2 \text{ subject to } \sum_{j=1}^p \phi_{j1}^2 = 1.
+$$
+
+- This problem can be solved via a singular-value decomposition (SVD) of the matrix $\boldsymbol{X}$, a standard technique in linear algebra.
+
+- We refer to $Z_1$ as the first principal component, with realized values $z_{11}, \ldots, z_{n1}$. 
+### Geometry of PCA
+
+- The loading vector $\phi_1$ with elements $\phi_{11}, \phi_{21}$, \ldots, $\phi_{p1}$ defines a direction in feature space along which the data vary the most.
+
+- If we project the $n$ data points $x_1, \ldots, x_n$ onto this direction, the projected values are the principal component scores $z_{11},\ldots,z_{n1}$ themselves.
+
+### Futher PCs
+
+- The second principal component is the linear combination of $X_1, \ldots, X_p$ that has maximal variance among all linear combinations that are **uncorrelated** with $Z_1$.
+
+- The second principal component scores $z_{12}, z_{22}, \ldots, z_{n2}$ take the form
+$$
+z_{i2} = \phi_{12} x_{i1} + \phi_{22} x_{i2} + \cdots + \phi_{p2} x_{ip},
+$$
+where $\phi_2$ is the second principal component loading vector, with elements $\phi_{12}, \phi_{22}, \ldots , \phi_{p2}$.
+
+- It turns out that constraining $Z_2$ to be uncorrelated with $Z_1$ is equivalent to constraining the direction $\phi_2$ to be orthogonal (perpendicular) to the direction $\phi_1$. And so on.
+
+- The principal component directions $\phi_1, \phi_2, \phi_3, \ldots$ are the ordered sequence of right singular vectors of the matrix $\boldsymbol{X}$, and the variances of the components are $\frac{1}{n}$ times the squares of the singular values. There are at most $\min(n − 1, p)$ principal components.
+
+### `USAarrests` data
+
+- For each of the fifty states in the United States, the data set contains the number of arrests per
+100,000 residents for each of three crimes: `Assault`, `Murder`, and `Rape`. We also record `UrbanPop` (the percent of the population in each state living in urban areas).
+
+- The principal component score vectors have length $n = 50$, and the principal component loading vectors have length $p = 4$.
+
+- PCA was performed after standardizing each variable to have mean zero and standard deviation one.
+
+::: {#fig-advertising-pc-1}
+
+<p align="center">
+![](ISL_fig_12_1.pdf){width=500px height=500px}
+</p>
+
+The blue state names represent the scores for the first two principal components. The orange arrows indicate the first two principal component loading vectors (with axes on the top and right). For example, the loading for `Rape` on the first component is 0.54, and its loading on the second principal component 0.17 [the word Rape is centered at the point (0.54, 0.17)]. This figure is known as a **biplot**, because it displays both the principal component scores and the principal component loadings.
+
+:::
+
+- PCA Loadings:
+
+|          | PC1       | PC2        |
+|----------|-----------|------------|
+| Murder   | 0.5358995 | -0.4181809 |
+| Assault  | 0.5831836 | -0.1879856 |
+| UrbanPop | 0.2781909 | 0.8728062  |
+| Rape     | 0.5434321 | 0.1673186  |
+
+### PCA find the hyperplane closest to the observations
+
+::: {#fig-advertising-pc-1}
+
+<p align="center">
+![](ISL_fig_12_2a.pdf){width=300px height=300px}
+![](ISL_fig_12_2b.pdf){width=300px height=300px}
+</p>
+
+Ninety observations simulated in three dimensions. The observa- tions are displayed in color for ease of visualization. Left: the first two principal component directions span the plane that best fits the data. The plane is positioned to minimize the sum of squared distances to each point. Right: the first two principal component score vectors give the coordinates of the projection of the 90 observations onto the plane.
+
+:::
+
+- The first principal component loading vector has a very special property: it defines the line in $p$-dimensional space that is **closest** to the $n$ observations (using average squared Euclidean distance as a measure of closeness).
+
+- The notion of principal components as the dimensions that are closest to the $n$ observations extends beyond just the first principal component.
+
+- For instance, the first two principal components of a data set span the plane that is closest to the $n$ observations, in terms of average squared Euclidean distance.
+
+### Scaling
+
+- If the variables are in different units, scaling each to have standard deviation equal to one is recommended.
+
+- If they are in the same units, you might or might not scale the variables.
+
+::: {#fig-usaarrest-scaled-vs-unscaled}
+
+<p align="center">
+![](ISL_fig_12_4.pdf){width=600px height=300px}
+</p>
+
+Two principal component biplots for the USArrests data.
+
+:::
+
+### Proportion variance explained (PVE)
+
+- To understand the strength of each component, we are interested in knowing the proportion of variance explained (PVE) by each one.
+
+- The **total variance** present in a data set (assuming that the variables have been centered to have mean zero) is defined as
+$$
+\sum_{j=1}^p \text{Var}(X_j) = \sum_{j=1}^p \frac{1}{n} \sum_{i=1}^n x_{ij}^2,
+$$
+and the variance explained by the $m$th principal component is
+$$
+\text{Var}(Z_m) = \frac{1}{n} \sum_{i=1}^n z_{im}^2.
+$$
+
+- It can be shown that
+$$
+\sum_{j=1}^p \text{Var}(X_j) = \sum_{m=1}^M \text{Var}(Z_m),
+$$
+with $M = \min(n-1, p)$.
+
+- Therefore, the PVE of the $m$th principal component is given by the positive quantity between 0 and 1
+$$
+\frac{\sum_{i=1}^n z_{im}^2}{\sum_{j=1}^p \sum_{i=1}^n x_{ij}^2}.
+$$
+
+- The PVEs sum to one. We sometimes display the cumulative PVEs.
+
+::: {#fig-usaarrest-PVE}
+
+<p align="center">
+![](ISL_fig_12_3.pdf){width=600px height=300px}
+</p>
+
+Left: a scree plot depicting the proportion of variance explained by each of the four principal components in the `USArrests` data. Right: the cu- mulative proportion of variance explained by the four principal components in the `USArrests` data.
+
+:::
+
+- The **scree plot** on the previous slide can be used as a guide: we look for an **elbow**.
+
+## Clustering
+
