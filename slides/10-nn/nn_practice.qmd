@@ -39,12 +39,17 @@ This lecture draws heavily on following sources.
 ## Software
 
 - High-level software focuses on user-friendly interface to specify and train models.  
-[Keras](https://keras.io), [scikit-learn](http://scikit-learn.org/stable/), [PyTorch](http://pytorch.org), ...
+[Keras](https://keras.io), [PyTorch](http://pytorch.org), [scikit-learn](http://scikit-learn.org/stable/), ...
 
 - Lower-level software focuses on developer tools for implementing deep learning models.   
-[TensorFlow](https://www.tensorflow.org), [PyTorch](http://pytorch.org),  [Theano](https://github.com/Theano/Theano), [CNTK](https://github.com/Microsoft/CNTK), [Caffe](http://caffe.berkeleyvision.org), [Torch](http://torch.ch), ...
+[TensorFlow](https://www.tensorflow.org), [PyTorch](http://pytorch.org),  [CNTK](https://github.com/Microsoft/CNTK), [Theano](https://github.com/Theano/Theano) (stopped development!),  [Caffe](http://caffe.berkeleyvision.org), [Torch](http://torch.ch), ...
 
 - Most tools are developed in Python plus a low-level language (C/C++, CUDA).
+
+<p align="center">
+![](./karas-pytorch-tensorflow.png){width=500px}
+</p>
+Source: <https://www.simplilearn.com/keras-vs-tensorflow-vs-pytorch-article>
 
 ## TensorFlow
 
@@ -64,8 +69,11 @@ This lecture draws heavily on following sources.
 ![](./tf_toolkit_hierarchy.png){width=600px}
 </p>
 
+- TensorFlow supports [distributed training](https://www.tensorflow.org/guide/distributed_training).
 
-- Used in a variety of Google apps: speech recognition (Google assistant), Gmail (Smart Reply), search, translate, self-driving car, ...
+- TensorFlow does not support Apple Silicon (M1/M2) directly, but Apple provides the `tensorflow-macos` package for running on M1/M2 GPUs.
+
+- Used in variety of Google apps: speech recognition (Google assistant), Gmail (Smart Reply), search, translate, self-driving car, ...
 
 > when you have a hammer, everything looks like a nail.  
 
@@ -136,7 +144,7 @@ Source: <https://www.asimovinstitute.org/neural-network-zoo/>
 
     - Stochastic GD. 
     
-    - Adding momentum: classical momentum, Nesterov acceleration.  
+    - Adding momentum: classical momentum, Nesterov acceleration. [Visualize](https://ucla-biostat-216.github.io/2022fall/slides/13-optim/13-optim.html)   
     
     - Adaptive learning rate: AdaGrad, AdaDelta, RMSprop. 
     
