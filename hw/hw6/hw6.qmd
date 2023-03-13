@@ -97,7 +97,7 @@ In general, we will tune the lag $L$ to acheive best forecasting performance. In
 
 Pay attention to the nuance of splitting time series data for cross validation. Study and use the [`TimeSeriesSplit`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html) in Scikit-Learn. Make sure to use the same splits when tuning different machine learning algorithms.
 
-Use the $R^2$ between forecast and actual values as the cross validation and test evaluation crtierion.
+Use the $R^2$ between forecast and actual values as the cross validation and test evaluation criterion.
 
 ## Baseline method (20 pts)
 
