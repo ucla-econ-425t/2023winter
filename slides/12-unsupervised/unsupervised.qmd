@@ -156,7 +156,7 @@ where $\phi_2$ is the second principal component loading vector, with elements $
 ::: {#fig-advertising-pc-1}
 
 <p align="center">
-![](ISL_fig_12_1.pdf){width=500px height=500px}
+![](ISL_fig_12_1.pdf){width=500px height=550px}
 </p>
 
 The blue state names represent the scores for the first two principal components. The orange arrows indicate the first two principal component loading vectors (with axes on the top and right). For example, the loading for `Rape` on the first component is 0.54, and its loading on the second principal component 0.17 [the word Rape is centered at the point (0.54, 0.17)]. This figure is known as a **biplot**, because it displays both the principal component scores and the principal component loadings.
@@ -177,8 +177,8 @@ The blue state names represent the scores for the first two principal components
 ::: {#fig-advertising-pc-1}
 
 <p align="center">
-![](ISL_fig_12_2a.pdf){width=300px height=300px}
-![](ISL_fig_12_2b.pdf){width=300px height=300px}
+![](ISL_fig_12_2a.pdf){width=300px height=350px}
+![](ISL_fig_12_2b.pdf){width=300px height=350px}
 </p>
 
 Ninety observations simulated in three dimensions. The observa- tions are displayed in color for ease of visualization. Left: the first two principal component directions span the plane that best fits the data. The plane is positioned to minimize the sum of squared distances to each point. Right: the first two principal component score vectors give the coordinates of the projection of the 90 observations onto the plane.
@@ -200,7 +200,7 @@ Ninety observations simulated in three dimensions. The observa- tions are displa
 ::: {#fig-usaarrest-scaled-vs-unscaled}
 
 <p align="center">
-![](ISL_fig_12_4.pdf){width=600px height=300px}
+![](ISL_fig_12_4.pdf){width=600px height=350px}
 </p>
 
 Two principal component biplots for the USArrests data.
@@ -236,7 +236,7 @@ $$
 ::: {#fig-usaarrest-PVE}
 
 <p align="center">
-![](ISL_fig_12_3.pdf){width=600px height=300px}
+![](ISL_fig_12_3.pdf){width=600px height=350px}
 </p>
 
 Left: a scree plot depicting the proportion of variance explained by each of the four principal components in the `USArrests` data. Right: the cu- mulative proportion of variance explained by the four principal components in the `USArrests` data.
@@ -246,4 +246,150 @@ Left: a scree plot depicting the proportion of variance explained by each of the
 - The **scree plot** on the previous slide can be used as a guide: we look for an **elbow**.
 
 ## Clustering
+
+- PCA looks for a low-dimensional representation of the observations that explains a good fraction of the variance.
+
+- Clustering looks for homogeneous subgroups among the observations.
+
+### Two clustering methods
+
+- In **K-means clustering**, we seek to partition the observations into a pre-specified number of clusters.
+
+- In **hierarchical clustering**, we do not know in advance how many clusters we want; in fact, we end up with a tree-like visual representation of the observations, called a **dendrogram**, that allows us to view at once the clusterings obtained for each possible number of clusters, from 1 to $n$.
+
+### K-means clustering
+
+<p align="center">
+![](ISL_fig_12_7.pdf){width=600px height=350px}
+</p>
+
+- Let $C_1,\ldots,C_K$ denotesetscontainingtheindicesofthe observations in each cluster. These sets satisfy two properties:
+
+    1. $C_1 \cup C_2 \cup \ldots \cup C_K = \{1,\ldots,n\}$. In other words, each observation belongs to at least one of the $K$ clusters.
+    
+    2. $C_k \cap C_{k'} = \emptyset$ for all $k \ne k'$. In other words, the clusters are non-overlapping: no observation belongs to more than one cluster. 
+    
+    For instance, if the $i$th observation is in the $k$th cluster, then $i \in C_k$. 
+    
+- The idea behind $K$-means clustering is that a **good** clustering is one for which the **within-cluster variation** is as small as possible.
+
+- The within-cluster variation for cluster $C_k$ is a measure WCV($C_k$) of the amount by which the observations within a cluster differ from each other.
+
+- Hence we want to solve the problem
+$$
+\min_{C_1,\ldots,C_K} \left\{ \sum_{i=1}^K \text{WCV}(C_k) \right\}.
+$$
+In words, this formula says that we want to partition the observations into $K$ clusters such that the total within-cluster variation, summed over all $K$ clusters, is as small as possible.
+
+- Typically we use Euclidean distance
+$$
+\text{WCV}(C_k) = \frac{1}{|C_k|} \sum_{i, i' \in C_k} \sum_{j=1}^p (x_{ij} - x_{i'j})^2,
+$$
+where $|C_k|$ denotes the number of observations in the $k$th cluster.
+
+- Therefore the optimization problem that defines $K$-means clustering is
+$$
+\min_{C_1,\ldots,C_K} \left\{ \sum_{i=1}^K \frac{1}{|C_k|} \sum_{i, i' \in C_k} \sum_{j=1}^p (x_{ij} - x_{i'j})^2 \right\}.
+$$
+
+- $K$-means clustering algorithm: 
+
+    1. Randomly assign a number, from 1 to $K$, to each of the observations. These serve as initial cluster assignments for the observations
+    
+    2. Iterate until the cluster assignments stop changing:
+
+        2.a. For each of the $K$ clusters, compute the cluster **centroid**. The $k$th cluster centroid is the vector of the $p$ feature means for the observations in the $k$th cluster.
+        
+        2.b. Assign each observation to the cluster whose centroid is closest (where **closest** is defined using Euclidean distance).
+        
+- This algorithm is guaranteed to decrease the value of the objective at each step. Why? Note that
+$$
+\frac{1}{|C_k|} \sum_{i, i' \in C_k} \sum_{j=1}^p (x_{ij} - x_{i'j})^2 = 2 \sum_{i \in C_k} \sum_{j=1}^p (x_{ij} - \bar{x}_{kj})^2,
+$$
+where $\bar{x}_{kj} = \frac{1}{|C_k|} \sum_{i \in C_k} x_{ij}$ is the mean for for feature $j$ in cluster $C_k$. However it is not guaranteed to give the global minimum.
+
+<p align="center">
+![](ISL_fig_12_8.pdf){width=600px height=700px}
+</p>
+
+- Different staring values.
+
+<p align="center">
+![](ISL_fig_12_9.pdf){width=600px height=700px}
+</p>
+
+### Hierarchical clustering
+
+- $K$-means clustering requires us to pre-specify the number of clusters $K$. This can be a disadvantage (later we discuss strategies for choosing $K$).
+
+- **Hierarchical clustering** is an alternative approach which does not require that we commit to a particular choice of $K$.
+
+- We describe **bottom-up** or **agglomerative** clustering. This is the most common type of hierarchical clustering, and refers to the fact that a dendrogram is built starting from the leaves and combining clusters up to the trunk. 
+
+- Hierarchical clustering algorithm
+
+    - Start with each point in its own cluster.
+    
+    - Identify the closest two clusters and merge them.
+    
+    - Repeat.
+    
+    - Ends when all points are in a single cluster.
+    
+- An example.
+
+::: {#figure-bottom-up}
+
+<p align="center">
+![](ISL_fig_12_10.pdf){width=500px height=500px}
+</p>
+
+45 observations generated in 2-dimensional space. In reality there are three distinct classes, shown in separate colors. However, we will treat these class labels as unknown and will seek to cluster the observations in order to discover the classes from the data.
+
+::: 
+
+::: {#figure-bottom-up}
+
+<p align="center">
+![](ISL_fig_12_11.pdf){width=600px height=450px}
+</p>
+
+Left: Dendrogram obtained from hierarchically clustering the data from previous slide, with complete linkage and Euclidean distance. Center: The dendrogram from the left-hand panel, cut at a height of 9 (indicated by the dashed line). This cut results in two distinct clusters, shown in different colors. Right: The dendrogram from the left-hand panel, now cut at a height of 5. This cut results in three distinct clusters, shown in different colors. Note that the colors were not used in clustering, but are simply used for display purposes in this figure.
+
+::: 
+
+- Types of linkage.
+
+| _Linkage_ | _Description_                                                                                                                                                                                        |
+|-----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Complete  | Maximal inter-cluster dissimilarity. Compute all pairwise dissimilarities between the observations in cluster A and the observations in cluster B, and record the **largest** of these dissimilarities.  |
+| Single    | Minimal inter-cluster dissimilarity. Compute all pairwise dissimilarities between the observations in cluster A and the observations in cluster B, and record the **smallest** of these dissimilarities. |
+| Average   | Mean inter-cluster dissimilarity. Compute all pairwise dissimilarities between the observations in cluster A and the observations in cluster B, and record the **average** of these dissimilarities.    |
+| Centroid  | Dissimilarity between the centroid for cluster A (a mean vector of length $p$) and the centroid for cluster B. Centroid linkage can result in undesirable **inversions**.                                |
+
+- Choice of dissimilarity measure.
+
+    - So far have used Euclidean distance.
+    
+    - An alternative is **correlation-based distance** which considers two observations to be similar if their features are highly correlated.
+    
+- Practical issues.
+
+    - Scaling of the variables matters!
+    
+    - What dissimilarity measure should be used?
+    
+    - What type of linkage should be used?
+    
+    - How many clusters to choose?
+    
+    - Which features should we use to drive the clustering?
+    
+## Conclusions
+
+- **Unsupervised learning** is important for understanding the variation and grouping structure of a set of unlabeled data, and can be a useful pre-processor for supervised learning.
+
+- It is intrinsically more difficult than **supervised learning** because there is no gold standard (like an outcome variable) and no single objective (like test set accuracy).
+
+- It is an active field of research, with many recently developed tools such as **self-organizing maps**, **independent components analysis** (ICA) and **spectral clustering**. See ESL Chapter 14.
 
