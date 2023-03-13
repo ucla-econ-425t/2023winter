@@ -83,7 +83,7 @@ plot_acf(NYSE['log_volume'], lags = 20)
 plt.show()
 ```
 
-Do a similar plot for (1) the correlation between $v_t$ and lag $\ell$ `Dow Jones return` $r_{t-\ell}$ and (2) correlation between $v_t$ and lag $\ell$ `Log volatility` $v_{t-\ell}$.
+Do a similar plot for (1) the correlation between $v_t$ and lag $\ell$ `Dow Jones return` $r_{t-\ell}$ and (2) correlation between $v_t$ and lag $\ell$ `Log volatility` $z_{t-\ell}$.
 
 ## Project goal
 
